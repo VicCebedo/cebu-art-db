@@ -3,24 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.cebuartdb.model;
+package com.cebedo.vic.artdb.dao;
+
+import com.cebedo.vic.artdb.model.User;
+import java.util.List;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public interface Profile {
+public interface UserDao {
 
-    long id();
-
-    String name();
-
-    String bio();
-
-    String website();
-
-    String email();
-
-    String phone();
+    List<User> users();
 
 }

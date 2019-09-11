@@ -3,19 +3,24 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.cebuartdb.model;
+package com.cebedo.vic.artdb.model;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public interface User {
+public interface Profile {
 
     long id();
 
-    long profileId();
+    String name();
 
-    String username();
+    String bio();
 
-    String password();
+    String website();
+
+    String email();
+
+    String phone();
+
 }

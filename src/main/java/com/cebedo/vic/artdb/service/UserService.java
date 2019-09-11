@@ -3,12 +3,17 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.cebuartdb;
+package com.cebedo.vic.artdb.service;
+
+import com.cebedo.vic.artdb.model.User;
+import java.util.List;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class UserBuilder {
-    
+public interface UserService {
+
+    List<User> users();
+
 }

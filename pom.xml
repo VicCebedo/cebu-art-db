@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.cebedo.vic</groupId>
-    <artifactId>cebu-art-db</artifactId>
+    <artifactId>art-db</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>cebu-art-db</name>
-    <description>cebu art and artists database</description>
+    <name>art-db</name>
+    <description>art and artists database</description>
 
     <properties>
         <java.version>1.8</java.version>
@@ -36,6 +36,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>5.1.9.RELEASE</version>
+        </dependency>
                 
         <dependency>
             <groupId>org.postgresql</groupId>
@@ -46,6 +52,7 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
         </dependency>
+        
     </dependencies>
 
     <build>

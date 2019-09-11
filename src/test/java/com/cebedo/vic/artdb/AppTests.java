@@ -1,4 +1,4 @@
-package com.cebedo.vic.cebuartdb;
+package com.cebedo.vic.artdb;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -7,7 +7,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class CebuArtDbApplicationTests {
+public class AppTests {
 
 	@Test
 	public void contextLoads() {

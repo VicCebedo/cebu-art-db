@@ -3,7 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.cebuartdb.model;
+package com.cebedo.vic.artdb.model;
+
+import com.cebedo.vic.artdb.builder.UserBuilder;
+import java.util.Objects;
 
 /**
  *
@@ -12,25 +15,19 @@ package com.cebedo.vic.cebuartdb.model;
 public final class UserImpl implements User {
 
     private final long id;
-    private final long profileId;
     private final String username;
     private final String password;
 
-    public UserImpl(long i, long pId, String u, String p) {
-        this.id = i;
-        this.profileId = pId;
-        this.username = u;
-        this.password = p;
+    public UserImpl(UserBuilder b) {
+        Objects.requireNonNull(b);
+        this.id = b.id();
+        this.username = b.username();
+        this.password = b.password();
     }
 
     @Override
     public long id() {
         return this.id;
-    }
-
-    @Override
-    public long profileId() {
-        return this.profileId;
     }
 
     @Override

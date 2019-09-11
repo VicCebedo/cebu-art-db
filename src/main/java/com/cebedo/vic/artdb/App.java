@@ -1,4 +1,4 @@
-package com.cebedo.vic.cebuartdb;
+package com.cebedo.vic.artdb;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -19,16 +19,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @SpringBootApplication
-public class CebuArtDbApplication {
+public class App {
 
-    @Value("${spring.datasource.url}")
-    private String dbUrl;
+    //    @Value("${spring.datasource.url}")
+    //    private String dbUrl;
+    private String dbUrl = "jdbc:postgresql://localhost:5432/heroku_local?user=postgres&password=postgres";
 
     @Autowired
     private DataSource dataSource;
 
     public static void main(String[] args) {
-        SpringApplication.run(CebuArtDbApplication.class, args);
+        SpringApplication.run(App.class, args);
     }
 
     @RequestMapping("/")
