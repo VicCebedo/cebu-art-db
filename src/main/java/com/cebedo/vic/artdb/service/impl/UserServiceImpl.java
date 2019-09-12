@@ -5,6 +5,7 @@
  */
 package com.cebedo.vic.artdb.service.impl;
 
+import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.UserService;
@@ -23,6 +24,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+
+    @Override
+    public void create(String username, String password) {
+        this.userDao.create(new UserBuilder(0, username, password).build());
+    }
 
     @Override
     public List<User> users() {

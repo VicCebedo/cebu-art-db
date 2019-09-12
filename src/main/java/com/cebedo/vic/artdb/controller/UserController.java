@@ -25,4 +25,9 @@ public class UserController {
         this.userService.users();
     }
 
+    @RequestMapping("/test/create")
+    void testCreate() {
+        this.userService.create("ahehe", "aaaa");
+    }
+
 }

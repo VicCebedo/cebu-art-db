@@ -9,6 +9,7 @@ import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.model.User;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -26,6 +27,22 @@ public class UserDaoImpl implements UserDao {
 
     @Autowired
     private DataSource dataSource;
+
+    // TODO
+    // saveUser(User user);
+    // if id == 0, save new
+    // else, update
+    @Override
+    public void create(User user) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("INSERT INTO users(username, password) VALUES (?, ?)");
+            stmt.setString(1, user.username());
+            stmt.setString(2, user.password());
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public List<User> users() {

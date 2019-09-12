@@ -14,6 +14,8 @@ import java.util.List;
  */
 public interface UserService {
 
+    void create(String username, String password);
+
     List<User> users();
 
 }

@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
@@ -30,11 +29,6 @@ public class App {
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
-    }
-
-    @RequestMapping("/")
-    String index() {
-        return "index";
     }
 
     @RequestMapping("/db")
@@ -68,5 +62,4 @@ public class App {
             return new HikariDataSource(config);
         }
     }
-
 }
