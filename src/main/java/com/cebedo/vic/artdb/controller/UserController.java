@@ -20,14 +20,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/test")
+    @RequestMapping("/test/1")
     void test() {
-        this.userService.users();
+        this.userService.create("asdasd", "asdssss");
     }
 
-    @RequestMapping("/test/create")
-    void testCreate() {
-        this.userService.create("ahehe", "aaaa");
+    @RequestMapping("/test/2")
+    void test2() {
+        this.userService.changePassword("ahehe2", "bbbb");
+    }
+
+    @RequestMapping("/test/3")
+    void test3() {
+        System.out.println(this.userService.passwordMatch("ahehe2", "bbbb"));
+        System.out.println(this.userService.passwordMatch("ahehe2", "bbbb2"));
     }
 
 }

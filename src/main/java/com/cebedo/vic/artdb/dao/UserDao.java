@@ -14,8 +14,12 @@ import java.util.List;
  */
 public interface UserDao {
 
+    User get(String username);
+
+    void changePassword(String username, String newPassword);
+
     void create(User user);
 
-    List<User> users();
+    List<User> getAll();
 
 }

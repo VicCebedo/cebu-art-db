@@ -11,6 +11,7 @@ import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.UserService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,17 +23,33 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UserServiceImpl implements UserService {
 
+    private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
+
     @Autowired
     private UserDao userDao;
 
     @Override
-    public void create(String username, String password) {
-        this.userDao.create(new UserBuilder(0, username, password).build());
+    public boolean passwordMatch(String username, String password) {
+        User user = this.userDao.get(username);
+        return ENCODER.matches(password, user.password());
     }
 
     @Override
-    public List<User> users() {
-        return this.userDao.users();
+    public void changePassword(String username, String newPassword) {
+        this.userDao.changePassword(username, ENCODER.encode(newPassword));
+    }
+
+    @Override
+    public void create(String username, String password) {
+        this.userDao.create(
+                new UserBuilder(
+                        0, username, ENCODER.encode(password))
+                        .build());
+    }
+
+    @Override
+    public List<User> getAll() {
+        return this.userDao.getAll();
     }
 
 }

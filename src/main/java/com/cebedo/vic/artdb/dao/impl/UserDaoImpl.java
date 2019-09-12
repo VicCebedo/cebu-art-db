@@ -28,10 +28,18 @@ public class UserDaoImpl implements UserDao {
     @Autowired
     private DataSource dataSource;
 
-    // TODO
-    // saveUser(User user);
-    // if id == 0, save new
-    // else, update
+    @Override
+    public void changePassword(String username, String newPassword) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("UPDATE users SET password = ? WHERE username = ?");
+            stmt.setString(1, newPassword);
+            stmt.setString(2, username);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void create(User user) {
         try (Connection connection = dataSource.getConnection()) {
@@ -45,7 +53,27 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> users() {
+    public User get(String username) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new UserBuilder(
+                        rs.getLong("id"),
+                        username,
+                        rs.getString("password")).build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new UserBuilder(0, "", "").build();
+    }
+
+    @Override
+    public List<User> getAll() {
         try (Connection connection = dataSource.getConnection()) {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM users");
@@ -63,7 +91,6 @@ public class UserDaoImpl implements UserDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return new ArrayList<>();
     }
 }

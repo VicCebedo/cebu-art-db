@@ -14,8 +14,12 @@ import java.util.List;
  */
 public interface UserService {
 
+    boolean passwordMatch(String username, String password);
+
+    void changePassword(String username, String newPassword);
+
     void create(String username, String password);
 
-    List<User> users();
+    List<User> getAll();
 
 }
