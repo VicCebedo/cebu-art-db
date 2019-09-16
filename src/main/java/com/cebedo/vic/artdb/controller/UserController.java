@@ -5,9 +5,12 @@
  */
 package com.cebedo.vic.artdb.controller;
 
+import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
@@ -15,22 +18,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
 @Controller
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
-    @RequestMapping("/test/1")
-    void test() {
-        this.userService.create("asdasd", "asdssss");
+    @PostMapping("/register")
+    String register(final UserDTO user) {
+        this.userService.create(user.getUsername(), user.getPassword());
+        return "register-success";
     }
 
-    @RequestMapping("/test/2")
+    @GetMapping("/test/2")
     void test2() {
         this.userService.changePassword("ahehe2", "bbbb");
     }
 
-    @RequestMapping("/test/3")
+    @GetMapping("/test/3")
     void test3() {
         System.out.println(this.userService.passwordMatch("ahehe2", "bbbb"));
         System.out.println(this.userService.passwordMatch("ahehe2", "bbbb2"));

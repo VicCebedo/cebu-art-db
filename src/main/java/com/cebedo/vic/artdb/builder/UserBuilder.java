@@ -32,6 +32,10 @@ public final class UserBuilder {
         return new UserImpl(this);
     }
 
+    public static User newUserInstance() {
+        return new UserBuilder(0, "", "").build();
+    }
+
     public long id() {
         return this.id;
     }

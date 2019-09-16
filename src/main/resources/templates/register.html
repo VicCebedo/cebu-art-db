@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>TODO</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <form action="#" th:action="@{/user/register}" th:object="${user}" method="post">
+            <input type="text" th:field="*{username}" />
+            <input type="password" th:field="*{password}" />
+            <button type="submit">register</button>
+        </form>
+    </body>
+</html>

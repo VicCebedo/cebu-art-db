@@ -29,9 +29,9 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public boolean passwordMatch(String username, String password) {
+    public boolean passwordMatch(String username, String rawPassword) {
         User user = this.userDao.get(username);
-        return ENCODER.matches(password, user.password());
+        return ENCODER.matches(rawPassword, user.password());
     }
 
     @Override

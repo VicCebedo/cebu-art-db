@@ -48,6 +48,7 @@ public class UserDaoImpl implements UserDao {
             stmt.setString(2, user.password());
             stmt.executeUpdate();
         } catch (Exception e) {
+            // TODO Error handling if fail, like duplicate username.
             e.printStackTrace();
         }
     }
