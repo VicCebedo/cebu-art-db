@@ -5,8 +5,9 @@
  */
 package com.cebedo.vic.artdb.builder;
 
+import com.cebedo.vic.artdb.model.Profile;
 import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.UserImpl;
+import com.cebedo.vic.artdb.model.impl.UserImpl;
 import java.util.Objects;
 
 /**
@@ -18,6 +19,7 @@ public final class UserBuilder {
     private final long id;
     private final String username;
     private final String password;
+    private final Profile profile;
 
     public UserBuilder(long i, String u, String p) {
         Objects.requireNonNull(i);
@@ -26,6 +28,18 @@ public final class UserBuilder {
         this.id = i;
         this.username = u;
         this.password = p;
+        this.profile = null;
+    }
+
+    public UserBuilder(long i, String u, String p, Profile prof) {
+        Objects.requireNonNull(i);
+        Objects.requireNonNull(u);
+        Objects.requireNonNull(p);
+        Objects.requireNonNull(prof);
+        this.id = i;
+        this.username = u;
+        this.password = p;
+        this.profile = prof;
     }
 
     public User build() {
@@ -46,6 +60,10 @@ public final class UserBuilder {
 
     public String password() {
         return this.password;
+    }
+
+    public Profile profile() {
+        return this.profile;
     }
 
 }

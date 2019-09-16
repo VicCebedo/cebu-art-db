@@ -6,6 +6,8 @@
 package com.cebedo.vic.artdb.controller;
 
 import com.cebedo.vic.artdb.dto.UserDTO;
+import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.utils.AuthUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,7 +37,9 @@ public class LoginController {
     }
 
     @GetMapping("/logged-in/home")
-    String pageHome() {
+    String pageHome(Model model) {
+        User user = AuthUtils.getAuth().user();
+        model.addAttribute("user", user);
         return "home";
     }
 
@@ -43,5 +47,4 @@ public class LoginController {
     String pageLoginFail() {
         return "login-fail";
     }
-
 }

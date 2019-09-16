@@ -16,4 +16,6 @@ public interface User {
     String username();
 
     String password();
+
+    Profile profile();
 }

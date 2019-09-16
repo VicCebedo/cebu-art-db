@@ -7,7 +7,9 @@ package com.cebedo.vic.artdb.dao.impl;
 
 import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
+import com.cebedo.vic.artdb.model.Profile;
 import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.model.impl.ProfileImpl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Repository;
 @Repository("userDao")
 public class UserDaoImpl implements UserDao {
 
+    // TODO Put character limits on DB columns.
     @Autowired
     private DataSource dataSource;
 
@@ -61,16 +64,24 @@ public class UserDaoImpl implements UserDao {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
+                Profile profile = new ProfileImpl(
+                        rs.getString("name"),
+                        rs.getString("bio"),
+                        rs.getString("website"),
+                        rs.getString("email"),
+                        rs.getString("phone"));
+
                 return new UserBuilder(
                         rs.getLong("id"),
                         username,
-                        rs.getString("password")).build();
+                        rs.getString("password"),
+                        profile).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return new UserBuilder(0, "", "").build();
+        return UserBuilder.newUserInstance();
     }
 
     @Override

@@ -6,6 +6,19 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
     </head>
     <body>
-        home
+        hello
+        <br/>
+        <a href="/logged-in/logout">logout</a>
+        <br/>
+        <br/>
+        name: <div th:text="${user.profile().name}"></div>
+        <br/>
+        bio: <div th:text="${user.profile().bio}"></div>
+        <br/>
+        website: <div th:text="${user.profile().website}"></div>
+        <br/>
+        email: <div th:text="${user.profile().email}"></div>
+        <br/>
+        phone: <div th:text="${user.profile().phone}"></div>
     </body>
 </html>

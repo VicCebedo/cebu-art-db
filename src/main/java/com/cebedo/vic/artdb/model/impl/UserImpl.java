@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.artdb.model;
+package com.cebedo.vic.artdb.model.impl;
 
 import com.cebedo.vic.artdb.builder.UserBuilder;
+import com.cebedo.vic.artdb.model.Profile;
+import com.cebedo.vic.artdb.model.User;
 import java.util.Objects;
 
 /**
@@ -17,12 +19,14 @@ public final class UserImpl implements User {
     private final long id;
     private final String username;
     private final String password;
+    private final Profile profile;
 
     public UserImpl(UserBuilder b) {
         Objects.requireNonNull(b);
         this.id = b.id();
         this.username = b.username();
         this.password = b.password();
+        this.profile = b.profile();
     }
 
     @Override
@@ -38,6 +42,11 @@ public final class UserImpl implements User {
     @Override
     public String password() {
         return this.password;
+    }
+
+    @Override
+    public Profile profile() {
+        return this.profile;
     }
 
 }

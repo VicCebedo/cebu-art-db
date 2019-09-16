@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class App {
 
+    // TODO Change during deployment.
     //    @Value("${spring.datasource.url}")
     //    private String dbUrl;
     private String dbUrl = "jdbc:postgresql://localhost:5432/heroku_local?user=postgres&password=postgres";

@@ -11,16 +11,24 @@ package com.cebedo.vic.artdb.model;
  */
 public interface Profile {
 
-    long id();
+    String getName();
 
-    String name();
+    void setName(String name);
 
-    String bio();
+    String getBio();
 
-    String website();
+    void setBio(String bio);
 
-    String email();
+    String getWebsite();
 
-    String phone();
+    void setWebsite(String website);
+
+    String getEmail();
+
+    void setEmail(String email);
+
+    String getPhone();
+
+    void setPhone(String phone);
 
 }
