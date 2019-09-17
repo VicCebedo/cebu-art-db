@@ -81,7 +81,7 @@ public class UserDaoImpl implements UserDao {
             e.printStackTrace();
         }
 
-        return UserBuilder.newUserInstance();
+        return UserBuilder.buildNewInstance();
     }
 
     @Override

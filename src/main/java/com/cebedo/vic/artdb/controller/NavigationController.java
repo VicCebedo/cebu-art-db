@@ -5,6 +5,7 @@
  */
 package com.cebedo.vic.artdb.controller;
 
+import com.cebedo.vic.artdb.dto.PhotoDTO;
 import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.utils.AuthUtils;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
 @Controller
-public class LoginController {
+public class NavigationController {
 
     @GetMapping("/")
     String index() {
@@ -28,6 +29,11 @@ public class LoginController {
     String pageLogin(Model model) {
         model.addAttribute("user", new UserDTO());
         return "login";
+    }
+
+    @GetMapping("/login/fail")
+    String pageLoginFail() {
+        return "login-fail";
     }
 
     @GetMapping("/register")
@@ -43,8 +49,11 @@ public class LoginController {
         return "home";
     }
 
-    @GetMapping("/login/fail")
-    String pageLoginFail() {
-        return "login-fail";
+    @GetMapping("/logged-in/upload")
+    String pageUpload(Model model) {
+        User user = AuthUtils.getAuth().user();
+        model.addAttribute("user", user);
+        model.addAttribute("photo", new PhotoDTO());
+        return "upload";
     }
 }

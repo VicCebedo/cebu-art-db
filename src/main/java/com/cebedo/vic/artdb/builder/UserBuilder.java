@@ -46,7 +46,7 @@ public final class UserBuilder {
         return new UserImpl(this);
     }
 
-    public static User newUserInstance() {
+    public static User buildNewInstance() {
         return new UserBuilder(0, "", "").build();
     }
 
