@@ -4,34 +4,95 @@
         <title>TODO</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
     </head>
     <body>
-        hello, [[${user.username()}]]
-        <br/>
-        <a href="/logged-in/logout">logout</a>
-        <br/>
-        <a href="/logged-in/upload">upload</a>
-        <br/>
-        <br/>
-        name: <div th:text="${user.profile().name}"></div>
-        <br/>
-        bio: <div th:text="${user.profile().bio}"></div>
-        <br/>
-        website: <div th:text="${user.profile().website}"></div>
-        <br/>
-        email: <div th:text="${user.profile().email}"></div>
-        <br/>
-        phone: <div th:text="${user.profile().phone}"></div>
+        <div class="ui inverted attached stackable menu">
+            <div class="ui container">
+                <a class="item" href="/logged-in/home"><i class="home icon"></i> Home</a>
+                <a class="item"><i class="grid layout icon"></i> Browse</a>
+                <a class="item" href="/logged-in/upload"><i class="mail icon"></i> Upload</a>
+                <div class="ui simple dropdown item">
+                    More<i class="dropdown icon"></i>
+                    <div class="menu">
+                        <a class="item" href="/logged-in/user/profile"><i class="edit icon"></i> Edit Profile</a>
+                        <a class="item" href="/logged-in/logout"><i class="globe icon"></i> Logout</a>
+                    </div>
+                </div>
+                <!-- <div class="right item"><div class="ui input"><input type="text" placeholder="Search..."></div></div> -->
+            </div>
+        </div>
+        <div class="ui hidden divider"></div>
+        <div class="ui container">
+            <div class="ui segment">
+                <div class="ui items">
+                    <div class="item">
+                        <a class="ui small circular image">
+                            <img class="ui small circular image" src="https://semantic-ui.com/images/avatar/large/elliot.jpg">
+                        </a>
+                        <div class="content center">
+                            <a class="header">[[${user.profile().name}]] (@[[${user.username()}]])</a>
+                            <div class="description">
+                                <p>[[${user.profile().bio}]]</p>
+                                <p>[[${user.profile().email}]]</p>
+                                <p>[[${user.profile().phone}]]</p>
+                                <p><a href="#" onclick="websitePage(this)">[[${user.profile().website}]]</a></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <table>
-            <tr th:each="photo : ${photos}">
-                <td th:text="${photo.id()}" />
-                <td th:text="${photo.userId()}" />
-                <td th:text="${photo.url()}" />
-                <td th:text="${photo.caption()}" />
-            </tr>
-        </table>
+        <div class="ui hidden divider"></div>
+        <div class="ui container">
 
+
+            <!--                <div th:each="photo : ${photos}">
+                                <td th:text="${photo.id()}" />
+                                <td th:text="${photo.userId()}" />
+                                <td th:text="${photo.url()}" />
+                                <td th:text="${photo.caption()}" />
+                            </<div>-->
+            <!--                <div class="card" th:each="photo : ${photos}">
+                                <div class="image">
+                                    <img src="#" th:src="${photo.url()}" />
+                                </div>
+                            </div>-->
+
+            <div class="ui special cards three stackable">
+                <div class="card" th:each="photo : ${photos}">
+                    <div class="blurring dimmable image">
+                        <div class="ui dimmer">
+                            <div class="content">
+                                <div class="center">
+                                    <div class="ui inverted button">Add Friend</div>
+                                </div>
+                            </div>
+                        </div>
+                        <img src="#" th:src="${photo.url()}" />
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <script type="text/javascript">
+            $('.special.cards .image').dimmer({
+                on: 'hover'
+            });
+
+            function websitePage(obj) {
+                location.href = obj.innerHTML;
+            }
+        </script>
     </body>
 
 </html>

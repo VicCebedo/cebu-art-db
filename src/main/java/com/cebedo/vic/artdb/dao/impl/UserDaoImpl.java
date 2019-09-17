@@ -10,6 +10,7 @@ import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.model.Profile;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.model.impl.ProfileImpl;
+import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -37,6 +38,22 @@ public class UserDaoImpl implements UserDao {
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET password = ? WHERE username = ?");
             stmt.setString(1, newPassword);
             stmt.setString(2, username);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateProfile(Profile profile) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("UPDATE users SET name=?, bio=?, website=?, email=?, phone=? WHERE id=?");
+            stmt.setString(1, profile.getName());
+            stmt.setString(2, profile.getBio());
+            stmt.setString(3, profile.getWebsite());
+            stmt.setString(4, profile.getEmail());
+            stmt.setString(5, profile.getPhone());
+            stmt.setLong(6, AuthUtils.getAuth().user().id());
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

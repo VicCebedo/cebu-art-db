@@ -7,8 +7,10 @@ package com.cebedo.vic.artdb.service.impl;
 
 import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
+import com.cebedo.vic.artdb.model.Profile;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.UserService;
+import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,6 +47,16 @@ public class UserServiceImpl implements UserService {
                         0, username, ENCODER.encode(password))
                         .build()
         );
+    }
+
+    @Override
+    public void updateProfile(Profile profile) {
+        AuthUtils.getAuth().user().profile().setBio(profile.getBio());
+        AuthUtils.getAuth().user().profile().setEmail(profile.getEmail());
+        AuthUtils.getAuth().user().profile().setName(profile.getName());
+        AuthUtils.getAuth().user().profile().setPhone(profile.getPhone());
+        AuthUtils.getAuth().user().profile().setWebsite(profile.getWebsite());
+        this.userDao.updateProfile(profile);
     }
 
     @Override
