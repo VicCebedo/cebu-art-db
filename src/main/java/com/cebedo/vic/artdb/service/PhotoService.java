@@ -5,6 +5,9 @@
  */
 package com.cebedo.vic.artdb.service;
 
+import com.cebedo.vic.artdb.model.Photo;
+import java.util.List;
+
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
@@ -12,5 +15,7 @@ package com.cebedo.vic.artdb.service;
 public interface PhotoService {
 
     void create(String url, String caption);
+
+    List<Photo> getAllByCurrentUser();
 
 }

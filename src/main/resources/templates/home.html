@@ -22,6 +22,16 @@
         email: <div th:text="${user.profile().email}"></div>
         <br/>
         phone: <div th:text="${user.profile().phone}"></div>
+
+        <table>
+            <tr th:each="photo : ${photos}">
+                <td th:text="${photo.id()}" />
+                <td th:text="${photo.userId()}" />
+                <td th:text="${photo.url()}" />
+                <td th:text="${photo.caption()}" />
+            </tr>
+        </table>
+
     </body>
 
 </html>

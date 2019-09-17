@@ -8,7 +8,9 @@ package com.cebedo.vic.artdb.controller;
 import com.cebedo.vic.artdb.dto.PhotoDTO;
 import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,6 +21,9 @@ import org.springframework.web.bind.annotation.GetMapping;
  */
 @Controller
 public class NavigationController {
+
+    @Autowired
+    private PhotoService photoService;
 
     @GetMapping("/")
     String index() {
@@ -46,6 +51,7 @@ public class NavigationController {
     String pageHome(Model model) {
         User user = AuthUtils.getAuth().user();
         model.addAttribute("user", user);
+        model.addAttribute("photos", this.photoService.getAllByCurrentUser());
         return "home";
     }
 

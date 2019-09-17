@@ -7,8 +7,10 @@ package com.cebedo.vic.artdb.service.impl;
 
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
+import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,11 @@ public class PhotoServiceImpl implements PhotoService {
     public void create(String url, String caption) {
         long userId = AuthUtils.getAuth().user().id();
         this.photoDao.create(new PhotoBuilder(0, userId, url, caption).build());
+    }
+
+    @Override
+    public List<Photo> getAllByCurrentUser() {
+        return this.photoDao.getAllByUserId(AuthUtils.getAuth().user().id());
     }
 
 }

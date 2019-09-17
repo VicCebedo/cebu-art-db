@@ -5,10 +5,14 @@
  */
 package com.cebedo.vic.artdb.dao.impl;
 
+import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.model.Photo;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -34,6 +38,29 @@ public class PhotoDaoImpl implements PhotoDao {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<Photo> getAllByUserId(long userId) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos WHERE user_id = ?");
+            stmt.setLong(1, userId);
+
+            ResultSet rs = stmt.executeQuery();
+            List<Photo> photos = new ArrayList<>();
+            while (rs.next()) {
+                photos.add(new PhotoBuilder(
+                        rs.getLong("id"),
+                        rs.getLong("user_id"),
+                        rs.getString("url"),
+                        rs.getString("caption")).build());
+            }
+
+            return photos;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
 }

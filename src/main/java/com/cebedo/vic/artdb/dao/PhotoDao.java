@@ -6,6 +6,7 @@
 package com.cebedo.vic.artdb.dao;
 
 import com.cebedo.vic.artdb.model.Photo;
+import java.util.List;
 
 /**
  *
@@ -14,5 +15,7 @@ import com.cebedo.vic.artdb.model.Photo;
 public interface PhotoDao {
 
     void create(Photo photo);
+
+    List<Photo> getAllByUserId(long userId);
 
 }
