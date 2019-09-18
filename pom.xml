@@ -51,11 +51,6 @@
             <artifactId>spring-tx</artifactId>
         </dependency>
         
-        <!--        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId> 
-        </dependency>-->
-        
         <!--Password Encryption-->
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -81,6 +76,13 @@
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
+        </dependency>
+        
+        <!--Photo uploads-->
+        <dependency>
+            <groupId>com.cloudinary</groupId>
+            <artifactId>cloudinary-http44</artifactId>
+            <version>1.24.0</version>
         </dependency>
         
     </dependencies>

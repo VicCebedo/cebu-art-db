@@ -8,6 +8,7 @@ package com.cebedo.vic.artdb.dao.impl;
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.model.Photo;
+import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -34,6 +35,18 @@ public class PhotoDaoImpl implements PhotoDao {
             stmt.setLong(1, photo.userId());
             stmt.setString(2, photo.url());
             stmt.setString(3, photo.caption());
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void delete(long id) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("DELETE FROM photos WHERE id = ? AND user_id = ?");
+            stmt.setLong(1, id);
+            stmt.setLong(2, AuthUtils.getAuth().user().id());
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

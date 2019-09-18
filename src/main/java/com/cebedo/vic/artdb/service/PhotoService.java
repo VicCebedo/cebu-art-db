@@ -18,4 +18,6 @@ public interface PhotoService {
 
     List<Photo> getAllByCurrentUser();
 
+    void delete(long id, String cloudName);
+
 }

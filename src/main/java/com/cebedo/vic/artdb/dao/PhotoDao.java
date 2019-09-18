@@ -18,4 +18,6 @@ public interface PhotoDao {
 
     List<Photo> getAllByUserId(long userId);
 
+    void delete(long id);
+
 }

@@ -19,6 +19,7 @@ public final class PhotoImpl implements Photo {
     private final long userId;
     private final String url;
     private final String caption;
+    private final String cloudName;
 
     public PhotoImpl(PhotoBuilder b) {
         Objects.requireNonNull(b);
@@ -26,6 +27,7 @@ public final class PhotoImpl implements Photo {
         this.userId = b.userId();
         this.url = b.url();
         this.caption = b.caption();
+        this.cloudName = this.url.substring(this.url.lastIndexOf('/') + 1, this.url.lastIndexOf('.'));
     }
 
     @Override
@@ -46,6 +48,11 @@ public final class PhotoImpl implements Photo {
     @Override
     public String caption() {
         return this.caption;
+    }
+
+    @Override
+    public String cloudName() {
+        return this.cloudName;
     }
 
 }

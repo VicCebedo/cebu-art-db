@@ -19,4 +19,6 @@ public interface Photo {
 
     String caption();
 
+    String cloudName();
+
 }
