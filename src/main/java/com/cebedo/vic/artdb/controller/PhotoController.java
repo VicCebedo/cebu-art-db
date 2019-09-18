@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -26,17 +27,21 @@ public class PhotoController {
     private PhotoService photoService;
 
     @PostMapping("/upload")
-    String upload(final PhotoDTO photo) {
+    String upload(RedirectAttributes attrs, final PhotoDTO photo) {
+        // TODO Error if uploaded by pressing 'Enter'.
         this.photoService.create(photo.getUrl(), photo.getCaption());
-        return "upload-success";
+        attrs.addFlashAttribute("showUploadSuccess", true);
+        return "redirect:/logged-in/home";
     }
 
     @GetMapping("/delete/{id}/{cloudName}")
     String delete(@PathVariable("id") final long id,
-            @PathVariable("cloudName") final String cloudName) {
+            @PathVariable("cloudName") final String cloudName,
+            RedirectAttributes attrs) {
         // TODO Confirmation dialog box in HTML view before deleting.
         this.photoService.delete(id, cloudName);
-        return "general-success";
+        attrs.addFlashAttribute("showDeleteSuccess", true);
+        return "redirect:/logged-in/home";
     }
 
 }

@@ -13,26 +13,73 @@
         </script>
         <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
 
+        <style>
+            body {
+                background: #F9F9F9;
+            }
+        </style>
+
     </head>
     <body>
+
+
+        <!--NAVIGATION BAR-->
         <div class="ui inverted attached stackable menu">
             <div class="ui container">
                 <a class="item" href="/logged-in/home"><i class="home icon"></i> Home</a>
                 <a class="item"><i class="grid layout icon"></i> Browse</a>
-                <a class="item" href="/logged-in/upload"><i class="mail icon"></i> Upload</a>
+                <a class="item" href="#" onclick="popupUpload()"><i class="edit icon"></i> Upload</a>
                 <div class="ui simple dropdown item">
                     More<i class="dropdown icon"></i>
                     <div class="menu">
-                        <a class="item" href="/logged-in/user/profile"><i class="edit icon"></i> Edit Profile</a>
+                        <a class="item" href="#" onclick="popupEditProfile()"><i class="edit icon"></i> Edit Profile</a>
                         <a class="item" href="/logged-in/logout"><i class="globe icon"></i> Logout</a>
                     </div>
                 </div>
-                <!-- <div class="right item"><div class="ui input"><input type="text" placeholder="Search..."></div></div> -->
+                <div class="right item">
+                    <div class="ui transparent inverted left icon input">
+                        <input type="text" placeholder="Search...">
+                        <i class="search icon"></i>
+                    </div>
+                </div> 
             </div>
         </div>
+
+        <!--MESSAGES-->
+        <div class="ui container">
+            <div th:if="${showUploadSuccess}">
+                <div class="ui hidden divider"></div>
+                <div class="ui success large message" id="message-container">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Your upload was successful.
+                    </div>
+                </div>
+            </div>
+            <div th:if="${showDeleteSuccess}">
+                <div class="ui hidden divider"></div>
+                <div class="ui success large message" id="message-container">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Your photo was successfully deleted.
+                    </div>
+                </div>
+            </div>
+            <div th:if="${showEditProfileSuccess}">
+                <div class="ui hidden divider"></div>
+                <div class="ui success large message" id="message-container">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Your profile was successfully updated.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--HEADER PROFILE DISPLAY-->
         <div class="ui hidden divider"></div>
         <div class="ui container">
-            <div class="ui segment">
+            <div class="ui circular segment left aligned violet">
                 <div class="ui items">
                     <div class="item">
                         <a class="ui small circular image">
@@ -52,22 +99,9 @@
             </div>
         </div>
 
+        <!--CURRENT USER PHOTO GRID-->
         <div class="ui hidden divider"></div>
         <div class="ui container">
-
-
-            <!--                <div th:each="photo : ${photos}">
-                                <td th:text="${photo.id()}" />
-                                <td th:text="${photo.userId()}" />
-                                <td th:text="${photo.url()}" />
-                                <td th:text="${photo.caption()}" />
-                            </<div>-->
-            <!--                <div class="card" th:each="photo : ${photos}">
-                                <div class="image">
-                                    <img src="#" th:src="${photo.url()}" />
-                                </div>
-                            </div>-->
-
             <div class="ui special cards three stackable">
                 <div class="card" th:each="photo : ${photos}">
                     <div class="blurring dimmable image">
@@ -87,13 +121,87 @@
                     </div>
                 </div>
             </div>
-
-
         </div>
 
-        <div class="ui basic modal">
+
+        <!--MODALS-->        
+        <div class="ui mini modal" id="modal-edit-profile">
+            <div class="header">
+                Edit Profile
+            </div>
             <div class="content">
-                <img class="ui fluid image" src="#" id="popup-image">
+                <form th:action="@{/logged-in/user/profile/update}" th:object="${profile}" method="post" class="ui form" id="form-edit-profile">
+                    <div class="field">
+                        <label>Name</label>
+                        <input type="text" placeholder="Name" th:field="*{name}" />
+                    </div>
+                    <div class="field">
+                        <label>Bio</label>
+                        <input type="text" placeholder="Bio" th:field="*{bio}" />
+                    </div>
+                    <div class="field">
+                        <label>Website</label>
+                        <input type="text" placeholder="Website" th:field="*{website}" />
+                    </div>
+                    <div class="field">
+                        <label>Email</label>
+                        <input type="text" placeholder="Email" th:field="*{email}" />
+                    </div>
+                    <div class="field">
+                        <label>Phone</label>
+                        <input type="text" placeholder="Phone" th:field="*{phone}" />
+                    </div>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button">
+                    Cancel
+                </div>
+                <a href="#" onclick="document.getElementById('form-edit-profile').submit()">
+                    <div class="ui positive button">
+                        Update
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="ui mini modal" id="modal-upload">
+            <div class="header">
+                Upload
+            </div>
+            <div class="content">
+
+                <div class="ui active dimmer" id="loader-upload" style="display: none">
+                    <div class="ui indeterminate text loader">Uploading</div>
+                </div>
+
+                <form th:action="@{/logged-in/photo/upload}" th:object="${photo}" method="post" class="ui form" id="form-upload">
+                    <input type="hidden" th:field="*{url}" id="photo-url"/>
+                    <div class="field">
+                        <label>Photo</label>
+                        <input type="file" accept="image/*" onchange="setFiles(this.files)"/>
+                    </div>
+                    <div class="field">
+                        <label>Caption</label>
+                        <input type="text" placeholder="Caption" th:field="*{caption}" />
+                    </div>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button">
+                    Cancel
+                </div>
+                <a href="#" onclick="handleFileUpload()">
+                    <div class="ui green button">
+                        Upload
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="ui basic modal" id="modal-image">
+            <div class="content">
+                <img class="ui fluid image" src="#" id="modal-image-src">
             </div>
             <div class="actions">
                 <div class="ui red basic cancel inverted button">
@@ -109,8 +217,16 @@
 
         <script type="text/javascript">
             function popupImage(imgSrc) {
-                document.getElementById('popup-image').src = imgSrc;
-                $('.ui.modal').modal('show');
+                document.getElementById('modal-image-src').src = imgSrc;
+                $('#modal-image').modal('show');
+            }
+
+            function popupUpload() {
+                $('#modal-upload').modal('show');
+            }
+
+            function popupEditProfile() {
+                $('#modal-edit-profile').modal('show');
             }
 
             $('.special.cards .image').dimmer({
@@ -119,6 +235,67 @@
 
             function websitePage(obj) {
                 location.href = obj.innerHTML;
+            }
+        </script>
+
+        <!--Code for upload functionality-->
+        <script type="text/javascript">
+
+            // Upload variables.
+            const cloudName = 'hqx5vpvj4';
+            const unsignedUploadPreset = 'nihp5svy';
+
+            // Do upload to Cloudinary.
+            function uploadFile(file) {
+                var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+                var xhr = new XMLHttpRequest();
+                var fd = new FormData();
+
+                xhr.open('POST', url, true);
+                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                xhr.onreadystatechange = function (e) {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+
+                        // File uploaded successfully
+                        var response = JSON.parse(xhr.responseText);
+                        var url = response.secure_url;
+
+                        // Create a thumbnail of the uploaded image, with 150px width
+                        var tokens = url.split('/');
+                        // TODO Optimize photos, enable thumbnails.
+                        // tokens.splice(-2, 0, 'w_150,c_scale');
+
+                        var img = new Image();
+                        img.src = tokens.join('/');
+                        document.getElementById('photo-url').value = img.src;
+                        document.getElementById('form-upload').submit();
+                    }
+                };
+
+                fd.append('upload_preset', unsignedUploadPreset);
+                fd.append('public_id', '/[[${user.username()}]]/' + uuidv4());
+                fd.append('tags', 'browser_upload');
+                fd.append('file', file);
+                xhr.send(fd);
+            }
+
+            // TODO Handle valid image extensions only.
+            // Handle selected files
+            var handleFileUpload = function () {
+                document.getElementById('loader-upload').style = '';
+                for (var i = 0; i < files.length; i++) {
+                    uploadFile(files[i]);
+                }
+            };
+
+            function setFiles(filesToUpload) {
+                files = filesToUpload;
+            }
+
+            function uuidv4() {
+                return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+                )
             }
         </script>
     </body>

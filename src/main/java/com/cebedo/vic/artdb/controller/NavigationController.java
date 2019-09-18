@@ -51,15 +51,9 @@ public class NavigationController {
     String pageHome(Model model) {
         User user = AuthUtils.getAuth().user();
         model.addAttribute("user", user);
+        model.addAttribute("profile", user.profile());
         model.addAttribute("photos", this.photoService.getAllByCurrentUser());
-        return "home";
-    }
-
-    @GetMapping("/logged-in/upload")
-    String pageUpload(Model model) {
-        User user = AuthUtils.getAuth().user();
-        model.addAttribute("user", user);
         model.addAttribute("photo", new PhotoDTO());
-        return "upload";
+        return "home";
     }
 }
