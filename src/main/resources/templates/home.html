@@ -76,8 +76,9 @@
                                 <div class="center">
                                     <p>[[${photo.caption()}]]</p>
                                     <p></p>
+                                    <button class="ui inverted basic button" onclick="#" th:attr="onclick=|popupImage('${photo.url()}')|">View</button>
                                     <a th:href="${'/logged-in/photo/delete/' + photo.id() + '/' + photo.cloudName()}">
-                                        <div class="ui inverted button">Delete</div>
+                                        <button class="ui inverted red basic button">Delete</button>
                                     </a>
                                 </div>
                             </div>
@@ -89,7 +90,29 @@
 
 
         </div>
+
+        <div class="ui basic modal">
+            <div class="content">
+                <img class="ui fluid image" src="#" id="popup-image">
+            </div>
+            <div class="actions">
+                <div class="ui red basic cancel inverted button">
+                    <i class="remove icon"></i>
+                    No
+                </div>
+                <div class="ui green ok inverted button">
+                    <i class="checkmark icon"></i>
+                    Yes
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
+            function popupImage(imgSrc) {
+                document.getElementById('popup-image').src = imgSrc;
+                $('.ui.modal').modal('show');
+            }
+
             $('.special.cards .image').dimmer({
                 on: 'hover'
             });
