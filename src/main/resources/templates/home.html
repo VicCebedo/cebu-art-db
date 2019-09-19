@@ -24,20 +24,16 @@
 
 
         <!--NAVIGATION BAR-->
-        <div class="ui inverted attached stackable menu">
+        <div class="ui attached stackable inverted menu">
             <div class="ui container">
-                <a class="item" href="/logged-in/home"><i class="home icon"></i> Home</a>
-                <a class="item"><i class="grid layout icon"></i> Browse</a>
-                <a class="item" href="#" onclick="popupUpload()"><i class="edit icon"></i> Upload</a>
-                <div class="ui simple dropdown item">
-                    More<i class="dropdown icon"></i>
-                    <div class="menu">
-                        <a class="item" href="#" onclick="popupEditProfile()"><i class="edit icon"></i> Edit Profile</a>
-                        <a class="item" href="/logged-in/logout"><i class="globe icon"></i> Logout</a>
-                    </div>
-                </div>
+                <a class="item" href="/">Home</a>
+                <a class="item" href="#" onclick="popupUpload()" sec:authorize="isAuthenticated()">Upload</a>
+                <a class="item" href="#" onclick="popupEditProfile()" sec:authorize="isAuthenticated()">Edit Profile</a>
+                <a class="item" href="/logged-in/logout" sec:authorize="isAuthenticated()">Logout</a>
+                <a class="item" href="/login" sec:authorize="!isAuthenticated()">Login</a>
+                <a class="item" href="/register" sec:authorize="!isAuthenticated()">Register</a>
                 <div class="right item">
-                    <div class="ui transparent inverted left icon input">
+                    <div class="ui transparent left icon inverted input">
                         <input type="text" placeholder="Search...">
                         <i class="search icon"></i>
                     </div>
@@ -79,19 +75,26 @@
         <!--HEADER PROFILE DISPLAY-->
         <div class="ui hidden divider"></div>
         <div class="ui container">
-            <div class="ui circular segment left aligned violet">
+            <div class="ui segment left aligned">
                 <div class="ui items">
                     <div class="item">
-                        <a class="ui small circular image">
-                            <img class="ui small circular image" src="https://semantic-ui.com/images/avatar/large/elliot.jpg">
+                        <a class="ui medium image">
+                            <div class="ui grey ribbon label large">
+                                [[${user.profile().name}]]
+                            </div>
+                            <img src="https://images.pexels.com/photos/2800724/pexels-photo-2800724.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940">
                         </a>
                         <div class="content center">
-                            <a class="header">[[${user.profile().name}]] (@[[${user.username()}]])</a>
                             <div class="description">
-                                <p>[[${user.profile().bio}]]</p>
-                                <p>[[${user.profile().email}]]</p>
-                                <p>[[${user.profile().phone}]]</p>
-                                <p><a href="#" onclick="websitePage(this)">[[${user.profile().website}]]</a></p>
+                                <p style="white-space: pre-line">[[${user.profile().bio}]]</p>
+                            </div>
+                            <div class="extra">
+                                <div class="ui label"><i class="user icon"></i>[[${user.username()}]]</div>
+                                <a href="#" onclick="#" th:attr="onclick=|location.href='${user.profile().website}'|">
+                                    <div class="ui label"><i class="globe icon"></i>[[${user.profile().website}]]</div>
+                                </a>
+                                <div class="ui label"><i class="envelope icon"></i>[[${user.profile().email}]]</div>
+                                <div class="ui label"><i class="phone icon"></i>[[${user.profile().phone}]]</div>
                             </div>
                         </div>
                     </div>
@@ -101,55 +104,56 @@
 
         <!--CURRENT USER PHOTO GRID-->
         <div class="ui hidden divider"></div>
+        <div class="ui horizontal divider">&nbsp;</div>
+        <div class="ui hidden divider"></div>
         <div class="ui container">
             <div class="ui special cards three stackable">
-                <div class="card" th:each="photo : ${photos}">
-                    <div class="blurring dimmable image">
-                        <div class="ui dimmer">
-                            <div class="content">
-                                <div class="center">
-                                    <p>[[${photo.caption()}]]</p>
-                                    <p></p>
-                                    <button class="ui inverted basic button" onclick="#" th:attr="onclick=|popupImage('${photo.url()}')|">View</button>
-                                    <a th:href="${'/logged-in/photo/delete/' + photo.id() + '/' + photo.cloudName()}">
-                                        <button class="ui inverted red basic button">Delete</button>
-                                    </a>
-                                </div>
+                <div class="card blurring dimmable image" th:each="photo : ${photos}">
+                    <div class="ui dimmer">
+                        <div class="content">
+                            <div class="center">
+                                <!--TODO Truncated caption for thumbnails-->
+                                <p>[[${photo.caption()}]]</p>
+                                <a href="#" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloudName()}', '${photo.caption()}'); event.preventDefault();|">
+                                    <div class="ui inverted mini button">View Photo</div>
+                                </a>
                             </div>
                         </div>
-                        <img src="#" th:src="${photo.url()}" />
                     </div>
+                    <img class="ui image" src="#" th:src="${photo.thumbnailUrl()}" />
                 </div>
             </div>
         </div>
 
 
-        <!--MODALS-->        
-        <div class="ui mini modal" id="modal-edit-profile">
+        <!--EDIT PROFILE-->        
+        <div class="ui medium modal" id="modal-edit-profile">
             <div class="header">
                 Edit Profile
             </div>
             <div class="content">
                 <form th:action="@{/logged-in/user/profile/update}" th:object="${profile}" method="post" class="ui form" id="form-edit-profile">
-                    <div class="field">
-                        <label>Name</label>
-                        <input type="text" placeholder="Name" th:field="*{name}" />
+                    <div class="fields">
+                        <div class="field">
+                            <label>Name</label>
+                            <input type="text" placeholder="Name" th:field="*{name}" />
+                        </div>
+                        <div class="field">
+                            <label>Website</label>
+                            <input type="text" placeholder="Website" th:field="*{website}" />
+                        </div>
+                        <div class="field">
+                            <label>Email</label>
+                            <input type="text" placeholder="Email" th:field="*{email}" />
+                        </div>
+                        <div class="field">
+                            <label>Phone</label>
+                            <input type="text" placeholder="Phone" th:field="*{phone}" />
+                        </div>
                     </div>
                     <div class="field">
-                        <label>Bio</label>
-                        <input type="text" placeholder="Bio" th:field="*{bio}" />
-                    </div>
-                    <div class="field">
-                        <label>Website</label>
-                        <input type="text" placeholder="Website" th:field="*{website}" />
-                    </div>
-                    <div class="field">
-                        <label>Email</label>
-                        <input type="text" placeholder="Email" th:field="*{email}" />
-                    </div>
-                    <div class="field">
-                        <label>Phone</label>
-                        <input type="text" placeholder="Phone" th:field="*{phone}" />
+                        <label>Artist Bio</label>
+                        <textarea placeholder="Bio" th:field="*{bio}" rows="18"></textarea>
                     </div>
                 </form>
             </div>
@@ -165,16 +169,15 @@
             </div>
         </div>
 
+        <!--UPLOAD MODAL-->
         <div class="ui mini modal" id="modal-upload">
             <div class="header">
                 Upload
             </div>
             <div class="content">
-
                 <div class="ui active dimmer" id="loader-upload" style="display: none">
                     <div class="ui indeterminate text loader">Uploading</div>
                 </div>
-
                 <form th:action="@{/logged-in/photo/upload}" th:object="${photo}" method="post" class="ui form" id="form-upload">
                     <input type="hidden" th:field="*{url}" id="photo-url"/>
                     <div class="field">
@@ -199,25 +202,53 @@
             </div>
         </div>
 
-        <div class="ui basic modal" id="modal-image">
-            <div class="content">
-                <img class="ui fluid image" src="#" id="modal-image-src">
+        <!--IMAGE IS CLICKED-->
+        <div class="ui basic fullscreen modal" id="modal-image">
+            <div class="ui active dimmer" id="loader-delete" style="display: none">
+                <div class="ui indeterminate text loader">Deleting</div>
             </div>
-            <div class="actions">
-                <div class="ui red basic cancel inverted button">
-                    <i class="remove icon"></i>
-                    No
+            <div class="image content">
+                <img class="ui huge image" src="#" id="modal-image-src"> 
+                <div class="description">
+                    <p id="modal-image-caption"></p>
+                    <div class="ui red inverted button icon" 
+                         targetId=""
+                         targetCloudName=""
+                         onclick="deletePhoto(this.targetId, this.targetCloudName)" 
+                         id="delete-image-details">
+                        <i class="trash alternate icon"></i>
+                    </div>
                 </div>
-                <div class="ui green ok inverted button">
-                    <i class="checkmark icon"></i>
-                    Yes
+            </div>
+        </div>
+
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
+        <div class="ui inverted vertical footer segment" style="margin-top: 70px; padding-top: 30px; padding-bottom: 30px">
+            <div class="ui center aligned container">
+                <div class="ui horizontal inverted small divided link list">
+                    <a class="item" href="#">Site Map</a>
+                    <a class="item" href="#">Contact Us</a>
+                    <a class="item" href="#">Terms and Conditions</a>
+                    <a class="item" href="#">Privacy Policy</a>
                 </div>
             </div>
         </div>
 
         <script type="text/javascript">
-            function popupImage(imgSrc) {
+            $('.special.cards .image').dimmer({
+                on: 'hover'
+            });
+
+            function popupImage(imgSrc, id, cloudName, caption) {
                 document.getElementById('modal-image-src').src = imgSrc;
+                document.getElementById('modal-image-caption').innerHTML = caption;
+
+                // Delete button.
+                document.getElementById('delete-image-details').targetId = id;
+                document.getElementById('delete-image-details').targetCloudName = cloudName;
+
                 $('#modal-image').modal('show');
             }
 
@@ -229,12 +260,9 @@
                 $('#modal-edit-profile').modal('show');
             }
 
-            $('.special.cards .image').dimmer({
-                on: 'hover'
-            });
-
-            function websitePage(obj) {
-                location.href = obj.innerHTML;
+            function deletePhoto(id, cloudName) {
+                document.getElementById('loader-delete').style = '';
+                location.href = '/logged-in/photo/delete/' + id + '/' + cloudName;
             }
         </script>
 

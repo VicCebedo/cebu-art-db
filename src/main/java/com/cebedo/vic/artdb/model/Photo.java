@@ -5,6 +5,8 @@
  */
 package com.cebedo.vic.artdb.model;
 
+import java.sql.Timestamp;
+
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
@@ -20,5 +22,13 @@ public interface Photo {
     String caption();
 
     String cloudName();
+
+    String thumbnailUrl();
+
+    Timestamp timestamp();
+
+    String username();
+
+    String userProfileName();
 
 }

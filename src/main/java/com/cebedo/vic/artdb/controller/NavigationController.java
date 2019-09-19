@@ -26,7 +26,8 @@ public class NavigationController {
     private PhotoService photoService;
 
     @GetMapping("/")
-    String index() {
+    String index(Model model) {
+        model.addAttribute("photos", this.photoService.getAll());
         return "index";
     }
 

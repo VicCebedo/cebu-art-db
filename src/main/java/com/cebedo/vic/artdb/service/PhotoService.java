@@ -20,4 +20,8 @@ public interface PhotoService {
 
     void delete(long id, String cloudName);
 
+    List<Photo> getAll();
+
+    List<Photo> getAllByUserId(long id);
+
 }

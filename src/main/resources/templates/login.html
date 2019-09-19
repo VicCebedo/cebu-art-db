@@ -30,17 +30,15 @@
 
     </head>
     <body>
-        <!--                <div class="column">
-                            <form action="#" th:action="@{/login/process}" th:object="${user}" method="post">
-                                <input type="text" th:field="*{username}" />
-                                <input type="password" th:field="*{password}" />
-                                <button type="submit">login</button>
-                            </form>
-                            <br/>
-                            <a href="/">index</a>
-                        </div>-->
+
         <div class="ui middle aligned center aligned grid">
             <div class="column">
+                <div class="ui success message" th:if="${showRegisterSuccess}">
+                    <div class="header">
+                        Your user registration was successful.
+                    </div>
+                    <p>You may now log-in with your newly created account</p>
+                </div>
                 <h2 class="ui teal image header">
                     <div class="content">
                         Log-in to your account
@@ -68,7 +66,7 @@
                 </form>
 
                 <div class="ui message">
-                    New to us? <a href="#">Sign Up</a>
+                    New to us? <a href="/register">Register</a>
                 </div>
             </div>
         </div>

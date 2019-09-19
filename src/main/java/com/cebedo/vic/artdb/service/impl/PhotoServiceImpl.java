@@ -13,6 +13,7 @@ import com.cebedo.vic.artdb.utils.AuthUtils;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import java.io.IOException;
+import java.sql.Timestamp;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,12 +36,22 @@ public class PhotoServiceImpl implements PhotoService {
     @Override
     public void create(String url, String caption) {
         long userId = AuthUtils.getAuth().user().id();
-        this.photoDao.create(new PhotoBuilder(0, userId, url, caption).build());
+        this.photoDao.create(new PhotoBuilder(0, userId, url, caption, new Timestamp(System.currentTimeMillis())).build());
     }
 
     @Override
     public List<Photo> getAllByCurrentUser() {
         return this.photoDao.getAllByUserId(AuthUtils.getAuth().user().id());
+    }
+
+    @Override
+    public List<Photo> getAllByUserId(long id) {
+        return this.photoDao.getAllByUserId(id);
+    }
+
+    @Override
+    public List<Photo> getAll() {
+        return this.photoDao.getAll();
     }
 
     @Override

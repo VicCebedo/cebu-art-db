@@ -112,7 +112,13 @@ public class UserDaoImpl implements UserDao {
                 User user = new UserBuilder(
                         rs.getLong("id"),
                         rs.getString("username"),
-                        rs.getString("password")).build();
+                        rs.getString("password"),
+                        new ProfileImpl(
+                                rs.getString("name"),
+                                "",
+                                "",
+                                "",
+                                "")).build();
                 users.add(user);
             }
 

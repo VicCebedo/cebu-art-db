@@ -5,11 +5,17 @@
  */
 package com.cebedo.vic.artdb.controller;
 
+import com.cebedo.vic.artdb.dto.PhotoDTO;
 import com.cebedo.vic.artdb.dto.UserDTO;
+import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.model.impl.ProfileImpl;
+import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -25,10 +31,14 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private PhotoService photoService;
+
     @PostMapping("/user/register")
-    String register(final UserDTO user) {
+    String register(RedirectAttributes attrs, final UserDTO user) {
         this.userService.create(user.getUsername(), user.getPassword());
-        return "register-success";
+        attrs.addFlashAttribute("showRegisterSuccess", true);
+        return "redirect:/login";
     }
 
     @PostMapping("/logged-in/user/profile/update")
@@ -36,5 +46,15 @@ public class UserController {
         this.userService.updateProfile(profile);
         attrs.addFlashAttribute("showEditProfileSuccess", true);
         return "redirect:/logged-in/home";
+    }
+
+    @GetMapping("/{username}")
+    String pageHome(@PathVariable("username") final String username, Model model) {
+        User user = this.userService.get(username);
+        model.addAttribute("user", user);
+        model.addAttribute("profile", user.profile());
+        model.addAttribute("photos", this.photoService.getAllByUserId(user.id()));
+        model.addAttribute("photo", new PhotoDTO());
+        return "home";
     }
 }

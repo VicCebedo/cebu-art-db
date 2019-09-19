@@ -7,6 +7,7 @@ package com.cebedo.vic.artdb.model.impl;
 
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.model.Photo;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
@@ -20,14 +21,27 @@ public final class PhotoImpl implements Photo {
     private final String url;
     private final String caption;
     private final String cloudName;
+    private final String thumbnailUrl;
+    private final Timestamp timestamp;
+    private final String username;
+    private final String userProfileName;
 
     public PhotoImpl(PhotoBuilder b) {
         Objects.requireNonNull(b);
         this.id = b.id();
-        this.userId = b.userId();
-        this.url = b.url();
         this.caption = b.caption();
-        this.cloudName = this.url.substring(this.url.lastIndexOf('/') + 1, this.url.lastIndexOf('.'));
+        this.cloudName = b.url().substring(b.url().lastIndexOf('/') + 1, b.url().lastIndexOf('.'));
+        this.timestamp = b.timestamp();
+
+        // Photo manipulations.
+        String[] urlSplit = b.url().split("/upload/");
+        this.thumbnailUrl = urlSplit[0] + "/upload/w_400,h_300,c_fill,g_auto,q_auto:best/" + urlSplit[1];
+        this.url = b.url();
+
+        // Uploader data.
+        this.userId = b.userId();
+        this.username = b.username();
+        this.userProfileName = b.userProfileName();
     }
 
     @Override
@@ -55,4 +69,21 @@ public final class PhotoImpl implements Photo {
         return this.cloudName;
     }
 
+    @Override
+    public String thumbnailUrl() {
+        return this.thumbnailUrl;
+    }
+
+    @Override
+    public Timestamp timestamp() {
+        return this.timestamp;
+    }
+
+    public String username() {
+        return this.username;
+    }
+
+    public String userProfileName() {
+        return this.userProfileName;
+    }
 }
