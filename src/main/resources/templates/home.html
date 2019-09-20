@@ -24,12 +24,16 @@
 
 
         <!--NAVIGATION BAR-->
+        <form th:action="@{/logged-in/logout}" method="post" id="form-logout" style="display: none">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
         <div class="ui attached stackable inverted menu">
             <div class="ui container">
-                <a class="item" href="/">Explore</a>
+                <a class="item" href="/">Art</a>
+                <a class="item" href="/artists">Artists</a>
                 <a class="item" href="#" onclick="popupUpload()" sec:authorize="isAuthenticated()">Upload</a>
                 <a class="item" href="#" onclick="popupEditProfile()" sec:authorize="isAuthenticated()">Edit Profile</a>
-                <a class="item" href="/logged-in/logout" sec:authorize="isAuthenticated()">Logout</a>
+                <a class="item" onclick="document.getElementById('form-logout').submit()" sec:authorize="isAuthenticated()">Logout</a>
                 <a class="item" href="/login" sec:authorize="!isAuthenticated()">Login</a>
                 <a class="item" href="/register" sec:authorize="!isAuthenticated()">Register</a>
                 <div class="right item">
@@ -79,22 +83,25 @@
                 <div class="ui items">
                     <div class="item">
                         <a class="ui medium image">
-                            <div class="ui grey ribbon label large">
+                            <div class="ui grey ribbon label large" th:if="${profile.getName() != ''}">
                                 [[${profile.getName()}]]
                             </div>
                             <img src="https://images.pexels.com/photos/2800724/pexels-photo-2800724.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940">
                         </a>
                         <div class="content center">
-                            <div class="description">
+                            <div class="description" th:if="${profile.getBio() != ''}">
                                 <p style="white-space: pre-line">[[${profile.getBio()}]]</p>
                             </div>
                             <div class="extra">
                                 <div class="ui label"><i class="user icon"></i>[[${user.username()}]]</div>
-                                <a href="#" onclick="#" th:attr="onclick=|location.href='${profile.getWebsite()}'; event.preventDefault();|">
+                                <a href="#" 
+                                   onclick="#" 
+                                   th:attr="onclick=|location.href='${profile.getWebsite()}'; event.preventDefault();|"
+                                   th:if="${profile.getWebsite() != ''}">
                                     <div class="ui label"><i class="globe icon"></i>[[${profile.getWebsite()}]]</div>
                                 </a>
-                                <div class="ui label"><i class="envelope icon"></i>[[${profile.getEmail()}]]</div>
-                                <div class="ui label"><i class="phone icon"></i>[[${profile.getPhone()}]]</div>
+                                <div class="ui label" th:if="${profile.getEmail() != ''}"><i class="envelope icon"></i>[[${profile.getEmail()}]]</div>
+                                <div class="ui label" th:if="${profile.getPhone() != ''}"><i class="phone icon"></i>[[${profile.getPhone()}]]</div>
                             </div>
                         </div>
                     </div>

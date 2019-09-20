@@ -10,6 +10,7 @@ import com.cebedo.vic.artdb.dto.ProfileDTO;
 import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.PhotoService;
+import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,10 +27,19 @@ public class NavigationController {
     @Autowired
     private PhotoService photoService;
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/")
     String pageIndex(Model model) {
         model.addAttribute("photos", this.photoService.getAll());
         return "index";
+    }
+
+    @GetMapping("/artists")
+    String pageArtists(Model model) {
+        model.addAttribute("artists", this.userService.getAll());
+        return "artists";
     }
 
     @GetMapping("/login")

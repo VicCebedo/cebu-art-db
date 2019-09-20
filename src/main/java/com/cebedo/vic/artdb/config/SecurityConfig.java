@@ -30,7 +30,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(final HttpSecurity http) throws Exception {
-        // TODO Enable CSRF.
         http
                 .authorizeRequests()
                 .antMatchers("/logged-in/*").authenticated()

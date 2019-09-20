@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>TODO</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+        <style>
+            body {
+                background: #F9F9F9;
+            }
+        </style>
+    </head>
+    <body>
+
+        <!--NAVIGATION BAR-->
+        <form th:action="@{/logged-in/logout}" method="post" id="form-logout" style="display: none">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
+        <div class="ui inverted attached stackable menu">
+            <div class="ui container">
+                <a class="item" href="/">Art</a>
+                <a class="item" href="/artists">Artists</a>
+                <a class="item" href="/logged-in/home" sec:authorize="isAuthenticated()">Profile</a>
+                <a class="item" onclick="document.getElementById('form-logout').submit()" sec:authorize="isAuthenticated()">Logout</a>
+                <a class="item" href="/login" sec:authorize="!isAuthenticated()">Login</a>
+                <a class="item" href="/register" sec:authorize="!isAuthenticated()">Register</a>
+                <div class="right item">
+                    <div class="ui transparent inverted left icon input">
+                        <input type="text" placeholder="Search...">
+                        <i class="search icon"></i>
+                    </div>
+                </div> 
+            </div>
+        </div>
+
+        <div class="ui hidden divider"></div>
+        <div class="ui horizontal divider">&nbsp;</div>
+        <div class="ui hidden divider"></div>
+        <div class="ui container">
+            <div class="ui divided items">
+                <div class="item" th:each="user : ${artists}">
+                    <div class="image">
+                        <img src="https://semantic-ui.com/images/wireframe/image.png" />
+                    </div>
+                    <div class="content">
+                        <a class="header" th:if="${user.name() != ''}">
+                            [[${user.name()}]]
+                        </a>
+                        <div class="extra">
+                            <div class="ui label"><i class="user icon"></i> [[${user.username()}]]</div>
+                            <a href="#"
+                               onclick="#"
+                               th:attr="onclick=|location.href='${user.website()}'; event.preventDefault();|"
+                               th:if="${user.website() != ''}">
+                                <div class="ui label"><i class="globe icon"></i> [[${user.website()}]]</div>
+                            </a>
+                            <div class="ui label" th:if="${user.email() != ''}"><i class="envelope icon"></i> [[${user.email()}]]</div>
+                            <div class="ui label" th:if="${user.phone() != ''}"><i class="phone icon"></i> [[${user.phone()}]]</div>
+                        </div>
+                        <div class="description">
+                            <p style="white-space: pre-line">[[${user.bio()}]]</p>
+                        </div>
+                        <div class="extra">
+                            <a href="#" onclick="#" th:attr="onclick=|location.href='/${user.username()}'; event.preventDefault();|">
+                                <div class="ui right floated inverted secondary mini button">
+                                    View Artist
+                                    <i class="right chevron icon"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--NAVIGATION BAR-->
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
+        <div class="ui inverted attached stackable menu">
+            <div class="ui container">
+            </div>
+        </div>
+    </body>
+</html>

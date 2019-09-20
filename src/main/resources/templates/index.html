@@ -22,11 +22,15 @@
     <body>
 
         <!--NAVIGATION BAR-->
+        <form th:action="@{/logged-in/logout}" method="post" id="form-logout" style="display: none">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+        </form>
         <div class="ui inverted attached stackable menu">
             <div class="ui container">
-                <a class="item" href="/">Explore</a>
+                <a class="item" href="/">Art</a>
+                <a class="item" href="/artists">Artists</a>
                 <a class="item" href="/logged-in/home" sec:authorize="isAuthenticated()">Profile</a>
-                <a class="item" href="/logged-in/logout" sec:authorize="isAuthenticated()">Logout</a>
+                <a class="item" onclick="document.getElementById('form-logout').submit()" sec:authorize="isAuthenticated()">Logout</a>
                 <a class="item" href="/login" sec:authorize="!isAuthenticated()">Login</a>
                 <a class="item" href="/register" sec:authorize="!isAuthenticated()">Register</a>
                 <div class="right item">
@@ -35,12 +39,6 @@
                         <i class="search icon"></i>
                     </div>
                 </div> 
-            </div>
-        </div>
-        <div class="ui attached stackable menu">
-            <div class="ui container">
-                <a class="item" href="/login">Artworks</a>
-                <a class="item" href="/register">Artists</a>
             </div>
         </div>
 
@@ -62,7 +60,7 @@
                                     <div class="ui inverted mini button">View Photo</div>
                                 </a>
                                 <a href="#" onclick="#" th:attr="onclick=|location.href='/${photo.user().username()}'|">
-                                    <div class="ui inverted mini button">Artist Page</div>
+                                    <div class="ui inverted mini button">View Artist</div>
                                 </a>
                             </div>
                         </div>

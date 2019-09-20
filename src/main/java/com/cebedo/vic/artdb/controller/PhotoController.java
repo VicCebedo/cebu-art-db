@@ -10,7 +10,6 @@ import com.cebedo.vic.artdb.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -29,6 +28,7 @@ public class PhotoController {
     @PostMapping("/upload")
     String upload(final PhotoDTO photo, RedirectAttributes attrs) {
         // TODO Error if uploaded by pressing 'Enter'.
+        // TODO Check if we can upload (as compressed) to cloudinary.
         this.photoService.create(photo.getUrl(), photo.getCaption());
         attrs.addFlashAttribute("showUploadSuccess", true);
         return "redirect:/logged-in/home";
