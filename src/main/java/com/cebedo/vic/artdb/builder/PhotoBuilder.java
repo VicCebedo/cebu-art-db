@@ -7,7 +7,7 @@ package com.cebedo.vic.artdb.builder;
 
 import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.impl.PhotoImpl;
+import com.cebedo.vic.artdb.model.impl.ImmutablePhoto;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -18,12 +18,10 @@ import java.util.Objects;
 public final class PhotoBuilder {
 
     private final long id;
-    private final long userId;
     private final String url;
     private final String caption;
     private final Timestamp timestamp;
-    private final String username;
-    private final String userProfileName;
+    private final User user;
 
     public PhotoBuilder(long i, String u, String c, Timestamp t, User user) {
         Objects.requireNonNull(i);
@@ -32,51 +30,28 @@ public final class PhotoBuilder {
         Objects.requireNonNull(t);
         Objects.requireNonNull(user);
         this.id = i;
-        this.userId = user.id();
         this.url = u;
         this.caption = c;
         this.timestamp = t;
-        this.username = user.username();
-        this.userProfileName = (user.profile() == null || user.profile().getName() == null)
-                ? ""
-                : user.profile().getName();
-    }
-
-    public PhotoBuilder(long i, long uId, String u, String c, Timestamp t) {
-        Objects.requireNonNull(i);
-        Objects.requireNonNull(uId);
-        Objects.requireNonNull(u);
-        Objects.requireNonNull(c);
-        Objects.requireNonNull(t);
-        this.id = i;
-        this.userId = uId;
-        this.url = u;
-        this.caption = c;
-        this.timestamp = t;
-        this.username = "";
-        this.userProfileName = "";
+        this.user = user;
     }
 
     public Photo build() {
-        return new PhotoImpl(this);
+        return new ImmutablePhoto(this);
     }
 
-    public static Photo buildNewInstance() {
-        return new PhotoImpl(new PhotoBuilder(
-                0,
+    public static Photo newInstance() {
+        return new ImmutablePhoto(new PhotoBuilder(
                 0,
                 "",
                 "",
-                new Timestamp(System.currentTimeMillis())
+                new Timestamp(System.currentTimeMillis()),
+                UserBuilder.newInstance()
         ));
     }
 
     public long id() {
         return this.id;
-    }
-
-    public long userId() {
-        return this.userId;
     }
 
     public String url() {
@@ -91,12 +66,8 @@ public final class PhotoBuilder {
         return this.timestamp;
     }
 
-    public String username() {
-        return this.username;
-    }
-
-    public String userProfileName() {
-        return this.userProfileName;
+    public User user() {
+        return this.user;
     }
 
 }

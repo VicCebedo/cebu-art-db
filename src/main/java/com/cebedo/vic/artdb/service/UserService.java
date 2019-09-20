@@ -5,7 +5,7 @@
  */
 package com.cebedo.vic.artdb.service;
 
-import com.cebedo.vic.artdb.model.Profile;
+import com.cebedo.vic.artdb.dto.ProfileDTO;
 import com.cebedo.vic.artdb.model.User;
 import java.util.List;
 
@@ -23,6 +23,6 @@ public interface UserService {
 
     List<User> getAll();
 
-    void updateProfile(Profile profile);
+    void updateProfileCurrentUser(ProfileDTO user);
 
 }

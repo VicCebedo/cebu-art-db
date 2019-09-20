@@ -17,5 +17,13 @@ public interface User {
 
     String password();
 
-    Profile profile();
+    String name();
+
+    String bio();
+
+    String website();
+
+    String email();
+
+    String phone();
 }

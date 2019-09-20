@@ -5,9 +5,8 @@
  */
 package com.cebedo.vic.artdb.builder;
 
-import com.cebedo.vic.artdb.model.Profile;
 import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.impl.UserImpl;
+import com.cebedo.vic.artdb.model.impl.ImmutableUser;
 import java.util.Objects;
 
 /**
@@ -19,35 +18,37 @@ public final class UserBuilder {
     private final long id;
     private final String username;
     private final String password;
-    private final Profile profile;
+    private final String name;
+    private final String bio;
+    private final String website;
+    private final String email;
+    private final String phone;
 
-    public UserBuilder(long i, String u, String p) {
+    public UserBuilder(long i, String u, String p, String name, String bio, String website, String email, String phone) {
         Objects.requireNonNull(i);
         Objects.requireNonNull(u);
         Objects.requireNonNull(p);
+        Objects.requireNonNull(name);
+        Objects.requireNonNull(bio);
+        Objects.requireNonNull(website);
+        Objects.requireNonNull(email);
+        Objects.requireNonNull(phone);
         this.id = i;
         this.username = u;
         this.password = p;
-        this.profile = null;
-    }
-
-    public UserBuilder(long i, String u, String p, Profile prof) {
-        Objects.requireNonNull(i);
-        Objects.requireNonNull(u);
-        Objects.requireNonNull(p);
-        Objects.requireNonNull(prof);
-        this.id = i;
-        this.username = u;
-        this.password = p;
-        this.profile = prof;
+        this.name = name;
+        this.bio = bio;
+        this.website = website;
+        this.email = email;
+        this.phone = phone;
     }
 
     public User build() {
-        return new UserImpl(this);
+        return new ImmutableUser(this);
     }
 
-    public static User buildNewInstance() {
-        return new UserBuilder(0, "", "").build();
+    public static User newInstance() {
+        return new UserBuilder(0, "", "", "", "", "", "", "").build();
     }
 
     public long id() {
@@ -62,8 +63,24 @@ public final class UserBuilder {
         return this.password;
     }
 
-    public Profile profile() {
-        return this.profile;
+    public String name() {
+        return this.name;
+    }
+
+    public String bio() {
+        return this.bio;
+    }
+
+    public String website() {
+        return this.website;
+    }
+
+    public String email() {
+        return this.email;
+    }
+
+    public String phone() {
+        return this.phone;
     }
 
 }

@@ -35,8 +35,13 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public void create(String url, String caption) {
-        long userId = AuthUtils.getAuth().user().id();
-        this.photoDao.create(new PhotoBuilder(0, userId, url, caption, new Timestamp(System.currentTimeMillis())).build());
+        this.photoDao.create(new PhotoBuilder(
+                0,
+                url,
+                caption,
+                new Timestamp(System.currentTimeMillis()),
+                AuthUtils.getAuth().user())
+                .build());
     }
 
     @Override

@@ -6,11 +6,12 @@
 package com.cebedo.vic.artdb.controller;
 
 import com.cebedo.vic.artdb.dto.PhotoDTO;
+import com.cebedo.vic.artdb.dto.ProfileDTO;
 import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.impl.ProfileImpl;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
+import com.cebedo.vic.artdb.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,17 +43,17 @@ public class UserController {
     }
 
     @PostMapping("/logged-in/user/profile/update")
-    String updateProfile(RedirectAttributes attrs, final ProfileImpl profile) {
-        this.userService.updateProfile(profile);
+    String updateProfileCurrentUser(RedirectAttributes attrs, final ProfileDTO profile) {
+        this.userService.updateProfileCurrentUser(profile);
         attrs.addFlashAttribute("showEditProfileSuccess", true);
         return "redirect:/logged-in/home";
     }
 
     @GetMapping("/{username}")
-    String pageHome(@PathVariable("username") final String username, Model model) {
+    String pageUser(@PathVariable("username") final String username, Model model) {
         User user = this.userService.get(username);
         model.addAttribute("user", user);
-        model.addAttribute("profile", user.profile());
+        model.addAttribute("profile", new ProfileDTO(user));
         model.addAttribute("photos", this.photoService.getAllByUserId(user.id()));
         model.addAttribute("photo", new PhotoDTO());
         return "home";

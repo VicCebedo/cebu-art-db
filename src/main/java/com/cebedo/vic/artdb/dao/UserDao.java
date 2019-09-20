@@ -5,7 +5,7 @@
  */
 package com.cebedo.vic.artdb.dao;
 
-import com.cebedo.vic.artdb.model.Profile;
+import com.cebedo.vic.artdb.dto.ProfileDTO;
 import com.cebedo.vic.artdb.model.User;
 import java.util.List;
 
@@ -17,12 +17,14 @@ public interface UserDao {
 
     User get(String username);
 
+    User get(long id);
+
     void changePassword(String username, String newPassword);
 
     void create(User user);
 
     List<User> getAll();
 
-    void updateProfile(Profile profile);
+    void updateProfileCurrentUser(ProfileDTO user);
 
 }

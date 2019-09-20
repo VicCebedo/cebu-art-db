@@ -24,7 +24,7 @@
         <!--NAVIGATION BAR-->
         <div class="ui inverted attached stackable menu">
             <div class="ui container">
-                <a class="item" href="/">Home</a>
+                <a class="item" href="/">Explore</a>
                 <a class="item" href="/logged-in/home" sec:authorize="isAuthenticated()">Profile</a>
                 <a class="item" href="/logged-in/logout" sec:authorize="isAuthenticated()">Logout</a>
                 <a class="item" href="/login" sec:authorize="!isAuthenticated()">Login</a>
@@ -35,6 +35,12 @@
                         <i class="search icon"></i>
                     </div>
                 </div> 
+            </div>
+        </div>
+        <div class="ui attached stackable menu">
+            <div class="ui container">
+                <a class="item" href="/login">Artworks</a>
+                <a class="item" href="/register">Artists</a>
             </div>
         </div>
 
@@ -49,19 +55,19 @@
                             <div class="center">
                                 <!--TODO Truncated caption for thumbnails-->
                                 <p>[[${photo.caption()}]]</p>
-                                <p th:if="${photo.userProfileName() != ''}"><i>by [[${photo.userProfileName()}]] ([[${photo.username()}]])</i></p>
-                                <p th:unless="${photo.userProfileName() != ''}"><i>by [[${photo.username()}]]</i></p>
+                                <p th:if="${photo.user().name() != ''}"><i>by [[${photo.user().name()}]] ([[${photo.user().username()}]])</i></p>
+                                <p th:unless="${photo.user().name() != ''}"><i>by [[${photo.user().username()}]]</i></p>
 
-                                <a href="#" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloudName()}', '${photo.caption()}'); event.preventDefault();|">
+                                <a href="#" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', '${photo.caption()}'); event.preventDefault();|">
                                     <div class="ui inverted mini button">View Photo</div>
                                 </a>
-                                <a href="#" onclick="#" th:attr="onclick=|location.href='/${photo.username()}'|">
+                                <a href="#" onclick="#" th:attr="onclick=|location.href='/${photo.user().username()}'|">
                                     <div class="ui inverted mini button">Artist Page</div>
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <img class="ui image" src="#" th:src="${photo.thumbnailUrl()}" />
+                    <img class="ui image" src="#" th:src="${photo.thumbnail()}" />
                 </div>
             </div>
         </div>

@@ -3,15 +3,15 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.artdb.model.impl;
+package com.cebedo.vic.artdb.dto;
 
-import com.cebedo.vic.artdb.model.Profile;
+import com.cebedo.vic.artdb.model.User;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class ProfileImpl implements Profile {
+public class ProfileDTO {
 
     private String name;
     private String bio;
@@ -19,60 +19,54 @@ public class ProfileImpl implements Profile {
     private String email;
     private String phone;
 
-    public ProfileImpl(String n, String b, String w, String e, String p) {
-        this.name = n;
-        this.bio = b;
-        this.website = w;
-        this.email = e;
-        this.phone = p;
+    public ProfileDTO() {
+        ;
     }
 
-    @Override
+    public ProfileDTO(User user) {
+        this.name = user.name();
+        this.bio = user.bio();
+        this.website = user.website();
+        this.email = user.email();
+        this.phone = user.phone();
+    }
+
     public String getName() {
         return name;
     }
 
-    @Override
     public void setName(String name) {
         this.name = name;
     }
 
-    @Override
     public String getBio() {
         return bio;
     }
 
-    @Override
     public void setBio(String bio) {
         this.bio = bio;
     }
 
-    @Override
     public String getWebsite() {
         return website;
     }
 
-    @Override
     public void setWebsite(String website) {
         this.website = website;
     }
 
-    @Override
     public String getEmail() {
         return email;
     }
 
-    @Override
     public void setEmail(String email) {
         this.email = email;
     }
 
-    @Override
     public String getPhone() {
         return phone;
     }
 
-    @Override
     public void setPhone(String phone) {
         this.phone = phone;
     }

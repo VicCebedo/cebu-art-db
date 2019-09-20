@@ -7,9 +7,8 @@ package com.cebedo.vic.artdb.dao.impl;
 
 import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
-import com.cebedo.vic.artdb.model.Profile;
+import com.cebedo.vic.artdb.dto.ProfileDTO;
 import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.impl.ProfileImpl;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,6 +34,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void changePassword(String username, String newPassword) {
         try (Connection connection = dataSource.getConnection()) {
+            // TODO Include user id in WHERE clause.
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET password = ? WHERE username = ?");
             stmt.setString(1, newPassword);
             stmt.setString(2, username);
@@ -45,7 +45,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateProfile(Profile profile) {
+    public void updateProfileCurrentUser(ProfileDTO profile) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET name=?, bio=?, website=?, email=?, phone=? WHERE id=?");
             stmt.setString(1, profile.getName());
@@ -63,9 +63,14 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void create(User user) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement stmt = connection.prepareStatement("INSERT INTO users(username, password) VALUES (?, ?)");
+            PreparedStatement stmt = connection.prepareStatement("INSERT INTO public.users(username, password, name, bio, website, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?);");
             stmt.setString(1, user.username());
             stmt.setString(2, user.password());
+            stmt.setString(3, "");
+            stmt.setString(4, "");
+            stmt.setString(5, "");
+            stmt.setString(6, "");
+            stmt.setString(7, "");
             stmt.executeUpdate();
         } catch (Exception e) {
             // TODO Error handling if fail, like duplicate username.
@@ -81,24 +86,44 @@ public class UserDaoImpl implements UserDao {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                Profile profile = new ProfileImpl(
-                        rs.getString("name"),
-                        rs.getString("bio"),
-                        rs.getString("website"),
-                        rs.getString("email"),
-                        rs.getString("phone"));
-
                 return new UserBuilder(
                         rs.getLong("id"),
                         username,
                         rs.getString("password"),
-                        profile).build();
+                        rs.getString("name"),
+                        rs.getString("bio"),
+                        rs.getString("website"),
+                        rs.getString("email"),
+                        rs.getString("phone")).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return UserBuilder.newInstance();
+    }
 
-        return UserBuilder.buildNewInstance();
+    @Override
+    public User get(long id) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE id = ?");
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new UserBuilder(
+                        id,
+                        rs.getString("username"),
+                        rs.getString("password"),
+                        rs.getString("name"),
+                        rs.getString("bio"),
+                        rs.getString("website"),
+                        rs.getString("email"),
+                        rs.getString("phone")).build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return UserBuilder.newInstance();
     }
 
     @Override
@@ -113,12 +138,11 @@ public class UserDaoImpl implements UserDao {
                         rs.getLong("id"),
                         rs.getString("username"),
                         rs.getString("password"),
-                        new ProfileImpl(
-                                rs.getString("name"),
-                                "",
-                                "",
-                                "",
-                                "")).build();
+                        rs.getString("name"),
+                        "",
+                        "",
+                        "",
+                        "").build();
                 users.add(user);
             }
 

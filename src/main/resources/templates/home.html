@@ -26,7 +26,7 @@
         <!--NAVIGATION BAR-->
         <div class="ui attached stackable inverted menu">
             <div class="ui container">
-                <a class="item" href="/">Home</a>
+                <a class="item" href="/">Explore</a>
                 <a class="item" href="#" onclick="popupUpload()" sec:authorize="isAuthenticated()">Upload</a>
                 <a class="item" href="#" onclick="popupEditProfile()" sec:authorize="isAuthenticated()">Edit Profile</a>
                 <a class="item" href="/logged-in/logout" sec:authorize="isAuthenticated()">Logout</a>
@@ -80,21 +80,21 @@
                     <div class="item">
                         <a class="ui medium image">
                             <div class="ui grey ribbon label large">
-                                [[${user.profile().name}]]
+                                [[${profile.getName()}]]
                             </div>
                             <img src="https://images.pexels.com/photos/2800724/pexels-photo-2800724.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940">
                         </a>
                         <div class="content center">
                             <div class="description">
-                                <p style="white-space: pre-line">[[${user.profile().bio}]]</p>
+                                <p style="white-space: pre-line">[[${profile.getBio()}]]</p>
                             </div>
                             <div class="extra">
                                 <div class="ui label"><i class="user icon"></i>[[${user.username()}]]</div>
-                                <a href="#" onclick="#" th:attr="onclick=|location.href='${user.profile().website}'|">
-                                    <div class="ui label"><i class="globe icon"></i>[[${user.profile().website}]]</div>
+                                <a href="#" onclick="#" th:attr="onclick=|location.href='${profile.getWebsite()}'; event.preventDefault();|">
+                                    <div class="ui label"><i class="globe icon"></i>[[${profile.getWebsite()}]]</div>
                                 </a>
-                                <div class="ui label"><i class="envelope icon"></i>[[${user.profile().email}]]</div>
-                                <div class="ui label"><i class="phone icon"></i>[[${user.profile().phone}]]</div>
+                                <div class="ui label"><i class="envelope icon"></i>[[${profile.getEmail()}]]</div>
+                                <div class="ui label"><i class="phone icon"></i>[[${profile.getPhone()}]]</div>
                             </div>
                         </div>
                     </div>
@@ -114,13 +114,13 @@
                             <div class="center">
                                 <!--TODO Truncated caption for thumbnails-->
                                 <p>[[${photo.caption()}]]</p>
-                                <a href="#" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloudName()}', '${photo.caption()}'); event.preventDefault();|">
+                                <a href="#" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', '${photo.caption()}'); event.preventDefault();|">
                                     <div class="ui inverted mini button">View Photo</div>
                                 </a>
                             </div>
                         </div>
                     </div>
-                    <img class="ui image" src="#" th:src="${photo.thumbnailUrl()}" />
+                    <img class="ui image" src="#" th:src="${photo.thumbnail()}" />
                 </div>
             </div>
         </div>

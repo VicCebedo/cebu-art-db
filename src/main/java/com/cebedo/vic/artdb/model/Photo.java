@@ -15,20 +15,16 @@ public interface Photo {
 
     long id();
 
-    long userId();
-
     String url();
 
     String caption();
 
-    String cloudName();
+    String cloud();
 
-    String thumbnailUrl();
+    String thumbnail();
 
     Timestamp timestamp();
 
-    String username();
-
-    String userProfileName();
+    User user();
 
 }

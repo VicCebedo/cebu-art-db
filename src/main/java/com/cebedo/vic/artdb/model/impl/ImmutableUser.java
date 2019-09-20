@@ -6,7 +6,6 @@
 package com.cebedo.vic.artdb.model.impl;
 
 import com.cebedo.vic.artdb.builder.UserBuilder;
-import com.cebedo.vic.artdb.model.Profile;
 import com.cebedo.vic.artdb.model.User;
 import java.util.Objects;
 
@@ -14,19 +13,27 @@ import java.util.Objects;
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public final class UserImpl implements User {
+public final class ImmutableUser implements User {
 
     private final long id;
     private final String username;
     private final String password;
-    private final Profile profile;
+    private final String name;
+    private final String bio;
+    private final String website;
+    private final String email;
+    private final String phone;
 
-    public UserImpl(UserBuilder b) {
+    public ImmutableUser(UserBuilder b) {
         Objects.requireNonNull(b);
         this.id = b.id();
         this.username = b.username();
         this.password = b.password();
-        this.profile = b.profile();
+        this.name = b.name();
+        this.bio = b.bio();
+        this.website = b.website();
+        this.email = b.email();
+        this.phone = b.phone();
     }
 
     @Override
@@ -45,8 +52,28 @@ public final class UserImpl implements User {
     }
 
     @Override
-    public Profile profile() {
-        return this.profile;
+    public String name() {
+        return this.name;
+    }
+
+    @Override
+    public String bio() {
+        return this.bio;
+    }
+
+    @Override
+    public String website() {
+        return this.website;
+    }
+
+    @Override
+    public String email() {
+        return this.email;
+    }
+
+    @Override
+    public String phone() {
+        return this.phone;
     }
 
 }

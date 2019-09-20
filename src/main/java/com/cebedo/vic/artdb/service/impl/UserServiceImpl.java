@@ -7,7 +7,7 @@ package com.cebedo.vic.artdb.service.impl;
 
 import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
-import com.cebedo.vic.artdb.model.Profile;
+import com.cebedo.vic.artdb.dto.ProfileDTO;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
@@ -31,32 +31,29 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public User get(String username) {
+    public User get(final String username) {
         return this.userDao.get(username);
     }
 
     @Override
-    public void changePassword(String username, String newPassword) {
+    public void changePassword(final String username, final String newPassword) {
         this.userDao.changePassword(username, ENCODER.encode(newPassword));
     }
 
     @Override
-    public void create(String username, String password) {
-        this.userDao.create(
-                new UserBuilder(
-                        0, username, ENCODER.encode(password))
-                        .build()
+    public void create(final String username, final String password) {
+        this.userDao.create(new UserBuilder(0, username, ENCODER.encode(password), "", "", "", "", "").build()
         );
     }
 
     @Override
-    public void updateProfile(Profile profile) {
-        AuthUtils.getAuth().user().profile().setBio(profile.getBio());
-        AuthUtils.getAuth().user().profile().setEmail(profile.getEmail());
-        AuthUtils.getAuth().user().profile().setName(profile.getName());
-        AuthUtils.getAuth().user().profile().setPhone(profile.getPhone());
-        AuthUtils.getAuth().user().profile().setWebsite(profile.getWebsite());
-        this.userDao.updateProfile(profile);
+    public void updateProfileCurrentUser(final ProfileDTO profile) {
+        AuthUtils.getAuth().profile().setBio(profile.getBio());
+        AuthUtils.getAuth().profile().setEmail(profile.getEmail());
+        AuthUtils.getAuth().profile().setName(profile.getName());
+        AuthUtils.getAuth().profile().setPhone(profile.getPhone());
+        AuthUtils.getAuth().profile().setWebsite(profile.getWebsite());
+        this.userDao.updateProfileCurrentUser(profile);
     }
 
     @Override

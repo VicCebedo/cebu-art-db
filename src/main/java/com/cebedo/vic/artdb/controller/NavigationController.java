@@ -6,6 +6,7 @@
 package com.cebedo.vic.artdb.controller;
 
 import com.cebedo.vic.artdb.dto.PhotoDTO;
+import com.cebedo.vic.artdb.dto.ProfileDTO;
 import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.PhotoService;
@@ -52,7 +53,7 @@ public class NavigationController {
     String pageHome(Model model) {
         User user = AuthUtils.getAuth().user();
         model.addAttribute("user", user);
-        model.addAttribute("profile", user.profile());
+        model.addAttribute("profile", new ProfileDTO(AuthUtils.getAuth().profile()));
         model.addAttribute("photos", this.photoService.getAllByCurrentUser());
         model.addAttribute("photo", new PhotoDTO());
         return "home";

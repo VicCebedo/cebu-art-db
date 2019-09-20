@@ -38,7 +38,7 @@ public class PhotoDaoImpl implements PhotoDao {
     public void create(Photo photo) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("INSERT INTO photos(user_id, url, caption, timestamp) VALUES (?, ?, ?, ?)");
-            stmt.setLong(1, photo.userId());
+            stmt.setLong(1, AuthUtils.getAuth().user().id());
             stmt.setString(2, photo.url());
             stmt.setString(3, photo.caption());
             stmt.setTimestamp(4, photo.timestamp());
@@ -68,13 +68,15 @@ public class PhotoDaoImpl implements PhotoDao {
 
             ResultSet rs = stmt.executeQuery();
             List<Photo> photos = new ArrayList<>();
+            User user = this.userDao.get(userId);
+
             while (rs.next()) {
                 photos.add(new PhotoBuilder(
                         rs.getLong("id"),
-                        rs.getLong("user_id"),
                         rs.getString("url"),
                         rs.getString("caption"),
-                        rs.getTimestamp("timestamp")).build());
+                        rs.getTimestamp("timestamp"),
+                        user).build());
             }
 
             return photos;
@@ -89,6 +91,7 @@ public class PhotoDaoImpl implements PhotoDao {
         List<User> users = this.userDao.getAll();
         List<Photo> photos = new ArrayList<>();
 
+        // TODO Optimize with UNION.
         for (User user : users) {
             try (Connection connection = dataSource.getConnection()) {
                 PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos WHERE user_id = ?");
