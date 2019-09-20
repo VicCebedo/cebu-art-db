@@ -6,6 +6,7 @@
 package com.cebedo.vic.artdb.dao.impl;
 
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
+import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.model.Photo;
@@ -63,7 +64,7 @@ public class PhotoDaoImpl implements PhotoDao {
     @Override
     public List<Photo> getAllByUserId(long userId) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos WHERE user_id = ?");
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos WHERE user_id = ? ORDER BY timestamp DESC");
             stmt.setLong(1, userId);
 
             ResultSet rs = stmt.executeQuery();
@@ -88,39 +89,31 @@ public class PhotoDaoImpl implements PhotoDao {
 
     @Override
     public List<Photo> getAll() {
-        List<User> users = this.userDao.getAll();
-        List<Photo> photos = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "SELECT photos.id, photos.url, photos.caption, photos.timestamp, users.username, users.name\n"
+                    + "FROM photos\n"
+                    + "INNER JOIN users ON photos.user_id = users.id\n"
+                    + "ORDER BY timestamp DESC";
+            PreparedStatement stmt = connection.prepareStatement(sql);
 
-        // TODO Optimize with UNION.
-        for (User user : users) {
-            try (Connection connection = dataSource.getConnection()) {
-                PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos WHERE user_id = ?");
-                stmt.setLong(1, user.id());
+            ResultSet rs = stmt.executeQuery();
+            List<Photo> photos = new ArrayList<>();
 
-                ResultSet rs = stmt.executeQuery();
-                while (rs.next()) {
-                    photos.add(new PhotoBuilder(
-                            rs.getLong("id"),
-                            rs.getString("url"),
-                            rs.getString("caption"),
-                            rs.getTimestamp("timestamp"),
-                            user)
-                            .build());
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
+            while (rs.next()) {
+                User user = new UserBuilder(0, rs.getString("username"), "", rs.getString("name"), "", "", "", "").build();
+                photos.add(new PhotoBuilder(
+                        rs.getLong("id"),
+                        rs.getString("url"),
+                        rs.getString("caption"),
+                        rs.getTimestamp("timestamp"),
+                        user).build());
             }
+
+            return photos;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        photos.sort(new Comparator<Photo>() {
-            @Override
-            public int compare(Photo o1, Photo o2) {
-                return o1.timestamp().compareTo(o2.timestamp()) * -1;
-            }
-        });
-
-        return photos;
+        return new ArrayList<>();
     }
 
 }
