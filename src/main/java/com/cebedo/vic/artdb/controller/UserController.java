@@ -11,13 +11,13 @@ import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
-import com.cebedo.vic.artdb.utils.AuthUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -36,14 +36,14 @@ public class UserController {
     private PhotoService photoService;
 
     @PostMapping("/user/register")
-    String register(RedirectAttributes attrs, final UserDTO user) {
+    String create(final UserDTO user, RedirectAttributes attrs) {
         this.userService.create(user.getUsername(), user.getPassword());
         attrs.addFlashAttribute("showRegisterSuccess", true);
         return "redirect:/login";
     }
 
-    @PostMapping("/logged-in/user/profile/update")
-    String updateProfileCurrentUser(RedirectAttributes attrs, final ProfileDTO profile) {
+    @PutMapping("/logged-in/user/profile/update")
+    String updateProfileCurrentUser(final ProfileDTO profile, RedirectAttributes attrs) {
         this.userService.updateProfileCurrentUser(profile);
         attrs.addFlashAttribute("showEditProfileSuccess", true);
         return "redirect:/logged-in/home";

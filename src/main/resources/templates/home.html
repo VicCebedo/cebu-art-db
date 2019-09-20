@@ -132,7 +132,7 @@
                 Edit Profile
             </div>
             <div class="content">
-                <form th:action="@{/logged-in/user/profile/update}" th:object="${profile}" method="post" class="ui form" id="form-edit-profile">
+                <form th:action="@{/logged-in/user/profile/update}" th:object="${profile}" th:method="put" class="ui form" id="form-edit-profile">
                     <div class="fields">
                         <div class="field">
                             <label>Name</label>
@@ -155,6 +155,7 @@
                         <label>Artist Bio</label>
                         <textarea placeholder="Bio" th:field="*{bio}" rows="18"></textarea>
                     </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
             </div>
             <div class="actions">
@@ -188,6 +189,7 @@
                         <label>Caption</label>
                         <input type="text" placeholder="Caption" th:field="*{caption}" />
                     </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
             </div>
             <div class="actions">
@@ -211,6 +213,14 @@
                 <img class="ui huge image" src="#" id="modal-image-src"> 
                 <div class="description">
                     <p id="modal-image-caption"></p>
+
+
+                    <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
+                        <input type="hidden" id="photo-delete-id" name="id" value=""/>
+                        <input type="hidden" id="photo-delete-cloud" name="cloud" value=""/>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                    </form>
+
                     <div class="ui red inverted button icon" 
                          targetId=""
                          targetCloudName=""
@@ -260,9 +270,13 @@
                 $('#modal-edit-profile').modal('show');
             }
 
-            function deletePhoto(id, cloudName) {
+            function deletePhoto(id, cloud) {
                 document.getElementById('loader-delete').style = '';
-                location.href = '/logged-in/photo/delete/' + id + '/' + cloudName;
+
+                // Form.
+                document.getElementById('photo-delete-id').value = id;
+                document.getElementById('photo-delete-cloud').value = cloud;
+                document.getElementById('form-photo-delete').submit();
             }
         </script>
 

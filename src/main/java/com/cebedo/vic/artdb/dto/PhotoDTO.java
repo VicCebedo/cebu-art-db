@@ -11,8 +11,26 @@ package com.cebedo.vic.artdb.dto;
  */
 public class PhotoDTO {
 
+    private long id;
     private String url;
     private String caption;
+    private String cloud;
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getCloud() {
+        return cloud;
+    }
+
+    public void setCloud(String cloud) {
+        this.cloud = cloud;
+    }
 
     public String getUrl() {
         return url;

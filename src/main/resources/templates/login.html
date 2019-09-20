@@ -58,11 +58,10 @@
                                 <input type="password" name="password" placeholder="Password" th:field="*{password}">
                             </div>
                         </div>
+                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                         <button class="ui fluid large teal submit button">Login</button>
                     </div>
-
                     <div class="ui error message"></div>
-
                 </form>
 
                 <div class="ui message">

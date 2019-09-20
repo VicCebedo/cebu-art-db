@@ -21,6 +21,7 @@ public class App {
     //    private String dbUrl;
     private String dbUrl = "jdbc:postgresql://localhost:5432/heroku_local?user=postgres&password=postgres";
 
+    // TODO Request new credentials.
     @Value("${cloudinary.cloud_name}")
     private String cloudName;
 
