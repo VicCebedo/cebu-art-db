@@ -67,6 +67,7 @@ public class NavigationController {
         // TODO (Beta) Mobile compatible website.
         // TODO (Beta) Create android app.
         // TODO (Beta) "Random" button?
+        // TODO (Beta) Add profile pic.
         User user = AuthUtils.getAuth().user();
         MutableUser profile = AuthUtils.getAuth().profile();
         model.addAttribute("user", user);
@@ -78,6 +79,7 @@ public class NavigationController {
         model.addAttribute("missingName", StringUtils.isBlank(profile.name()));
         model.addAttribute("missingPhone", StringUtils.isBlank(profile.phone()));
         model.addAttribute("missingWebsite", StringUtils.isBlank(profile.website()));
+        model.addAttribute("isGuest", false);
         return "home";
     }
 }
