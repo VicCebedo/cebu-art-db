@@ -45,6 +45,13 @@ public class UserController {
         return "redirect:/login";
     }
 
+    @PutMapping("/logged-in/user/password/update")
+    String updatePassword(final UserDTO changePass, RedirectAttributes attrs) {
+        boolean success = this.userService.changePassword(changePass);
+        attrs.addFlashAttribute("showChangePassSuccess", success);
+        return "redirect:/logged-in/home";
+    }
+
     @PutMapping("/logged-in/user/profile/update")
     String updateProfileCurrentUser(final ProfileDTO profile, RedirectAttributes attrs) {
         this.userService.updateProfileCurrentUser(profile);

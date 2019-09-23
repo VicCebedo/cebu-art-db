@@ -8,6 +8,7 @@ package com.cebedo.vic.artdb.service.impl;
 import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.dto.ProfileDTO;
+import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
@@ -36,8 +37,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changePassword(final String username, final String newPassword) {
-        this.userDao.changePassword(username, ENCODER.encode(newPassword));
+    public boolean changePassword(final UserDTO changePass) {
+        // Validations.
+        // TODO (Alpha) Error-handling if passwords are not secure.
+        String newPassword = changePass.getNewPassword();
+        boolean valid = newPassword.equals(changePass.getNewPasswordRetype());
+
+        if (valid) {
+            User user = AuthUtils.getAuth().user();
+            if (ENCODER.matches(changePass.getPassword(), user.password())) {
+                this.userDao.changePassword(user.username(), ENCODER.encode(newPassword));
+                return true;
+            }
+
+            System.out.println("PASSWORD: Doesn't match");
+            return false;
+        }
+
+        System.out.println("PASSWORD: Not equal");
+        return false;
     }
 
     @Override

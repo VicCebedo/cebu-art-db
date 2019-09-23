@@ -73,6 +73,7 @@ public class NavigationController {
         model.addAttribute("profile", new ProfileDTO(profile));
         model.addAttribute("photos", this.photoService.getAllByCurrentUser());
         model.addAttribute("photo", new PhotoDTO());
+        model.addAttribute("changePass", new UserDTO());
         model.addAttribute("missingBio", StringUtils.isBlank(profile.bio()));
         model.addAttribute("missingEmail", StringUtils.isBlank(profile.email()));
         model.addAttribute("missingName", StringUtils.isBlank(profile.name()));

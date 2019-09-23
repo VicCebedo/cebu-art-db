@@ -43,8 +43,8 @@
                         <div class="menu">
                             <div class="item" onclick="popupUpload()">Upload</div>
                             <div class="divider"></div>
-                            <div class="item" onclick="popupEditProfile()">Edit Profile</div>
-                            <div class="item">Change Password</div>
+                            <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
+                            <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
                         </div>
                     </div>
                     <a th:class="${isGuest ? 'item' : 'active item'}" href="/logged-in/home" sec:authorize="isAuthenticated()">
@@ -81,7 +81,7 @@
                         <div class="ui bottom attached warning message">
                             <i class="icon help"></i>
                             Want to complete your profile? 
-                            <a class="item" href="#" onclick="popupEditProfile()" sec:authorize="isAuthenticated()">
+                            <a class="item" href="#" onclick="$('#modal-edit-profile').modal('show')" sec:authorize="isAuthenticated()">
                                 Edit Profile
                             </a> now.
                         </div>
@@ -112,6 +112,15 @@
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
                         Your profile was successfully updated.
+                    </div>
+                </div>
+            </div>
+            <div th:if="${showChangePassSuccess}" id="message-container">
+                <div class="ui hidden divider"></div>
+                <div class="ui success large message">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Your password was successfully updated.
                     </div>
                 </div>
             </div>
@@ -208,6 +217,40 @@
                     Cancel
                 </div>
                 <a href="#" onclick="document.getElementById('form-edit-profile').submit()">
+                    <div class="ui positive button">
+                        Update
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!--CHANGE PASSWORD-->        
+        <div class="ui mini modal" id="modal-change-password">
+            <div class="header">
+                Change Password
+            </div>
+            <div class="content">
+                <form th:action="@{/logged-in/user/password/update}" th:object="${changePass}" th:method="put" class="ui form" id="form-change-password">
+                    <div class="field">
+                        <label>Current Password</label>
+                        <input type="password" placeholder="Name" th:field="*{password}" />
+                    </div>
+                    <div class="field">
+                        <label>New Password</label>
+                        <input type="password" placeholder="Name" th:field="*{newPassword}" />
+                    </div>
+                    <div class="field">
+                        <label>Retype New Password:</label>
+                        <input type="password" placeholder="Name" th:field="*{newPasswordRetype}" />
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button">
+                    Cancel
+                </div>
+                <a href="#" onclick="document.getElementById('form-change-password').submit()">
                     <div class="ui positive button">
                         Update
                     </div>
@@ -335,8 +378,8 @@
                 $('#modal-upload').modal('show');
             }
 
-            function popupEditProfile() {
-                $('#modal-edit-profile').modal('show');
+            function popupChangePassword() {
+                $('#modal-change-password').modal('show');
             }
 
             function deletePhoto(id, cloud) {

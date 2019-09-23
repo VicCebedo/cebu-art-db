@@ -13,6 +13,24 @@ public class UserDTO {
 
     private String username;
     private String password;
+    private String newPassword;
+    private String newPasswordRetype;
+
+    public String getNewPassword() {
+        return newPassword;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
+    public String getNewPasswordRetype() {
+        return newPasswordRetype;
+    }
+
+    public void setNewPasswordRetype(String newPasswordRetype) {
+        this.newPasswordRetype = newPasswordRetype;
+    }
 
     public String getUsername() {
         return username;

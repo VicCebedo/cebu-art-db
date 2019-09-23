@@ -6,6 +6,7 @@
 package com.cebedo.vic.artdb.service;
 
 import com.cebedo.vic.artdb.dto.ProfileDTO;
+import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.model.User;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public interface UserService {
 
-    void changePassword(String username, String newPassword);
+    boolean changePassword(UserDTO user);
 
     void create(String username, String password);
 
