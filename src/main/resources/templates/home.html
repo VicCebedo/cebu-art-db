@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>TODO</title>
+        <title>title</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -36,38 +36,61 @@
                 <a class="item" onclick="document.getElementById('form-logout').submit()" sec:authorize="isAuthenticated()">Logout</a>
                 <a class="item" href="/login" sec:authorize="!isAuthenticated()">Login</a>
                 <a class="item" href="/register" sec:authorize="!isAuthenticated()">Register</a>
-                <div class="right item">
-                    <div class="ui transparent left icon inverted input">
-                        <input type="text" placeholder="Search...">
-                        <i class="search icon"></i>
-                    </div>
-                </div> 
+                <!--                <div class="right item">
+                                    <div class="ui transparent left icon inverted input">
+                                        <input type="text" placeholder="Search...">
+                                        <i class="search icon"></i>
+                                    </div>
+                                </div> -->
             </div>
         </div>
 
         <!--MESSAGES-->
         <div class="ui container">
-            <div th:if="${showUploadSuccess}">
+            <div th:if="${missingBio || missingEmail || missingName || missingPhone || missingWebsite}">
                 <div class="ui hidden divider"></div>
-                <div class="ui success large message" id="message-container">
+                <div class="ui yellow message">
+                    <div class="header">
+                        There are missing details in your profile.
+                    </div>
+                    <ul class="list">
+                        <li th:if="${missingName}">It's essential to provide a <b>name</b> for this account.</li>
+                        <li th:if="${missingEmail}">You need to provide an <b>email address</b> so that clients can contact you.</li>
+                        <li th:if="${missingPhone}">Your <b>phone number</b> is missing.</li>
+                        <li th:if="${missingBio}">Please provide an <b>artist bio</b> in your profile.</li>
+                        <li th:if="${missingWebsite}">Provide a link to your <b>website</b> or any social media account.</li>
+                        <p></p>
+                        <div class="ui bottom attached warning message">
+                            <i class="icon help"></i>
+                            Want to complete your profile? 
+                            <a class="item" href="#" onclick="popupEditProfile()" sec:authorize="isAuthenticated()">
+                                Edit Profile
+                            </a>.
+                        </div>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${showUploadSuccess}" id="message-container">
+                <div class="ui hidden divider"></div>
+                <div class="ui success large message">
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
                         Your upload was successful.
                     </div>
                 </div>
             </div>
-            <div th:if="${showDeleteSuccess}">
+            <div th:if="${showDeleteSuccess}" id="message-container">
                 <div class="ui hidden divider"></div>
-                <div class="ui success large message" id="message-container">
+                <div class="ui success large message">
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
                         Your photo was successfully deleted.
                     </div>
                 </div>
             </div>
-            <div th:if="${showEditProfileSuccess}">
+            <div th:if="${showEditProfileSuccess}" id="message-container">
                 <div class="ui hidden divider"></div>
-                <div class="ui success large message" id="message-container">
+                <div class="ui success large message">
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
                         Your profile was successfully updated.
@@ -110,6 +133,7 @@
         </div>
 
         <!--CURRENT USER PHOTO GRID-->
+        <!--TODO Image hover should not need "View", entire dimmer should be clickable.-->
         <div class="ui hidden divider"></div>
         <div class="ui horizontal divider">&nbsp;</div>
         <div class="ui hidden divider"></div>
@@ -178,7 +202,7 @@
         </div>
 
         <!--UPLOAD MODAL-->
-        <div class="ui mini modal" id="modal-upload">
+        <div class="ui tiny modal" id="modal-upload">
             <div class="header">
                 Upload
             </div>
@@ -194,7 +218,7 @@
                     </div>
                     <div class="field">
                         <label>Caption</label>
-                        <input type="text" placeholder="Caption" th:field="*{caption}" />
+                        <textarea placeholder="Caption" th:field="*{caption}" rows="8"></textarea>
                     </div>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>

@@ -16,12 +16,12 @@ import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 @SpringBootApplication
 public class App {
 
-    // TODO Change during deployment.
+    // TODO (Config) Change during deployment.
     //    @Value("${spring.datasource.url}")
     //    private String dbUrl;
     private String dbUrl = "jdbc:postgresql://localhost:5432/heroku_local?user=postgres&password=postgres";
 
-    // TODO Request new credentials.
+    // TODO (Config) Request new credentials.
     @Value("${cloudinary.cloud_name}")
     private String cloudName;
 

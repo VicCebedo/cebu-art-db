@@ -9,9 +9,11 @@ import com.cebedo.vic.artdb.dto.PhotoDTO;
 import com.cebedo.vic.artdb.dto.ProfileDTO;
 import com.cebedo.vic.artdb.dto.UserDTO;
 import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.model.impl.MutableUser;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -61,11 +63,21 @@ public class NavigationController {
 
     @GetMapping("/logged-in/home")
     String pageHome(Model model) {
+        // TODO (Alpha) Should not be able to edit other people's profile.        
+        // TODO (Beta) Mobile compatible website.
+        // TODO (Beta) Create android app.
+        // TODO (Beta) "Random" button?
         User user = AuthUtils.getAuth().user();
+        MutableUser profile = AuthUtils.getAuth().profile();
         model.addAttribute("user", user);
-        model.addAttribute("profile", new ProfileDTO(AuthUtils.getAuth().profile()));
+        model.addAttribute("profile", new ProfileDTO(profile));
         model.addAttribute("photos", this.photoService.getAllByCurrentUser());
         model.addAttribute("photo", new PhotoDTO());
+        model.addAttribute("missingBio", StringUtils.isBlank(profile.bio()));
+        model.addAttribute("missingEmail", StringUtils.isBlank(profile.email()));
+        model.addAttribute("missingName", StringUtils.isBlank(profile.name()));
+        model.addAttribute("missingPhone", StringUtils.isBlank(profile.phone()));
+        model.addAttribute("missingWebsite", StringUtils.isBlank(profile.website()));
         return "home";
     }
 }

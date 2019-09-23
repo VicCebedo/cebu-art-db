@@ -27,14 +27,14 @@ import org.springframework.stereotype.Repository;
 @Repository("userDao")
 public class UserDaoImpl implements UserDao {
 
-    // TODO Put character limits on DB columns.
+    // TODO (Alpha) Put character limits on DB columns.
     @Autowired
     private DataSource dataSource;
 
     @Override
     public void changePassword(String username, String newPassword) {
         try (Connection connection = dataSource.getConnection()) {
-            // TODO Include user id in WHERE clause.
+            // TODO (Alpha) Change pass implement. Include user id in WHERE clause.
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET password = ? WHERE username = ?");
             stmt.setString(1, newPassword);
             stmt.setString(2, username);
@@ -73,7 +73,7 @@ public class UserDaoImpl implements UserDao {
             stmt.setString(7, "");
             stmt.executeUpdate();
         } catch (Exception e) {
-            // TODO Error handling if fail, like duplicate username.
+            // TODO (Alpha) Error handling if fail, like duplicate username.
             e.printStackTrace();
         }
     }

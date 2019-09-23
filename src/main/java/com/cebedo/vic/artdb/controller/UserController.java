@@ -37,7 +37,7 @@ public class UserController {
 
     @PostMapping("/user/register")
     String create(final UserDTO user, RedirectAttributes attrs) {
-        // TODO Implement non-artist accounts using Redis.
+        // TODO (v1.1.0) Implement non-artist accounts using Redis.
         // Can only view, heart and comment.
         this.userService.create(user.getUsername(), user.getPassword());
         attrs.addFlashAttribute("showRegisterSuccess", true);
