@@ -27,7 +27,6 @@ public class PhotoController {
 
     @PostMapping("/upload")
     String upload(final PhotoDTO photo, RedirectAttributes attrs) {
-        // TODO (Alpha) Check if we can upload (as compressed) to cloudinary.
         this.photoService.create(photo.getUrl(), photo.getCaption());
         attrs.addFlashAttribute("showUploadSuccess", true);
         return "redirect:/logged-in/home";
@@ -35,7 +34,6 @@ public class PhotoController {
 
     @DeleteMapping("/delete")
     String delete(final PhotoDTO photo, RedirectAttributes attrs) {
-        // TODO (Alpha) Confirmation dialog box in HTML view before deleting.
         this.photoService.delete(photo.getId(), photo.getCloud());
         attrs.addFlashAttribute("showDeleteSuccess", true);
         return "redirect:/logged-in/home";

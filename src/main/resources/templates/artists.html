@@ -60,7 +60,7 @@
                         <img src="https://semantic-ui.com/images/wireframe/image.png" />
                     </div>
                     <div class="content">
-                        <a class="header" th:if="${user.name() != ''}">
+                        <a href="#" onclick="#" th:attr="onclick=|location.href='/${user.username()}'; event.preventDefault();|" class="header" th:if="${user.name() != ''}">
                             [[${user.name()}]]
                         </a>
                         <div class="extra">

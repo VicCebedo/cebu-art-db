@@ -63,7 +63,6 @@ public class NavigationController {
 
     @GetMapping("/logged-in/home")
     String pageHome(Model model) {
-        // TODO (Alpha) Should not be able to edit other people's profile.        
         // TODO (Beta) Mobile compatible website.
         // TODO (Beta) Create android app.
         // TODO (Beta) "Random" button?

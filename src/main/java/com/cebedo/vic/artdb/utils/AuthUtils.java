@@ -18,4 +18,8 @@ public class AuthUtils {
         return (WebAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
     }
 
+    public static boolean isCustomToken() {
+        return SecurityContextHolder.getContext().getAuthentication() instanceof WebAuthenticationToken;
+    }
+
 }

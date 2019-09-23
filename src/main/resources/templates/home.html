@@ -37,12 +37,16 @@
                     Artists
                 </a>
                 <div class="right menu">
-                    <a class="item" href="#" onclick="popupUpload()" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
-                        Upload
-                    </a>
-                    <a class="ui item" href="#" onclick="popupEditProfile()" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
-                        Edit Profile
-                    </a>
+                    <div class="ui pointing dropdown link item" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
+                        <span class="text">Content</span>
+                        <i class="dropdown icon"></i>
+                        <div class="menu">
+                            <div class="item" onclick="popupUpload()">Upload</div>
+                            <div class="divider"></div>
+                            <div class="item" onclick="popupEditProfile()">Edit Profile</div>
+                            <div class="item">Change Password</div>
+                        </div>
+                    </div>
                     <a th:class="${isGuest ? 'item' : 'active item'}" href="/logged-in/home" sec:authorize="isAuthenticated()">
                         Profile
                     </a>
@@ -153,15 +157,12 @@
         <div class="ui hidden divider"></div>
         <div class="ui container">
             <div class="ui special cards three stackable">
-                <div class="card blurring dimmable image" th:each="photo : ${photos}">
-                    <div class="ui dimmer">
+                <div class="card blurring dimmable image" th:each="photo : ${photos}" style="cursor: pointer">
+                    <div class="ui dimmer" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', '${photo.caption()}'); event.preventDefault();|">
                         <div class="content">
                             <div class="center">
                                 <!--TODO Truncated caption for thumbnails-->
                                 <p>[[${photo.caption()}]]</p>
-                                <a href="#" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', '${photo.caption()}'); event.preventDefault();|">
-                                    <div class="ui inverted mini button">View Photo</div>
-                                </a>
                             </div>
                         </div>
                     </div>
@@ -169,7 +170,6 @@
                 </div>
             </div>
         </div>
-
 
         <!--EDIT PROFILE-->        
         <div class="ui medium modal" id="modal-edit-profile">
@@ -251,14 +251,10 @@
 
         <!--IMAGE IS CLICKED-->
         <div class="ui basic fullscreen modal" id="modal-image">
-            <div class="ui active dimmer" id="loader-delete" style="display: none">
-                <div class="ui indeterminate text loader">Deleting</div>
-            </div>
             <div class="image content">
                 <img class="ui huge image" src="#" id="modal-image-src"> 
                 <div class="description">
                     <p id="modal-image-caption"></p>
-
 
                     <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
                         <input type="hidden" id="photo-delete-id" name="id" value=""/>
@@ -270,8 +266,29 @@
                          targetId=""
                          targetCloudName=""
                          onclick="deletePhoto(this.targetId, this.targetCloudName)" 
-                         id="delete-image-details">
+                         id="delete-image-details"
+                         th:if="${!isGuest}">
                         <i class="trash alternate icon"></i>
+                    </div>
+
+                    <div class="ui basic mini modal" id="modal-photo-delete">
+                        <div class="ui icon header">
+                            <i class="archive icon"></i>
+                            Delete Photo
+                        </div>
+                        <div class="content">
+                            <p>You will not be able to recover this photo. Do you still want to delete?</p>
+                        </div>
+                        <div class="actions">
+                            <div class="ui red basic cancel inverted button">
+                                <i class="remove icon"></i>
+                                Cancel
+                            </div>
+                            <div class="ui green ok inverted button" onclick="doDeletePhoto()">
+                                <i class="checkmark icon"></i>
+                                Delete
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -292,6 +309,10 @@
         </div>
 
         <script type="text/javascript">
+            $('.ui.dropdown').dropdown({
+                on: 'hover',
+                action: 'nothing'
+            })
             $('.special.cards .image').dimmer({
                 on: 'hover'
             });
@@ -301,8 +322,11 @@
                 document.getElementById('modal-image-caption').innerHTML = caption;
 
                 // Delete button.
-                document.getElementById('delete-image-details').targetId = id;
-                document.getElementById('delete-image-details').targetCloudName = cloudName;
+                var imageDetails = document.getElementById('delete-image-details');
+                if (imageDetails) {
+                    imageDetails.targetId = id;
+                    imageDetails.targetCloudName = cloudName;
+                }
 
                 $('#modal-image').modal('show');
             }
@@ -316,11 +340,12 @@
             }
 
             function deletePhoto(id, cloud) {
-                document.getElementById('loader-delete').style = '';
-
-                // Form.
                 document.getElementById('photo-delete-id').value = id;
                 document.getElementById('photo-delete-cloud').value = cloud;
+                $('#modal-photo-delete').modal('show');
+            }
+
+            function doDeletePhoto() {
                 document.getElementById('form-photo-delete').submit();
             }
         </script>
@@ -336,8 +361,6 @@
             function uploadFile(file) {
                 var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
                 var xhr = new XMLHttpRequest();
-                var fd = new FormData();
-
                 xhr.open('POST', url, true);
                 xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
                 xhr.onreadystatechange = function (e) {
@@ -359,6 +382,7 @@
                     }
                 };
 
+                var fd = new FormData();
                 fd.append('upload_preset', unsignedUploadPreset);
                 fd.append('public_id', '/[[${user.username()}]]/' + uuidv4());
                 fd.append('tags', 'browser_upload');

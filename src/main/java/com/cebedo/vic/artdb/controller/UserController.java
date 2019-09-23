@@ -56,7 +56,7 @@ public class UserController {
     String pageUser(@PathVariable("username") final String username, Model model) {
         // If this username is equal to mine,
         // redirect to home.
-        if (username.equals(AuthUtils.getAuth().user().username())) {
+        if (AuthUtils.isCustomToken() && username.equals(AuthUtils.getAuth().user().username())) {
             return "redirect:/logged-in/home";
         }
 
