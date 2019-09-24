@@ -22,6 +22,7 @@ public final class ImmutablePhoto implements Photo {
     private final String caption;
     private final String cloud;
     private final String thumbnail;
+    private final String thumbnailCaption;
     private final Timestamp timestamp;
     private final User user;
 
@@ -33,6 +34,12 @@ public final class ImmutablePhoto implements Photo {
         this.cloud = this.url.substring(this.url.lastIndexOf('/') + 1, this.url.lastIndexOf('.'));
         this.timestamp = b.timestamp();
         this.user = b.user();
+
+        // Caption for thumbnails.
+        this.thumbnailCaption
+                = this.caption.length() > 150
+                ? this.caption.substring(0, 149) + " [...]"
+                : this.caption;
 
         // Photo manipulations.
         // TODO (Beta) Thumbnail pre-manipulation.
@@ -73,5 +80,10 @@ public final class ImmutablePhoto implements Photo {
     @Override
     public User user() {
         return this.user;
+    }
+
+    @Override
+    public String thumbnailCaption() {
+        return this.thumbnailCaption;
     }
 }

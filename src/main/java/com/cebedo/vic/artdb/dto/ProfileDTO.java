@@ -18,6 +18,7 @@ public class ProfileDTO {
     private String website;
     private String email;
     private String phone;
+    private String profilePic;
 
     public ProfileDTO() {
         ;
@@ -29,6 +30,7 @@ public class ProfileDTO {
         this.website = user.website();
         this.email = user.email();
         this.phone = user.phone();
+        this.profilePic = user.profilePic();
     }
 
     public String getName() {
@@ -71,4 +73,11 @@ public class ProfileDTO {
         this.phone = phone;
     }
 
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
 }

@@ -26,4 +26,8 @@ public interface UserService {
 
     void updateProfileCurrentUser(ProfileDTO user);
 
+    void updateProfilePic(String profilePic);
+
+    void deleteProfilePic();
+
 }

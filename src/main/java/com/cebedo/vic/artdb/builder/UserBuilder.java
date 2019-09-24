@@ -23,8 +23,9 @@ public final class UserBuilder {
     private final String website;
     private final String email;
     private final String phone;
+    private final String profilePic;
 
-    public UserBuilder(long i, String u, String p, String name, String bio, String website, String email, String phone) {
+    public UserBuilder(long i, String u, String p, String name, String bio, String website, String email, String phone, String profPic) {
         Objects.requireNonNull(i);
         Objects.requireNonNull(u);
         Objects.requireNonNull(p);
@@ -41,6 +42,7 @@ public final class UserBuilder {
         this.website = website;
         this.email = email;
         this.phone = phone;
+        this.profilePic = profPic;
     }
 
     public User build() {
@@ -48,7 +50,7 @@ public final class UserBuilder {
     }
 
     public static User newInstance() {
-        return new UserBuilder(0, "", "", "", "", "", "", "").build();
+        return new UserBuilder(0, "", "", "", "", "", "", "", "").build();
     }
 
     public long id() {
@@ -81,6 +83,10 @@ public final class UserBuilder {
 
     public String phone() {
         return this.phone;
+    }
+
+    public String profilePic() {
+        return this.profilePic;
     }
 
 }

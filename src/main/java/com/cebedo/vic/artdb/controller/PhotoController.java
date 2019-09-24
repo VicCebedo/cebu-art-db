@@ -27,6 +27,8 @@ public class PhotoController {
 
     @PostMapping("/upload")
     String upload(final PhotoDTO photo, RedirectAttributes attrs) {
+        // TODO (Beta) Optimize thumbnails, should pre-transform before upload to cloud.
+        // TODO (Beta) Handle valid image extensions only when uploading.
         this.photoService.create(photo.getUrl(), photo.getCaption());
         attrs.addFlashAttribute("showUploadSuccess", true);
         return "redirect:/logged-in/home";

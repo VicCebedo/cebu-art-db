@@ -26,4 +26,6 @@ public interface User {
     String email();
 
     String phone();
+
+    String profilePic();
 }

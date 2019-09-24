@@ -100,7 +100,7 @@ public class PhotoDaoImpl implements PhotoDao {
             List<Photo> photos = new ArrayList<>();
 
             while (rs.next()) {
-                User user = new UserBuilder(0, rs.getString("username"), "", rs.getString("name"), "", "", "", "").build();
+                User user = new UserBuilder(0, rs.getString("username"), "", rs.getString("name"), "", "", "", "", "").build();
                 photos.add(new PhotoBuilder(
                         rs.getLong("id"),
                         rs.getString("url"),

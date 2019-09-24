@@ -21,6 +21,8 @@ public interface UserDao {
 
     void changePassword(String username, String newPassword);
 
+    void updateProfilePhoto(String profilePic);
+
     void create(User user);
 
     List<User> getAll();

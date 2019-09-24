@@ -19,6 +19,8 @@ public interface Photo {
 
     String caption();
 
+    String thumbnailCaption();
+
     String cloud();
 
     String thumbnail();

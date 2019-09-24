@@ -60,9 +60,22 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void updateProfilePhoto(String profilePic) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("UPDATE users SET profile_pic=? WHERE id=?");
+            stmt.setString(1, profilePic);
+            stmt.setLong(2, AuthUtils.getAuth().user().id());
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void create(User user) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement stmt = connection.prepareStatement("INSERT INTO public.users(username, password, name, bio, website, email, phone) VALUES (?, ?, ?, ?, ?, ?, ?);");
+            PreparedStatement stmt = connection.prepareStatement("INSERT INTO public.users(username, password, name, bio, website, email, phone, profile_pic) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             stmt.setString(1, user.username());
             stmt.setString(2, user.password());
             stmt.setString(3, "");
@@ -70,9 +83,10 @@ public class UserDaoImpl implements UserDao {
             stmt.setString(5, "");
             stmt.setString(6, "");
             stmt.setString(7, "");
+            stmt.setString(8, "");
             stmt.executeUpdate();
         } catch (Exception e) {
-            // TODO (Alpha) Error handling if fail, like duplicate username, and all negative scenarios.
+            // TODO (Alpha) Error handling/validation if fail, like duplicate username, and all negative scenarios.
             e.printStackTrace();
         }
     }
@@ -93,7 +107,8 @@ public class UserDaoImpl implements UserDao {
                         rs.getString("bio"),
                         rs.getString("website"),
                         rs.getString("email"),
-                        rs.getString("phone")).build();
+                        rs.getString("phone"),
+                        rs.getString("profile_pic")).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -117,7 +132,8 @@ public class UserDaoImpl implements UserDao {
                         rs.getString("bio"),
                         rs.getString("website"),
                         rs.getString("email"),
-                        rs.getString("phone")).build();
+                        rs.getString("phone"),
+                        rs.getString("profile_pic")).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,7 +157,8 @@ public class UserDaoImpl implements UserDao {
                         rs.getString("bio"),
                         rs.getString("website"),
                         rs.getString("email"),
-                        rs.getString("phone")).build();
+                        rs.getString("phone"),
+                        rs.getString("profile_pic")).build();
                 users.add(user);
             }
 

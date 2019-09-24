@@ -23,6 +23,7 @@ public final class ImmutableUser implements User {
     private final String website;
     private final String email;
     private final String phone;
+    private final String profilePic;
 
     public ImmutableUser(UserBuilder b) {
         Objects.requireNonNull(b);
@@ -34,6 +35,7 @@ public final class ImmutableUser implements User {
         this.website = b.website();
         this.email = b.email();
         this.phone = b.phone();
+        this.profilePic = b.profilePic();
     }
 
     @Override
@@ -74,6 +76,11 @@ public final class ImmutableUser implements User {
     @Override
     public String phone() {
         return this.phone;
+    }
+
+    @Override
+    public String profilePic() {
+        return this.profilePic;
     }
 
 }

@@ -23,7 +23,7 @@ public class App {
 
     // TODO (Config) Request new credentials.
     @Value("${cloudinary.cloud_name}")
-    private String cloudName;
+    private String cloud;
 
     @Value("${cloudinary.api_key}")
     private String apiKey;
@@ -49,7 +49,7 @@ public class App {
     @Bean
     public Cloudinary cloudinary() {
         Map config = new HashMap();
-        config.put("cloud_name", cloudName);
+        config.put("cloud_name", cloud);
         config.put("api_key", apiKey);
         config.put("api_secret", apiSecret);
         return new Cloudinary(config);

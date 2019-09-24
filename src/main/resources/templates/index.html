@@ -59,8 +59,7 @@
                     <div class="ui dimmer">
                         <div class="content">
                             <div class="center">
-                                <!--TODO Truncated caption for thumbnails-->
-                                <p>[[${photo.caption()}]]</p>
+                                <p>[[${photo.thumbnailCaption()}]]</p>
                                 <p th:if="${photo.user().name() != ''}"><i>by [[${photo.user().name()}]] ([[${photo.user().username()}]])</i></p>
                                 <p th:unless="${photo.user().name() != ''}"><i>by [[${photo.user().username()}]]</i></p>
 

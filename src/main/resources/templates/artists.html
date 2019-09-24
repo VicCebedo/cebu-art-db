@@ -57,7 +57,8 @@
             <div class="ui divided items">
                 <div class="item" th:each="user : ${artists}">
                     <div class="image">
-                        <img src="https://semantic-ui.com/images/wireframe/image.png" />
+                        <img th:if="${user.profilePic()} == ''" src="https://semantic-ui.com/images/wireframe/image.png" />
+                        <img th:unless="${user.profilePic()} == ''" th:src="${user.profilePic()}" />
                     </div>
                     <div class="content">
                         <a href="#" onclick="#" th:attr="onclick=|location.href='/${user.username()}'; event.preventDefault();|" class="header" th:if="${user.name() != ''}">

@@ -41,9 +41,10 @@
                         <span class="text">Content</span>
                         <i class="dropdown icon"></i>
                         <div class="menu">
-                            <div class="item" onclick="popupUpload()">Upload</div>
+                            <div class="item" onclick="$('#modal-upload').modal('show')">Upload</div>
                             <div class="divider"></div>
                             <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
+                            <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
                             <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
                         </div>
                     </div>
@@ -65,7 +66,8 @@
 
         <!--MESSAGES-->
         <div class="ui container">
-            <div th:if="${missingBio || missingEmail || missingName || missingPhone || missingWebsite}">
+            <div sec:authorize="isAuthenticated()" 
+                 th:if="${!isGuest && (missingBio || missingEmail || missingName || missingPhone || missingWebsite)}">
                 <div class="ui hidden divider"></div>
                 <div class="ui yellow message">
                     <div class="header">
@@ -88,6 +90,25 @@
                     </ul>
                 </div>
             </div>
+            <div sec:authorize="isAuthenticated()"  th:if="${!isGuest && missingProfilePic}">
+                <div class="ui hidden divider"></div>
+                <div class="ui yellow message">
+                    <div class="header">
+                        You have not yet uploaded a profile photo.
+                    </div>
+                    <ul class="list">
+                        <li th:if="${missingName}">Profile photos are essential so that other people can recognize you.</li>
+                        <p></p>
+                        <div class="ui bottom attached warning message">
+                            <i class="icon help"></i>
+                            Want to upload a new profile photo? 
+                            <a class="item" href="#" onclick="$('#modal-profile-pic').modal('show')" sec:authorize="isAuthenticated()">
+                                Change Profile Photo
+                            </a> now.
+                        </div>
+                    </ul>
+                </div>
+            </div>
             <div th:if="${showUploadSuccess}" id="message-container">
                 <div class="ui hidden divider"></div>
                 <div class="ui success large message">
@@ -103,6 +124,15 @@
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
                         Your photo was successfully deleted.
+                    </div>
+                </div>
+            </div>
+            <div th:if="${showChangeProfPicSuccess}" id="message-container">
+                <div class="ui hidden divider"></div>
+                <div class="ui success large message">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Your profile photo was successfully updated.
                     </div>
                 </div>
             </div>
@@ -136,7 +166,8 @@
                             <div class="ui grey ribbon label large" th:if="${profile.getName() != ''}">
                                 [[${profile.getName()}]]
                             </div>
-                            <img src="https://images.pexels.com/photos/2800724/pexels-photo-2800724.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940">
+                            <img th:if="${profile.getProfilePic()} == ''" src="https://semantic-ui.com/images/wireframe/image.png" />
+                            <img th:unless="${profile.getProfilePic()} == ''" th:src="${profile.getProfilePic()}" />
                         </a>
                         <div class="content center">
                             <div class="description" th:if="${profile.getBio() != ''}">
@@ -160,7 +191,6 @@
         </div>
 
         <!--CURRENT USER PHOTO GRID-->
-        <!--TODO Image hover should not need "View", entire dimmer should be clickable.-->
         <div class="ui hidden divider"></div>
         <div class="ui horizontal divider">&nbsp;</div>
         <div class="ui hidden divider"></div>
@@ -170,8 +200,8 @@
                     <div class="ui dimmer" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', '${photo.caption()}'); event.preventDefault();|">
                         <div class="content">
                             <div class="center">
-                                <!--TODO Truncated caption for thumbnails-->
-                                <p>[[${photo.caption()}]]</p>
+                                <!--TODO Error when caption is long/from wiki or photo is square-->
+                                <p>[[${photo.thumbnailCaption()}]]</p>
                             </div>
                         </div>
                     </div>
@@ -224,10 +254,10 @@
             </div>
         </div>
 
-        <!--CHANGE PASSWORD-->        
-        <div class="ui mini modal" id="modal-change-password">
+        <!--CHANGE PROFILE PIC-->        
+        <div class="ui mini modal" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
             <div class="header">
-                Change Password
+                Change Profile Photo
             </div>
             <div class="content">
                 <form th:action="@{/logged-in/user/password/update}" th:object="${changePass}" th:method="put" class="ui form" id="form-change-password">
@@ -258,8 +288,38 @@
             </div>
         </div>
 
+        <!--CHANGE PROFILE PIC-->        
+        <div class="ui mini modal" id="modal-profile-pic" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
+            <div class="header">
+                Upload
+            </div>
+            <div class="content">
+                <div class="ui active dimmer" id="loader-prof-pic" style="display: none">
+                    <div class="ui indeterminate text loader">Uploading</div>
+                </div>
+                <form th:action="@{/logged-in/user/profile-pic/update}" th:object="${profile}" th:method="PUT" class="ui form" id="form-profile-pic">
+                    <input type="hidden" th:field="*{profilePic}" id="profile-pic-url"/>
+                    <div class="field">
+                        <label>Profile Photo</label>
+                        <input type="file" accept="image/*" onchange="setFiles(this.files)"/>
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button">
+                    Cancel
+                </div>
+                <a href="#" onclick="uploadProfilePhoto();">
+                    <div class="ui green button">
+                        Upload
+                    </div>
+                </a>
+            </div>
+        </div>
+
         <!--UPLOAD MODAL-->
-        <div class="ui tiny modal" id="modal-upload">
+        <div class="ui tiny modal" id="modal-upload" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
             <div class="header">
                 Upload
             </div>
@@ -284,7 +344,7 @@
                 <div class="ui black deny button">
                     Cancel
                 </div>
-                <a href="#" onclick="handleFileUpload()">
+                <a href="#" onclick="uploadFile()">
                     <div class="ui green button">
                         Upload
                     </div>
@@ -374,14 +434,6 @@
                 $('#modal-image').modal('show');
             }
 
-            function popupUpload() {
-                $('#modal-upload').modal('show');
-            }
-
-            function popupChangePassword() {
-                $('#modal-change-password').modal('show');
-            }
-
             function deletePhoto(id, cloud) {
                 document.getElementById('photo-delete-id').value = id;
                 document.getElementById('photo-delete-cloud').value = cloud;
@@ -398,49 +450,109 @@
 
             // Upload variables.
             const cloudName = 'hqx5vpvj4';
-            const unsignedUploadPreset = 'nihp5svy';
 
             // Do upload to Cloudinary.
-            function uploadFile(file) {
-                var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', url, true);
-                xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-                xhr.onreadystatechange = function (e) {
-                    if (xhr.readyState === 4 && xhr.status === 200) {
-
-                        // File uploaded successfully
-                        var response = JSON.parse(xhr.responseText);
-                        var url = response.secure_url;
-
-                        // Create a thumbnail of the uploaded image, with 150px width
-                        var tokens = url.split('/');
-                        // TODO Optimize photos, enable thumbnails.
-                        // tokens.splice(-2, 0, 'w_150,c_scale');
-
-                        var img = new Image();
-                        img.src = tokens.join('/');
-                        document.getElementById('photo-url').value = img.src;
-                        document.getElementById('form-upload').submit();
-                    }
-                };
-
-                var fd = new FormData();
-                fd.append('upload_preset', unsignedUploadPreset);
-                fd.append('public_id', '/[[${user.username()}]]/' + uuidv4());
-                fd.append('tags', 'browser_upload');
-                fd.append('file', file);
-                xhr.send(fd);
-            }
-
-            // TODO Handle valid image extensions only.
-            // Handle selected files
-            var handleFileUpload = function () {
+            var uploadFile = function () {
+                const unsignedUploadPreset = 'nihp5svy';
                 document.getElementById('loader-upload').style = '';
+
                 for (var i = 0; i < files.length; i++) {
-                    uploadFile(files[i]);
+                    var file = files[i];
+                    var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', url, true);
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    xhr.onreadystatechange = function (e) {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+
+                            // File uploaded successfully
+                            var response = JSON.parse(xhr.responseText);
+                            var img = new Image();
+                            img.src = response.secure_url;
+                            document.getElementById('photo-url').value = img.src;
+                            document.getElementById('form-upload').submit();
+                        }
+                    };
+
+                    var fd = new FormData();
+                    fd.append('upload_preset', unsignedUploadPreset);
+                    fd.append('public_id', '/[[${user.username()}]]/' + uuidv4());
+                    fd.append('file', file);
+                    xhr.send(fd);
+                    break;
                 }
             };
+
+            // Upload profile pic.
+            var uploadProfilePhoto = function () {
+                document.getElementById('loader-prof-pic').style = '';
+                $.ajax({
+                    url: '/logged-in/user/profile-pic/delete',
+                    type: 'delete',
+                    data: $('#form-profile-pic').serialize(),
+                    success: function () {
+                        const unsignedUploadPreset = 'profile-pic';
+
+                        for (var i = 0; i < files.length; i++) {
+                            var file = files[i];
+                            var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('POST', url, true);
+                            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                            xhr.onreadystatechange = function (e) {
+                                if (xhr.readyState === 4 && xhr.status === 200) {
+
+                                    // File uploaded successfully
+                                    var response = JSON.parse(xhr.responseText);
+                                    var img = new Image();
+                                    img.src = response.secure_url;
+                                    document.getElementById('profile-pic-url').value = img.src;
+                                    document.getElementById('form-profile-pic').submit();
+                                }
+                            };
+
+                            var fd = new FormData();
+                            fd.append('upload_preset', unsignedUploadPreset);
+                            fd.append('public_id', '/[[${user.username()}]]/profile_pic');
+                            fd.append('file', file);
+                            xhr.send(fd);
+                            break;
+                        }
+                    }
+                });
+            };
+
+            // Upload profile photo.
+//            var uploadProfilePhoto = function () {
+//                deleteProfilePic();
+//
+//                const unsignedUploadPreset = 'profile-pic';
+//                for (var i = 0; i < files.length; i++) {
+//                    var file = files[i];
+//                    var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+//                    var xhr = new XMLHttpRequest();
+//                    xhr.open('PUT', url, true);
+//                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+//                    xhr.onreadystatechange = function (e) {
+//                        if (xhr.readyState === 4 && xhr.status === 200) {
+//
+//                            // File uploaded successfully
+//                            var response = JSON.parse(xhr.responseText);
+//                            var img = new Image();
+//                            img.src = response.secure_url;
+//                            document.getElementById('photo-url').value = img.src;
+//                            location.href = '/logged-in/user/profile-pic/success';
+//                        }
+//                    };
+//
+//                    var fd = new FormData();
+//                    fd.append('upload_preset', unsignedUploadPreset);
+//                    fd.append('public_id', '/[[${user.username()}]]/profile_pic');
+//                    fd.append('file', file);
+//                    xhr.send(fd);
+//                    break;
+//                }
+//            };
 
             function setFiles(filesToUpload) {
                 files = filesToUpload;

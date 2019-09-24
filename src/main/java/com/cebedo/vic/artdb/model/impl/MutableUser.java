@@ -22,6 +22,7 @@ public class MutableUser implements User {
     private String website;
     private String email;
     private String phone;
+    private String profilePic;
 
     public MutableUser(User usr) {
         Objects.requireNonNull(usr);
@@ -33,6 +34,7 @@ public class MutableUser implements User {
         this.website = usr.website();
         this.email = usr.email();
         this.phone = usr.phone();
+        this.profilePic = usr.profilePic();
     }
 
     @Override
@@ -107,4 +109,12 @@ public class MutableUser implements User {
         this.phone = phone;
     }
 
+    @Override
+    public String profilePic() {
+        return this.profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
+    }
 }
