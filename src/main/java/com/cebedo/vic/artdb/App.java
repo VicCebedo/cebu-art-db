@@ -7,6 +7,9 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -22,6 +25,7 @@ public class App {
     private String dbUrl = "jdbc:postgresql://localhost:5432/heroku_local?user=postgres&password=postgres";
 
     // TODO (Config) Request new credentials.
+    // TODO (Config) Run uptime robot.
     @Value("${cloudinary.cloud_name}")
     private String cloud;
 
@@ -33,6 +37,12 @@ public class App {
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
+    }
+
+    @Bean
+    public Validator validator() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        return factory.getValidator();
     }
 
     @Bean

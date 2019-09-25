@@ -6,25 +6,47 @@
 package com.cebedo.vic.artdb.dto;
 
 import com.cebedo.vic.artdb.model.User;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import org.hibernate.validator.constraints.URL;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class ProfileDTO {
+public class ProfileDto {
 
+    @NotNull
+    @Size(max = 30, message = "Name must not be more than 30 characters.")
     private String name;
+
+    @NotNull
+    @Size(max = 2000, message = "Artist bio must not be more than 2000 characters.")
     private String bio;
+
+    @NotNull
+    @URL(message = "Please provide a valid website link.")
+    @Size(max = 150, message = "Website must not be more than 150 characters.")
     private String website;
+
+    @NotNull
+    @Email(message = "Please provide a valid email address.")
+    @Size(max = 50, message = "Email must not be more than 50 characters.")
     private String email;
+
+    @NotNull
+    @Size(max = 20, message = "Phone number must not be more than 20 characters.")
     private String phone;
+
+    @Size(max = 150)
     private String profilePic;
 
-    public ProfileDTO() {
+    public ProfileDto() {
         ;
     }
 
-    public ProfileDTO(User user) {
+    public ProfileDto(User user) {
         this.name = user.name();
         this.bio = user.bio();
         this.website = user.website();

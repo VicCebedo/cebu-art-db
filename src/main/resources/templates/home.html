@@ -109,49 +109,28 @@
                     </ul>
                 </div>
             </div>
-            <div th:if="${showUploadSuccess}" id="message-container">
+            <div th:if="${not #lists.isEmpty(responseMessages)}" id="message-container">
                 <div class="ui hidden divider"></div>
-                <div class="ui success large message">
+                <div class="ui success message">
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
-                        Your upload was successful.
+                        Successfully completed your request
                     </div>
+                    <ul class="list" th:each="msg : ${responseMessages}">
+                        <li>[[${msg}]]</li>
+                    </ul>
                 </div>
             </div>
-            <div th:if="${showDeleteSuccess}" id="message-container">
+            <div th:if="${not #lists.isEmpty(responseErrors)}" id="message-container">
                 <div class="ui hidden divider"></div>
-                <div class="ui success large message">
+                <div class="ui error message">
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
-                        Your photo was successfully deleted.
+                        There was an error with your request
                     </div>
-                </div>
-            </div>
-            <div th:if="${showChangeProfPicSuccess}" id="message-container">
-                <div class="ui hidden divider"></div>
-                <div class="ui success large message">
-                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
-                    <div class="header">
-                        Your profile photo was successfully updated.
-                    </div>
-                </div>
-            </div>
-            <div th:if="${showEditProfileSuccess}" id="message-container">
-                <div class="ui hidden divider"></div>
-                <div class="ui success large message">
-                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
-                    <div class="header">
-                        Your profile was successfully updated.
-                    </div>
-                </div>
-            </div>
-            <div th:if="${showChangePassSuccess}" id="message-container">
-                <div class="ui hidden divider"></div>
-                <div class="ui success large message">
-                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
-                    <div class="header">
-                        Your password was successfully updated.
-                    </div>
+                    <ul class="list" th:each="error : ${responseErrors}">
+                        <li>[[${error}]]</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -175,9 +154,10 @@
                             </div>
                             <div class="extra">
                                 <div class="ui label"><i class="user icon"></i>[[${user.username()}]]</div>
+
                                 <a href="#" 
                                    onclick="#" 
-                                   th:attr="onclick=|location.href='${profile.getWebsite()}'; event.preventDefault();|"
+                                   th:attr="onclick=|window.open('${profile.getWebsite()}', '_blank'); event.preventDefault();|"
                                    th:if="${profile.getWebsite() != ''}">
                                     <div class="ui label"><i class="globe icon"></i>[[${profile.getWebsite()}]]</div>
                                 </a>
@@ -255,7 +235,7 @@
         </div>
 
         <!--CHANGE PROFILE PIC-->        
-        <div class="ui mini modal" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
+        <div id="modal-change-password" class="ui mini modal" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
             <div class="header">
                 Change Profile Photo
             </div>
@@ -521,38 +501,6 @@
                     }
                 });
             };
-
-            // Upload profile photo.
-//            var uploadProfilePhoto = function () {
-//                deleteProfilePic();
-//
-//                const unsignedUploadPreset = 'profile-pic';
-//                for (var i = 0; i < files.length; i++) {
-//                    var file = files[i];
-//                    var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
-//                    var xhr = new XMLHttpRequest();
-//                    xhr.open('PUT', url, true);
-//                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-//                    xhr.onreadystatechange = function (e) {
-//                        if (xhr.readyState === 4 && xhr.status === 200) {
-//
-//                            // File uploaded successfully
-//                            var response = JSON.parse(xhr.responseText);
-//                            var img = new Image();
-//                            img.src = response.secure_url;
-//                            document.getElementById('photo-url').value = img.src;
-//                            location.href = '/logged-in/user/profile-pic/success';
-//                        }
-//                    };
-//
-//                    var fd = new FormData();
-//                    fd.append('upload_preset', unsignedUploadPreset);
-//                    fd.append('public_id', '/[[${user.username()}]]/profile_pic');
-//                    fd.append('file', file);
-//                    xhr.send(fd);
-//                    break;
-//                }
-//            };
 
             function setFiles(filesToUpload) {
                 files = filesToUpload;

@@ -32,13 +32,25 @@
     <body>
         <div class="ui middle aligned center aligned grid">
             <div class="column">
+                <div class="ui success message" th:each="msg : ${responseMessages}" th:if="${not #lists.isEmpty(responseMessages)}">
+                    <div class="header">
+                        Successfully completed your request
+                    </div>
+                    <p>[[${msg}]]</p>
+                </div>
+                <div class="ui error message" th:each="error : ${responseErrors}" th:if="${not #lists.isEmpty(responseErrors)}">
+                    <div class="header">
+                        There was an error with your request
+                    </div>
+                    <p>[[${error}]]</p>
+                </div>
                 <h2 class="ui teal image header">
                     <div class="content">
                         Register a new account
                     </div>
                 </h2>
                 <form class="ui large form" action="#" th:action="@{/user/register}" th:object="${user}" method="post">
-                    <div class="ui stacked segment">
+                    <div class="ui segment">
                         <div class="field">
                             <div class="ui left icon input">
                                 <i class="user icon"></i>

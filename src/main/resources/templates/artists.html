@@ -68,7 +68,7 @@
                             <div class="ui label"><i class="user icon"></i> [[${user.username()}]]</div>
                             <a href="#"
                                onclick="#"
-                               th:attr="onclick=|location.href='${user.website()}'; event.preventDefault();|"
+                               th:attr="onclick=|window.open('${user.website()}', '_blank'); event.preventDefault();|"
                                th:if="${user.website() != ''}">
                                 <div class="ui label"><i class="globe icon"></i> [[${user.website()}]]</div>
                             </a>

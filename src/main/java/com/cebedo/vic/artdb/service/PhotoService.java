@@ -5,6 +5,8 @@
  */
 package com.cebedo.vic.artdb.service;
 
+import com.cebedo.vic.artdb.dto.PhotoDto;
+import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.model.Photo;
 import java.util.List;
 
@@ -14,11 +16,11 @@ import java.util.List;
  */
 public interface PhotoService {
 
-    void create(String url, String caption);
+    ResponseDto create(PhotoDto photo);
 
     List<Photo> getAllByCurrentUser();
 
-    void delete(long id, String cloudName);
+    ResponseDto delete(long id, String cloudName);
 
     List<Photo> getAll();
 

@@ -5,7 +5,7 @@
  */
 package com.cebedo.vic.artdb.dao;
 
-import com.cebedo.vic.artdb.dto.ProfileDTO;
+import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.model.User;
 import java.util.List;
 
@@ -27,6 +27,6 @@ public interface UserDao {
 
     List<User> getAll();
 
-    void updateProfileCurrentUser(ProfileDTO user);
+    void updateProfileCurrentUser(ProfileDto user);
 
 }

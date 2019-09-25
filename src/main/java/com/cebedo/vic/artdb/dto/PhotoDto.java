@@ -5,16 +5,22 @@
  */
 package com.cebedo.vic.artdb.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class PhotoDTO {
+public class PhotoDto {
 
     private long id;
     private String url;
-    private String caption;
     private String cloud;
+
+    @NotNull
+    @Size(max = 2000, message = "Caption must not be more than 2000 characters.")
+    private String caption;
 
     public long getId() {
         return id;

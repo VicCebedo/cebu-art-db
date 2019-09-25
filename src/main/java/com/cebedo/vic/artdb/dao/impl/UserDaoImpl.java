@@ -7,7 +7,7 @@ package com.cebedo.vic.artdb.dao.impl;
 
 import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
-import com.cebedo.vic.artdb.dto.ProfileDTO;
+import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.sql.Connection;
@@ -27,7 +27,6 @@ import org.springframework.stereotype.Repository;
 @Repository("userDao")
 public class UserDaoImpl implements UserDao {
 
-    // TODO (Alpha) Put character limits on DB columns.
     @Autowired
     private DataSource dataSource;
 
@@ -44,7 +43,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateProfileCurrentUser(ProfileDTO profile) {
+    public void updateProfileCurrentUser(ProfileDto profile) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET name=?, bio=?, website=?, email=?, phone=? WHERE id=?");
             stmt.setString(1, profile.getName());
@@ -86,7 +85,6 @@ public class UserDaoImpl implements UserDao {
             stmt.setString(8, "");
             stmt.executeUpdate();
         } catch (Exception e) {
-            // TODO (Alpha) Error handling/validation if fail, like duplicate username, and all negative scenarios.
             e.printStackTrace();
         }
     }

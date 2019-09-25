@@ -5,8 +5,9 @@
  */
 package com.cebedo.vic.artdb.controller;
 
-import com.cebedo.vic.artdb.dto.ProfileDTO;
-import com.cebedo.vic.artdb.dto.UserDTO;
+import com.cebedo.vic.artdb.dto.ProfileDto;
+import com.cebedo.vic.artdb.dto.ResponseDto;
+import com.cebedo.vic.artdb.dto.UserDto;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
@@ -38,18 +39,38 @@ public class UserController {
     private PhotoService photoService;
 
     @PostMapping("/user/register")
-    String create(final UserDTO user, RedirectAttributes attrs) {
-        // TODO (v1.1.0) Implement non-artist accounts using Redis.
-        // Can only view, heart and comment.
-        this.userService.create(user.getUsername(), user.getPassword());
-        attrs.addFlashAttribute("showRegisterSuccess", true);
-        return "redirect:/login";
+    String create(final UserDto user, RedirectAttributes attrs) {
+        // TODO (v1.1.0) Implement non-artist accounts using Redis. Can only view, heart and comment.
+        // TODO (Alpha) Implement new password/retype check.
+        ResponseDto rsp = this.userService.create(user);
+        attrs.addFlashAttribute("responseErrors", rsp.getErrors());
+        attrs.addFlashAttribute("responseMessages", rsp.getMessages());
+        return rsp.getErrors() == null || rsp.getErrors().isEmpty()
+                ? "redirect:/login"
+                : "redirect:/register";
     }
 
     @PutMapping("/logged-in/user/password/update")
-    String updatePassword(final UserDTO changePass, RedirectAttributes attrs) {
-        boolean success = this.userService.changePassword(changePass);
-        attrs.addFlashAttribute("showChangePassSuccess", success);
+    String updatePassword(final UserDto changePass, RedirectAttributes attrs) {
+        // TODO (Beta) Implement forget password.
+        ResponseDto rsp = this.userService.changePassword(changePass);
+        attrs.addFlashAttribute("responseErrors", rsp.getErrors());
+        attrs.addFlashAttribute("responseMessages", rsp.getMessages());
+        return "redirect:/logged-in/home";
+    }
+
+    @PutMapping("/logged-in/user/profile-pic/update")
+    String updateProfilePic(final ProfileDto profile, RedirectAttributes attrs) {
+        ResponseDto rsp = this.userService.updateProfilePic(profile.getProfilePic());
+        attrs.addFlashAttribute("responseMessages", rsp.getMessages());
+        return "redirect:/logged-in/home";
+    }
+
+    @PutMapping("/logged-in/user/profile/update")
+    String updateProfileCurrentUser(final ProfileDto profile, RedirectAttributes attrs) {
+        ResponseDto rsp = this.userService.updateProfileCurrentUser(profile);
+        attrs.addFlashAttribute("responseErrors", rsp.getErrors());
+        attrs.addFlashAttribute("responseMessages", rsp.getMessages());
         return "redirect:/logged-in/home";
     }
 
@@ -57,20 +78,6 @@ public class UserController {
     @ResponseBody
     void deleteProfilePic() {
         this.userService.deleteProfilePic();
-    }
-
-    @PutMapping("/logged-in/user/profile-pic/update")
-    String updateProfilePic(final ProfileDTO profile, RedirectAttributes attrs) {
-        this.userService.updateProfilePic(profile.getProfilePic());
-        attrs.addFlashAttribute("showChangeProfPicSuccess", true);
-        return "redirect:/logged-in/home";
-    }
-
-    @PutMapping("/logged-in/user/profile/update")
-    String updateProfileCurrentUser(final ProfileDTO profile, RedirectAttributes attrs) {
-        this.userService.updateProfileCurrentUser(profile);
-        attrs.addFlashAttribute("showEditProfileSuccess", true);
-        return "redirect:/logged-in/home";
     }
 
     @GetMapping("/{username}")
@@ -84,7 +91,7 @@ public class UserController {
         // If we are visiting another person's profile.
         User user = this.userService.get(username);
         model.addAttribute("user", user);
-        model.addAttribute("profile", new ProfileDTO(user));
+        model.addAttribute("profile", new ProfileDto(user));
         model.addAttribute("photos", this.photoService.getAllByUserId(user.id()));
         model.addAttribute("isGuest", true);
         return "home";

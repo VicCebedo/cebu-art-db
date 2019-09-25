@@ -5,7 +5,8 @@
  */
 package com.cebedo.vic.artdb.controller;
 
-import com.cebedo.vic.artdb.dto.PhotoDTO;
+import com.cebedo.vic.artdb.dto.PhotoDto;
+import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.service.PhotoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,18 +27,20 @@ public class PhotoController {
     private PhotoService photoService;
 
     @PostMapping("/upload")
-    String upload(final PhotoDTO photo, RedirectAttributes attrs) {
+    String upload(final PhotoDto photo, RedirectAttributes attrs) {
         // TODO (Beta) Optimize thumbnails, should pre-transform before upload to cloud.
-        // TODO (Beta) Handle valid image extensions only when uploading.
-        this.photoService.create(photo.getUrl(), photo.getCaption());
-        attrs.addFlashAttribute("showUploadSuccess", true);
+        // TODO (Beta) Handle valid image extensions only when uploading. Front-end validation only.
+        ResponseDto rsp = this.photoService.create(photo);
+        attrs.addFlashAttribute("responseErrors", rsp.getErrors());
+        attrs.addFlashAttribute("responseMessages", rsp.getMessages());
         return "redirect:/logged-in/home";
     }
 
     @DeleteMapping("/delete")
-    String delete(final PhotoDTO photo, RedirectAttributes attrs) {
-        this.photoService.delete(photo.getId(), photo.getCloud());
-        attrs.addFlashAttribute("showDeleteSuccess", true);
+    String delete(final PhotoDto photo, RedirectAttributes attrs) {
+        ResponseDto rsp = this.photoService.delete(photo.getId(), photo.getCloud());
+        attrs.addFlashAttribute("responseErrors", rsp.getErrors());
+        attrs.addFlashAttribute("responseMessages", rsp.getMessages());
         return "redirect:/logged-in/home";
     }
 

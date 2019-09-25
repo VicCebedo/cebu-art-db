@@ -7,15 +7,20 @@ package com.cebedo.vic.artdb.service.impl;
 
 import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
-import com.cebedo.vic.artdb.dto.ProfileDTO;
-import com.cebedo.vic.artdb.dto.UserDTO;
+import com.cebedo.vic.artdb.dto.ProfileDto;
+import com.cebedo.vic.artdb.dto.ResponseDto;
+import com.cebedo.vic.artdb.dto.UserDto;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -32,6 +37,9 @@ public class UserServiceImpl implements UserService {
     private static final BCryptPasswordEncoder ENCODER = new BCryptPasswordEncoder();
 
     @Autowired
+    private Validator validator;
+
+    @Autowired
     private UserDao userDao;
 
     @Autowired
@@ -43,52 +51,87 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean changePassword(final UserDTO changePass) {
+    public ResponseDto changePassword(final UserDto changePass) {
         // Validations.
-        // TODO (Alpha) Error-handling/validation if passwords are not secure.
+        // TODO (Beta) Error-handling/validation if passwords are not secure.
         String newPassword = changePass.getNewPassword();
-        boolean valid = newPassword.equals(changePass.getNewPasswordRetype());
+        boolean retypeMatch = newPassword.equals(changePass.getNewPasswordRetype());
 
-        if (valid) {
+        if (retypeMatch) {
             User user = AuthUtils.getAuth().user();
             if (ENCODER.matches(changePass.getPassword(), user.password())) {
                 this.userDao.changePassword(user.username(), ENCODER.encode(newPassword));
-                return true;
+                return ResponseDto.newInstanceWithMessage("Your password is now updated.");
             }
+            return ResponseDto.newInstanceWithError("Incorrect password. Please try again.");
+        }
+        return ResponseDto.newInstanceWithError("Your new passwords don't match. Please try again.");
+    }
 
-            System.out.println("PASSWORD: Doesn't match");
-            return false;
+    @Override
+    public ResponseDto create(final UserDto userDto) {
+        // Check if user exists.
+        String username = userDto.getUsername();
+        User userCheck = this.userDao.get(username);
+        if (userCheck.id() != 0) {
+            return ResponseDto.newInstanceWithError("The username you selected already exists. Please try again.");
         }
 
-        System.out.println("PASSWORD: Not equal");
-        return false;
+        // General validation.
+        Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(userDto);
+        if (constraintViolations.size() > 0) {
+            List<String> errors = new ArrayList<>();
+            for (ConstraintViolation violation : constraintViolations) {
+                errors.add(violation.getMessage());
+            }
+            return ResponseDto.newInstanceWithErrors(errors);
+        }
+
+        // Normal behaviour.
+        User user = new UserBuilder(0, username, ENCODER.encode(userDto.getPassword()), "", "", "", "", "", "").build();
+        this.userDao.create(user);
+        return ResponseDto.newInstanceWithMessage("Your user registration was successful.");
     }
 
     @Override
-    public void create(final String username, final String password) {
-        this.userDao.create(new UserBuilder(0, username, ENCODER.encode(password), "", "", "", "", "", "").build());
-    }
+    public ResponseDto updateProfileCurrentUser(final ProfileDto profile) {
+        // Websites must be prefixed with http or https.
+        String web = profile.getWebsite();
+        if (!web.startsWith("http")) {
+            profile.setWebsite("http://" + web);
+        }
 
-    @Override
-    public void updateProfileCurrentUser(final ProfileDTO profile) {
-        // TODO (Alpha) Implement profile pictures.
-        AuthUtils.getAuth().profile().setBio(profile.getBio());
-        AuthUtils.getAuth().profile().setEmail(profile.getEmail());
-        AuthUtils.getAuth().profile().setName(profile.getName());
-        AuthUtils.getAuth().profile().setPhone(profile.getPhone());
-        AuthUtils.getAuth().profile().setWebsite(profile.getWebsite());
+        // Validations.
+        Set<ConstraintViolation<ProfileDto>> constraintViolations = validator.validate(profile);
+        if (constraintViolations.size() > 0) {
+            List<String> errors = new ArrayList<>();
+            for (ConstraintViolation violation : constraintViolations) {
+                errors.add(violation.getMessage());
+            }
+            return ResponseDto.newInstanceWithErrors(errors);
+        }
+
+        // Update in DB and in session.
         this.userDao.updateProfileCurrentUser(profile);
+        AuthUtils.getAuth().profile().setName(profile.getName());
+        AuthUtils.getAuth().profile().setBio(profile.getBio());
+        AuthUtils.getAuth().profile().setWebsite(profile.getWebsite());
+        AuthUtils.getAuth().profile().setEmail(profile.getEmail());
+        AuthUtils.getAuth().profile().setPhone(profile.getPhone());
+
+        return ResponseDto.newInstanceWithMessage("Your profile is now updated.");
+    }
+
+    @Override
+    public ResponseDto updateProfilePic(String profilePic) {
+        this.userDao.updateProfilePhoto(profilePic);
+        AuthUtils.getAuth().profile().setProfilePic(profilePic);
+        return ResponseDto.newInstanceWithMessage("Your profile photo is now updated.");
     }
 
     @Override
     public List<User> getAll() {
         return this.userDao.getAll();
-    }
-
-    @Override
-    public void updateProfilePic(String profilePic) {
-        AuthUtils.getAuth().profile().setProfilePic(profilePic);
-        this.userDao.updateProfilePhoto(profilePic);
     }
 
     @Override

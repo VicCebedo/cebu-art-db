@@ -5,13 +5,19 @@
  */
 package com.cebedo.vic.artdb.dto;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class UserDTO {
+public class UserDto {
 
+    @NotNull
+    @Size(max = 30, message = "Username must not be more than 30 characters.")
     private String username;
+
     private String password;
     private String newPassword;
     private String newPasswordRetype;

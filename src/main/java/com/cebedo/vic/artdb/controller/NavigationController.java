@@ -5,9 +5,10 @@
  */
 package com.cebedo.vic.artdb.controller;
 
-import com.cebedo.vic.artdb.dto.PhotoDTO;
-import com.cebedo.vic.artdb.dto.ProfileDTO;
-import com.cebedo.vic.artdb.dto.UserDTO;
+import com.cebedo.vic.artdb.dto.PhotoDto;
+import com.cebedo.vic.artdb.dto.ProfileDto;
+import com.cebedo.vic.artdb.dto.ResponseDto;
+import com.cebedo.vic.artdb.dto.UserDto;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.model.impl.MutableUser;
 import com.cebedo.vic.artdb.service.PhotoService;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  *
@@ -46,18 +48,20 @@ public class NavigationController {
 
     @GetMapping("/login")
     String pageLogin(Model model) {
-        model.addAttribute("user", new UserDTO());
+        model.addAttribute("user", new UserDto());
         return "login";
     }
 
     @GetMapping("/login/fail")
-    String pageLoginFail() {
-        return "login-fail";
+    String pageLoginFail(RedirectAttributes attrs) {
+        ResponseDto rsp = ResponseDto.newInstanceWithError("Incorrect username or password.");
+        attrs.addFlashAttribute("responseErrors", rsp.getErrors());
+        return "redirect:/login";
     }
 
     @GetMapping("/register")
     String pageRegister(Model model) {
-        model.addAttribute("user", new UserDTO());
+        model.addAttribute("user", new UserDto());
         return "register";
     }
 
@@ -69,10 +73,10 @@ public class NavigationController {
         User user = AuthUtils.getAuth().user();
         MutableUser profile = AuthUtils.getAuth().profile();
         model.addAttribute("user", user);
-        model.addAttribute("profile", new ProfileDTO(profile));
+        model.addAttribute("profile", new ProfileDto(profile));
         model.addAttribute("photos", this.photoService.getAllByCurrentUser());
-        model.addAttribute("photo", new PhotoDTO());
-        model.addAttribute("changePass", new UserDTO());
+        model.addAttribute("photo", new PhotoDto());
+        model.addAttribute("changePass", new UserDto());
         model.addAttribute("missingBio", StringUtils.isBlank(profile.bio()));
         model.addAttribute("missingEmail", StringUtils.isBlank(profile.email()));
         model.addAttribute("missingName", StringUtils.isBlank(profile.name()));
