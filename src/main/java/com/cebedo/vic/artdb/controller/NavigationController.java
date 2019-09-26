@@ -79,6 +79,7 @@ public class NavigationController {
         // TODO (Beta) Mobile compatible website.
         // TODO (Beta) Create android app.
         // TODO (Beta) "Random" button?
+        // TODO (Beta) Configurable cloud name, search 'cloudName' in *.html.
         User user = AuthUtils.getAuth().user();
         MutableUser profile = AuthUtils.getAuth().profile();
         model.addAttribute("user", user);

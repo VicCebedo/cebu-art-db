@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
-        <title>title</title>
+        <title>Artist | [[${user.username()}]]</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -400,7 +400,7 @@
                 on: 'hover'
             });
 
-            function popupImage(imgSrc, id, cloudName, caption) {
+            function popupImage(imgSrc, id, cloud, caption) {
                 document.getElementById('modal-image-src').src = imgSrc;
                 document.getElementById('modal-image-caption').innerHTML = caption;
 
@@ -408,7 +408,7 @@
                 var imageDetails = document.getElementById('delete-image-details');
                 if (imageDetails) {
                     imageDetails.targetId = id;
-                    imageDetails.targetCloudName = cloudName;
+                    imageDetails.targetCloudName = cloud;
                 }
 
                 $('#modal-image').modal('show');
@@ -438,7 +438,7 @@
 
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
-                    var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+                    var url = 'https://api.cloudinary.com/v1_1/' + cloudName + '/upload';
                     var xhr = new XMLHttpRequest();
                     xhr.open('POST', url, true);
                     xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
@@ -475,7 +475,7 @@
 
                         for (var i = 0; i < files.length; i++) {
                             var file = files[i];
-                            var url = `https://api.cloudinary.com/v1_1/${cloudName}/upload`;
+                            var url = 'https://api.cloudinary.com/v1_1/' + cloudName + '/upload';
                             var xhr = new XMLHttpRequest();
                             xhr.open('POST', url, true);
                             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
