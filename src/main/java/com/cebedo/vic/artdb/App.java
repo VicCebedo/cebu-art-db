@@ -20,9 +20,9 @@ import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 public class App {
 
     // TODO (Config) Change during deployment.
-    //    @Value("${spring.datasource.url}")
-    //    private String dbUrl;
-    private String dbUrl = "jdbc:postgresql://localhost:5432/heroku_local?user=postgres&password=postgres";
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
+    // private String dbUrl = "jdbc:postgresql://localhost:5432/heroku_local?user=postgres&password=postgres";
 
     // TODO (Config) Request new credentials.
     // TODO (Config) Run uptime robot.
