@@ -50,6 +50,33 @@
             </div>
         </div>
 
+        <div class="ui container">
+            <div th:if="${not #lists.isEmpty(responseMessages)}" id="message-container">
+                <div class="ui hidden divider"></div>
+                <div class="ui success message">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Successfully completed your request
+                    </div>
+                    <ul class="list" th:each="msg : ${responseMessages}">
+                        <li>[[${msg}]]</li>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${not #lists.isEmpty(responseErrors)}" id="message-container">
+                <div class="ui hidden divider"></div>
+                <div class="ui error message">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        There was an error with your request
+                    </div>
+                    <ul class="list" th:each="error : ${responseErrors}">
+                        <li>[[${error}]]</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
         <!--CURRENT USER PHOTO GRID-->
         <div class="ui hidden divider"></div>
         <div class="ui hidden divider"></div>

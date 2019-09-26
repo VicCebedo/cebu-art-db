@@ -49,7 +49,12 @@
                         Register a new account
                     </div>
                 </h2>
-                <form class="ui large form" action="#" th:action="@{/user/register}" th:object="${user}" method="post">
+                <form class="ui large form" 
+                      action="#" 
+                      th:action="@{/user/register}" 
+                      th:object="${user}" 
+                      method="post"
+                      th:if="${enableRegistration}">
                     <div class="ui segment">
                         <div class="field">
                             <div class="ui left icon input">
@@ -60,7 +65,13 @@
                         <div class="field">
                             <div class="ui left icon input">
                                 <i class="lock icon"></i>
-                                <input type="password" name="password" placeholder="Password" th:field="*{password}">
+                                <input type="password" placeholder="Password" th:field="*{password}">
+                            </div>
+                        </div>
+                        <div class="field">
+                            <div class="ui left icon input">
+                                <i class="lock icon"></i>
+                                <input type="password" placeholder="Retype Password" th:field="*{newPasswordRetype}">
                             </div>
                         </div>
                         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -68,6 +79,17 @@
                     </div>
                 </form>
 
+                <div class="ui teal message" th:if="${!enableRegistration}">
+                    <div class="header">
+                        Registration closed.
+                    </div>
+                    <p></p>
+                    <p>
+                        Sorry, public registration is closed right now.<br/>
+                        If you want to be part of this project,<br/>
+                        please reach out via email at cebedo.vii@gmail.com.
+                    </p>
+                </div>
                 <div class="ui message">
                     Already have an account? <a href="/login">Log In</a>
                 </div>

@@ -70,6 +70,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseDto create(final UserDto userDto) {
+        // Check if passwords are not equal.
+        String password = userDto.getPassword();
+        String retype = userDto.getNewPasswordRetype();
+        if (!password.equals(retype)) {
+            return ResponseDto.newInstanceWithError("Your passwords don't match. Please try again.");
+        }
+
         // Check if user exists.
         String username = userDto.getUsername();
         User userCheck = this.userDao.get(username);
@@ -88,7 +95,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Normal behaviour.
-        User user = new UserBuilder(0, username, ENCODER.encode(userDto.getPassword()), "", "", "", "", "", "").build();
+        User user = new UserBuilder(0, username, ENCODER.encode(password), "", "", "", "", "", "").build();
         this.userDao.create(user);
         return ResponseDto.newInstanceWithMessage("Your user registration was successful.");
     }
