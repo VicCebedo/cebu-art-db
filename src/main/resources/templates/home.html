@@ -236,15 +236,15 @@
                 <form th:action="@{/logged-in/user/password/update}" th:object="${changePass}" th:method="put" class="ui form" id="form-change-password">
                     <div class="field">
                         <label>Current Password</label>
-                        <input type="password" placeholder="Name" th:field="*{password}" />
+                        <input type="password" placeholder="Current Password" th:field="*{password}" />
                     </div>
                     <div class="field">
                         <label>New Password</label>
-                        <input type="password" placeholder="Name" th:field="*{newPassword}" />
+                        <input type="password" placeholder="New Password" th:field="*{newPassword}" />
                     </div>
                     <div class="field">
                         <label>Retype New Password:</label>
-                        <input type="password" placeholder="Name" th:field="*{newPasswordRetype}" />
+                        <input type="password" placeholder="Retype Password" th:field="*{newPasswordRetype}" />
                     </div>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
