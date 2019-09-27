@@ -173,7 +173,7 @@
                                 <a href="#" 
                                    onclick="#" 
                                    th:caption="${photo.caption()}"
-                                   th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', this); event.preventDefault();|">
+                                   th:attr="onclick=|event.preventDefault(); popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', this);|">
                                     <div class="ui inverted button">View Photo</div>
                                 </a>
                             </div>
