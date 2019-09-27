@@ -20,21 +20,21 @@ import org.thymeleaf.extras.springsecurity4.dialect.SpringSecurityDialect;
 public class App {
 
     // TODO (Config) Change during deployment.
-//    @Value("${spring.datasource.url}")
-//    private String dbUrl;
-//
-//    @Value("${cloudinary.cloud_name}")
-//    private String cloud;
-//
-//    @Value("${cloudinary.api_key}")
-//    private String apiKey;
-//
-//    @Value("${cloudinary.api_secret}")
-//    private String apiSecret;
-    private String dbUrl = "jdbc:postgresql://localhost:5432/heroku_local?user=postgres&password=postgres";
-    private String cloud = "hqx5vpvj4";
-    private String apiKey = "224457221896293";
-    private String apiSecret = "e-Sz1hP7ojcd4QY5XZWtdTFQpQI";
+    @Value("${spring.datasource.url}")
+    private String dbUrl;
+
+    @Value("${cloudinary.cloud_name}")
+    private String cloud;
+
+    @Value("${cloudinary.api_key}")
+    private String apiKey;
+
+    @Value("${cloudinary.api_secret}")
+    private String apiSecret;
+//    private String dbUrl = "jdbc:postgresql://localhost:5432/heroku_local?user=postgres&password=postgres";
+//    private String cloud = "hqx5vpvj4";
+//    private String apiKey = "224457221896293";
+//    private String apiSecret = "e-Sz1hP7ojcd4QY5XZWtdTFQpQI";
 
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);
