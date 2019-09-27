@@ -43,7 +43,7 @@ public final class ImmutablePhoto implements Photo {
 
         // Photo manipulations.
         String[] urlSplit = this.url.split("/upload/");
-        this.thumbnail = urlSplit[0] + "/upload/w_400,h_300,c_fill,g_auto/" + urlSplit[1];
+        this.thumbnail = urlSplit[0] + "/upload/w_400,h_400,c_fill,g_auto/" + urlSplit[1];
     }
 
     @Override
