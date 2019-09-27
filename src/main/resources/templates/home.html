@@ -426,6 +426,7 @@
             });
 
             function popupImage(imgSrc, id, cloud, elem) {
+                $('#modal-image').modal('show');
                 document.getElementById('modal-image-src').src = imgSrc;
                 document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
 
@@ -435,7 +436,6 @@
                     imageDetails.targetId = id;
                     imageDetails.targetCloudName = cloud;
                 }
-                $('#modal-image').modal('show');
                 $('#modal-image').modal('refresh');
             }
 
