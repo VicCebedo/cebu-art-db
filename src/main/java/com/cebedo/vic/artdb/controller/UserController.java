@@ -52,6 +52,7 @@ public class UserController {
     @PutMapping("/logged-in/user/password/update")
     String updatePassword(final UserDto changePass, RedirectAttributes attrs) {
         // TODO (Beta) Implement forget password.
+        // TODO (Beta) Captcha for registration.
         ResponseDto rsp = this.userService.changePassword(changePass);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());

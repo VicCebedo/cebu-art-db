@@ -30,68 +30,78 @@
 
     </head>
     <body>
-        <div class="ui middle aligned center aligned grid">
-            <div class="column">
-                <div class="ui success message" th:each="msg : ${responseMessages}" th:if="${not #lists.isEmpty(responseMessages)}">
-                    <div class="header">
-                        Successfully completed your request
-                    </div>
-                    <p>[[${msg}]]</p>
-                </div>
-                <div class="ui error message" th:each="error : ${responseErrors}" th:if="${not #lists.isEmpty(responseErrors)}">
-                    <div class="header">
-                        There was an error with your request
-                    </div>
-                    <p>[[${error}]]</p>
-                </div>
-                <h2 class="ui teal image header">
-                    <div class="content">
-                        Register a new account
-                    </div>
-                </h2>
-                <form class="ui large form" 
-                      action="#" 
-                      th:action="@{/user/register}" 
-                      th:object="${user}" 
-                      method="post"
-                      th:if="${enableRegistration}">
-                    <div class="ui segment">
-                        <div class="field">
-                            <div class="ui left icon input">
-                                <i class="user icon"></i>
-                                <input type="text" name="uname" placeholder="Username" th:field="*{username}">
-                            </div>
+        <div class="ui container" style="padding-top: 10%">
+            <div class="ui middle aligned center aligned grid">
+                <div class="column">
+                    <div class="ui success message" th:each="msg : ${responseMessages}" th:if="${not #lists.isEmpty(responseMessages)}">
+                        <div class="header">
+                            Successfully completed your request
                         </div>
-                        <div class="field">
-                            <div class="ui left icon input">
-                                <i class="lock icon"></i>
-                                <input type="password" placeholder="Password" th:field="*{password}">
-                            </div>
-                        </div>
-                        <div class="field">
-                            <div class="ui left icon input">
-                                <i class="lock icon"></i>
-                                <input type="password" placeholder="Retype Password" th:field="*{newPasswordRetype}">
-                            </div>
-                        </div>
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                        <button class="ui fluid large teal submit button">Register</button>
+                        <p>[[${msg}]]</p>
                     </div>
-                </form>
+                    <div class="ui error message" th:each="error : ${responseErrors}" th:if="${not #lists.isEmpty(responseErrors)}">
+                        <div class="header">
+                            There was an error with your request
+                        </div>
+                        <p>[[${error}]]</p>
+                    </div>
+                    <h2 class="ui black image header">
+                        <div class="content">
+                            Register a new account
+                        </div>
+                    </h2>
+                    <form class="ui large form" 
+                          action="#" 
+                          th:action="@{/user/register}" 
+                          th:object="${user}" 
+                          method="post"
+                          th:if="${enableRegistration}">
+                        <div class="ui segment">
+                            <div class="field">
+                                <div class="ui left icon input">
+                                    <i class="user icon"></i>
+                                    <input type="text" name="uname" placeholder="Username" th:field="*{username}">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui left icon input">
+                                    <i class="lock icon"></i>
+                                    <input type="password" placeholder="Password" th:field="*{password}">
+                                </div>
+                            </div>
+                            <div class="field">
+                                <div class="ui left icon input">
+                                    <i class="lock icon"></i>
+                                    <input type="password" placeholder="Retype Password" th:field="*{newPasswordRetype}">
+                                </div>
+                            </div>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            <button class="ui fluid large black submit button">Register</button>
+                        </div>
+                    </form>
 
-                <div class="ui teal message" th:if="${!enableRegistration}">
-                    <div class="header">
-                        Registration closed.
+                    <div class="ui grey message" th:if="${!enableRegistration}">
+                        <div class="header">
+                            Registration closed.
+                        </div>
+                        <p></p>
+                        <p>
+                            Sorry, public registration is closed right now.
+                            If you want to be part of this project,
+                            please reach out via email at cebedo.vii@gmail.com.
+                        </p>
                     </div>
-                    <p></p>
-                    <p>
-                        Sorry, public registration is closed right now.<br/>
-                        If you want to be part of this project,<br/>
-                        please reach out via email at cebedo.vii@gmail.com.
-                    </p>
-                </div>
-                <div class="ui message">
-                    Already have an account? <a href="/login">Log In</a>
+                    <div class="ui message">
+                        <div class="ui buttons">
+                            <a href="/">
+                                <button class="ui button">Go Back</button>
+                            </a>
+                            <div class="or"></div>
+                            <a href="/login">
+                                <button class="ui grey button">Log In</button>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

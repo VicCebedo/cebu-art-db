@@ -37,12 +37,17 @@
                     Artists
                 </a>
                 <div class="right menu">
+                    <a class="item"
+                       href="#"
+                       onclick="$('#modal-upload').modal('show'); event.preventDefault();"
+                       sec:authorize="isAuthenticated()"
+                       th:if="${!isGuest}">
+                        Upload
+                    </a>
                     <div class="ui pointing dropdown link item" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
-                        <span class="text">Content</span>
+                        <span class="text">Account</span>
                         <i class="dropdown icon"></i>
                         <div class="menu">
-                            <div class="item" onclick="$('#modal-upload').modal('show')">Upload</div>
-                            <div class="divider"></div>
                             <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
                             <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
                             <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
@@ -176,12 +181,18 @@
         <div class="ui hidden divider"></div>
         <div class="ui container">
             <div class="ui special cards three stackable">
-                <div class="card blurring dimmable image" th:each="photo : ${photos}" style="cursor: pointer">
-                    <div class="ui dimmer" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', '${photo.caption()}'); event.preventDefault();|">
+                <div class="card blurring dimmable image" th:each="photo : ${photos}">
+                    <div class="ui dimmer">
                         <div class="content">
                             <div class="center">
                                 <!--TODO Error when caption is long/from wiki or photo is square-->
                                 <p>[[${photo.thumbnailCaption()}]]</p>
+                                <a href="#" 
+                                   onclick="#" 
+                                   th:caption="${photo.caption()}"
+                                   th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', this); event.preventDefault();|">
+                                    <div class="ui inverted button">View Photo</div>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -334,10 +345,13 @@
 
         <!--IMAGE IS CLICKED-->
         <div class="ui basic fullscreen modal" id="modal-image">
+            <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide')">
+                <i class="close icon"></i>
+            </div>
             <div class="image content">
                 <img class="ui huge image" src="#" id="modal-image-src"> 
                 <div class="description">
-                    <p id="modal-image-caption"></p>
+                    <p id="modal-image-caption" style="white-space: pre-line"></p>
 
                     <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
                         <input type="hidden" id="photo-delete-id" name="id" value=""/>
@@ -379,17 +393,17 @@
 
         <div class="ui hidden divider"></div>
         <div class="ui hidden divider"></div>
-        <div class="ui hidden divider"></div>
-        <div class="ui inverted vertical footer segment" style="margin-top: 70px; padding-top: 30px; padding-bottom: 30px">
-            <div class="ui center aligned container">
-                <div class="ui horizontal inverted small divided link list">
-                    <a class="item" href="#">Site Map</a>
-                    <a class="item" href="#">Contact Us</a>
-                    <a class="item" href="#">Terms and Conditions</a>
-                    <a class="item" href="#">Privacy Policy</a>
-                </div>
-            </div>
-        </div>
+        <!--        <div class="ui hidden divider"></div>
+                <div class="ui inverted vertical footer segment" style="margin-top: 70px; padding-top: 30px; padding-bottom: 30px">
+                    <div class="ui center aligned container">
+                        <div class="ui horizontal inverted small divided link list">
+                            <a class="item" href="#">Site Map</a>
+                            <a class="item" href="#">Contact Us</a>
+                            <a class="item" href="#">Terms and Conditions</a>
+                            <a class="item" href="#">Privacy Policy</a>
+                        </div>
+                    </div>
+                </div>-->
 
         <script type="text/javascript">
             $('.ui.dropdown').dropdown({
@@ -400,9 +414,9 @@
                 on: 'hover'
             });
 
-            function popupImage(imgSrc, id, cloud, caption) {
+            function popupImage(imgSrc, id, cloud, elem) {
                 document.getElementById('modal-image-src').src = imgSrc;
-                document.getElementById('modal-image-caption').innerHTML = caption;
+                document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
 
                 // Delete button.
                 var imageDetails = document.getElementById('delete-image-details');

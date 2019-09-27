@@ -56,7 +56,7 @@ public class PhotoServiceImpl implements PhotoService {
         this.photoDao.create(new PhotoBuilder(
                 0,
                 photo.getUrl(),
-                photo.getCaption().replace("\n", " ").replace("\r", ""),
+                photo.getCaption(),
                 new Timestamp(System.currentTimeMillis()),
                 AuthUtils.getAuth().user())
                 .build());

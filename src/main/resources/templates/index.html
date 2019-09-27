@@ -90,11 +90,14 @@
                                 <p th:if="${photo.user().name() != ''}"><i>by [[${photo.user().name()}]] ([[${photo.user().username()}]])</i></p>
                                 <p th:unless="${photo.user().name() != ''}"><i>by [[${photo.user().username()}]]</i></p>
 
-                                <a href="#" onclick="#" th:attr="onclick=|popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', '${photo.caption()}'); event.preventDefault();|">
-                                    <div class="ui inverted mini button">View Photo</div>
+                                <a href="#" 
+                                   onclick="#" 
+                                   th:caption="${photo.caption()}"
+                                   th:attr="onclick=|popupImage('${photo.url()}', this); event.preventDefault();|">
+                                    <div class="ui inverted button">View Photo</div>
                                 </a>
                                 <a href="#" onclick="#" th:attr="onclick=|location.href='/${photo.user().username()}'|">
-                                    <div class="ui inverted mini button">View Artist</div>
+                                    <div class="ui inverted button">View Artist</div>
                                 </a>
                             </div>
                         </div>
@@ -103,36 +106,38 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <!--NAVIGATION BAR-->
-    <div class="ui hidden divider"></div>
-    <div class="ui hidden divider"></div>
-    <div class="ui inverted attached stackable menu">
-        <div class="ui container">
-        </div>
-    </div>
+        <!--NAVIGATION BAR-->
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
+        <!--        <div class="ui inverted attached stackable menu">
+                    <div class="ui container">
+                    </div>
+                </div>-->
 
-    <!--IMAGE IS CLICKED-->
-    <div class="ui basic fullscreen modal" id="modal-image">
-        <div class="image content">
-            <img class="ui huge image" src="#" id="modal-image-src">
-            <div class="description">
-                <p id="modal-image-caption"></p>
+        <!--IMAGE IS CLICKED-->
+        <div class="ui basic fullscreen modal" id="modal-image">
+            <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide')">
+                <i class="close icon"></i>
+            </div>
+            <div class="image content">
+                <img class="ui huge image" src="#" id="modal-image-src">
+                <div class="description">
+                    <p id="modal-image-caption" style="white-space: pre-line"></p>
+                </div>
             </div>
         </div>
-    </div>
 
-    <script type="text/javascript">
-        $('.special.cards .image').dimmer({
-            on: 'hover'
-        });
+        <script type="text/javascript">
+            $('.special.cards .image').dimmer({
+                on: 'hover'
+            });
 
-        function popupImage(imgSrc, id, cloudName, caption) {
-            document.getElementById('modal-image-src').src = imgSrc;
-            document.getElementById('modal-image-caption').innerHTML = caption;
-            $('#modal-image').modal('show');
-        }
-    </script>
-</body>
+            function popupImage(imgSrc, elem) {
+                document.getElementById('modal-image-src').src = imgSrc;
+                document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
+                $('#modal-image').modal('show');
+            }
+        </script>
+    </body>
 </html>
