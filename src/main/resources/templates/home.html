@@ -326,13 +326,9 @@
 
         <!--IMAGE IS CLICKED-->
         <div class="ui basic fullscreen modal" id="modal-image">
-            <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide')">
-                <i class="close icon"></i>
-            </div>
             <div class="image content">
                 <img class="ui huge image" src="#" id="modal-image-src"> 
                 <div class="description">
-                    <p id="modal-image-caption" style="white-space: pre-line"></p>
 
                     <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
                         <input type="hidden" id="photo-delete-id" name="id" value=""/>
@@ -347,6 +343,15 @@
                          id="delete-image-details"
                          th:if="${!isGuest}">
                         <i class="trash alternate icon"></i>
+                    </div>
+
+                    <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide')">
+                        <i class="close icon"></i>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div>
+                        <p id="modal-image-caption" style="white-space: pre-line"></p>
                     </div>
 
                     <div class="ui basic mini modal" id="modal-photo-delete">

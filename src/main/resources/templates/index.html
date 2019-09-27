@@ -117,13 +117,17 @@
 
         <!--IMAGE IS CLICKED-->
         <div class="ui basic fullscreen modal" id="modal-image">
-            <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide')">
-                <i class="close icon"></i>
-            </div>
             <div class="image content">
                 <img class="ui huge image" src="#" id="modal-image-src">
                 <div class="description">
-                    <p id="modal-image-caption" style="white-space: pre-line"></p>
+                    <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide')">
+                        <i class="close icon"></i>
+                    </div>
+                    <br/>
+                    <br/>
+                    <div>
+                        <p id="modal-image-caption" style="white-space: pre-line"></p>
+                    </div>
                 </div>
             </div>
         </div>
