@@ -30,6 +30,25 @@
 
     </head>
     <body>
+        <div class="ui container" sec:authorize="!isAuthenticated()">
+            <div class="ui bottom fixed huge menu">
+                <div class="item">
+                    <img src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569575644/static/jo8jab4kzemksimbcyte.jpg">
+                </div>
+                <a class="item icon" href="/">
+                    <i class="home icon"></i>
+                </a>
+                <a class="item icon" href="/artists">
+                    <i class="users icon"></i>
+                </a>
+                <a class="ui item" href="/login">
+                    <i class="sign in alternate icon"></i>
+                </a>
+                <a class="ui active item" href="/register">
+                    <i class="user plus icon"></i>
+                </a>
+            </div>
+        </div>
         <div class="ui container" style="padding-top: 10%">
             <div class="ui middle aligned center aligned grid">
                 <div class="column">
@@ -91,17 +110,17 @@
                             please reach out via email at cebedo.vii@gmail.com.
                         </p>
                     </div>
-                    <div class="ui message">
-                        <div class="ui buttons">
-                            <a href="/">
-                                <button class="ui button">Go Back</button>
-                            </a>
-                            <div class="or"></div>
-                            <a href="/login">
-                                <button class="ui grey button">Log In</button>
-                            </a>
-                        </div>
-                    </div>
+                    <!--                    <div class="ui message">
+                                            <div class="ui buttons">
+                                                <a href="/">
+                                                    <button class="ui button">Go Back</button>
+                                                </a>
+                                                <div class="or"></div>
+                                                <a href="/login">
+                                                    <button class="ui grey button">Log In</button>
+                                                </a>
+                                            </div>
+                                        </div>-->
                 </div>
             </div>
         </div>

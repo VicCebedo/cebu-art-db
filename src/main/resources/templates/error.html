@@ -12,37 +12,10 @@
         </style>
     </head>
     <body>
-
-        <!--NAVIGATION BAR-->
-        <div class="ui container">
-            <div class="ui secondary pointing menu">
-                <a class="active item" href="/">
-                    Art
-                </a>
-                <a class="item" href="/artists">
-                    Artists
-                </a>
-                <div class="right menu">
-                    <a class="ui item" href="/logged-in/home" sec:authorize="isAuthenticated()">
-                        Profile
-                    </a>
-                    <a class="ui item" onclick="document.getElementById('form-logout').submit()" sec:authorize="isAuthenticated()">
-                        Logout
-                    </a>
-                    <a class="ui item" href="/login" sec:authorize="!isAuthenticated()">
-                        Login
-                    </a>
-                    <a class="ui item" href="/register" sec:authorize="!isAuthenticated()">
-                        Register
-                    </a>
-                </div>
-            </div>
-        </div>
-
         <div class="ui container">
             <div class="ui hidden divider"></div>
             <div class="ui icon error message">
-                <i class="massive home icon"></i>
+                <i class="massive bug icon"></i>
                 <div class="content">
                     <div class="header">
                         There was an error with your request
@@ -50,6 +23,12 @@
                     <p>Something went wrong along the way. Please report to administrators. Thanks!</p>
                 </div>
             </div>
+        </div>
+        <br/>
+        <div class="ui container center aligned">
+            <a href="/">
+                <button class="ui button">Go Back</button>
+            </a>
         </div>
     </body>
 </html>
