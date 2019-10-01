@@ -65,13 +65,11 @@
         </div>
 
         <div class="ui hidden divider"></div>
-        <div class="ui horizontal divider">&nbsp;</div>
-        <div class="ui hidden divider"></div>
         <div class="ui container">
             <div class="ui divided items">
                 <div class="item" th:each="user : ${artists}">
-                    <div class="image">
-                        <img th:if="${user.profilePic()} == ''" src="https://semantic-ui.com/images/wireframe/image.png" />
+                    <div class="image" onclick="#" th:attr="onclick=|location.href='/${user.username()}'; event.preventDefault();|">
+                        <img th:if="${user.profilePic()} == ''" src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569906610/static/ecmvsberhzwodn6roitt.png" />
                         <img th:unless="${user.profilePic()} == ''" th:src="${user.profilePic()}" />
                     </div>
                     <div class="content">
@@ -92,14 +90,6 @@
                         <div class="description">
                             <p style="white-space: pre-line">[[${user.bio()}]]</p>
                         </div>
-                        <div class="extra">
-                            <a href="#" onclick="#" th:attr="onclick=|location.href='/${user.username()}'; event.preventDefault();|">
-                                <div class="ui right floated inverted secondary button">
-                                    View Artist
-                                    <i class="right chevron icon"></i>
-                                </div>
-                            </a>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -108,9 +98,7 @@
         <!--NAVIGATION BAR-->
         <div class="ui hidden divider"></div>
         <div class="ui hidden divider"></div>
-        <!--        <div class="ui inverted attached stackable menu">
-                    <div class="ui container">
-                    </div>
-                </div>-->
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
     </body>
 </html>
