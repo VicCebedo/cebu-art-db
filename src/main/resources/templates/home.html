@@ -178,7 +178,7 @@
                     </div>
                     <div class="field">
                         <label>Artist Bio</label>
-                        <textarea placeholder="Bio" th:field="*{bio}" rows="18"></textarea>
+                        <textarea placeholder="Bio" th:field="*{bio}" rows="10"></textarea>
                     </div>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
@@ -276,7 +276,7 @@
                     </div>
                     <div class="field">
                         <label>Caption</label>
-                        <textarea placeholder="Caption" th:field="*{caption}" rows="8"></textarea>
+                        <textarea placeholder="Caption" th:field="*{caption}" rows="5"></textarea>
                     </div>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
