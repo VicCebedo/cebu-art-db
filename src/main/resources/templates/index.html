@@ -95,28 +95,19 @@
         <div class="ui hidden divider"></div>
         <div class="ui hidden divider"></div>
         <div class="ui container">
-            <div class="ui special cards three stackable">
-                <div class="card blurring dimmable image" th:each="photo : ${photos}">
-                    <div class="ui dimmer">
-                        <div class="content">
-                            <div class="center">
-                                <p>[[${photo.thumbnailCaption()}]]</p>
-                                <p th:if="${photo.user().name() != ''}"><i>by [[${photo.user().name()}]] ([[${photo.user().username()}]])</i></p>
-                                <p th:unless="${photo.user().name() != ''}"><i>by [[${photo.user().username()}]]</i></p>
-
-                                <a href="#" 
-                                   onclick="#" 
-                                   th:caption="${photo.caption()}"
-                                   th:attr="onclick=|event.preventDefault(); popupImage('${photo.url()}', this);|">
-                                    <div class="ui inverted button">View Photo</div>
-                                </a>
-                                <a href="#" onclick="#" th:attr="onclick=|location.href='/${photo.user().username()}'|">
-                                    <div class="ui inverted button">View Artist</div>
-                                </a>
-                            </div>
+            <div class="ui cards three stackable">
+                <div class="card" th:each="photo : ${photos}" style="box-shadow: none; background: none; margin-bottom: 30px;">
+                    <div class="image">
+                        <a th:caption="${photo.caption()}"
+                           th:attr="onclick=|event.preventDefault(); popupImage(this);|">
+                            <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
+                        </a>
+                    </div>
+                    <div class="content" style="padding: 9px">
+                        <div class="ui label" onclick="#" th:attr="onclick=|location.href='/${photo.user().username()}';|">
+                            [[${photo.user().name() == '' ? photo.user().username() : photo.user().name() }]]
                         </div>
                     </div>
-                    <img class="ui image" src="#" th:src="${photo.thumbnail()}" />
                 </div>
             </div>
         </div>
@@ -128,41 +119,20 @@
         <div class="ui hidden divider"></div>
 
         <!--IMAGE IS CLICKED-->
-        <div class="ui basic fullscreen modal" id="modal-image">
-            <div class="image content">
-                <img class="ui huge image" src="#" id="modal-image-src">
-                <div class="description">
-                    <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide')">
-                        <i class="close icon"></i>
-                    </div>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <div>
-                        <p id="modal-image-caption" style="white-space: pre-line"></p>
-                    </div>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
+        <div class="ui basic small modal" id="modal-image">
+            <div class="content">
+                <p id="modal-image-caption" style="white-space: pre-line"></p>
+                <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide');">
+                    <i class="close icon"></i>
                 </div>
+                <br/>
+                <br/>
             </div>
         </div>
 
         <script type="text/javascript">
-            $('.special.cards .image').dimmer({
-                on: 'hover'
-            });
-
-            function popupImage(imgSrc, elem) {
+            function popupImage(elem) {
                 $('#modal-image').modal('show');
-                document.getElementById('modal-image-src').src = imgSrc;
                 document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
                 $('#modal-image').modal('refresh');
             }

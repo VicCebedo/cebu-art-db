@@ -132,23 +132,14 @@
         <div class="ui horizontal divider">&nbsp;</div>
         <div class="ui hidden divider"></div>
         <div class="ui container">
-            <div class="ui special cards three stackable">
-                <div class="card blurring dimmable image" th:each="photo : ${photos}">
-                    <div class="ui dimmer">
-                        <div class="content">
-                            <div class="center">
-                                <!--TODO Error when caption is long/from wiki or photo is square-->
-                                <p>[[${photo.thumbnailCaption()}]]</p>
-                                <a href="#" 
-                                   onclick="#" 
-                                   th:caption="${photo.caption()}"
-                                   th:attr="onclick=|event.preventDefault(); popupImage('${photo.url()}', ${photo.id()}, '${photo.cloud()}', this);|">
-                                    <div class="ui inverted button">View Photo</div>
-                                </a>
-                            </div>
-                        </div>
+            <div class="ui cards three stackable">
+                <div class="card" th:each="photo : ${photos}" style="box-shadow: none; background: none; margin-bottom: 30px;">
+                    <div class="image">
+                        <a th:caption="${photo.caption()}"
+                           th:attr="onclick=|popupImage(${photo.id()}, '${photo.cloud()}', this);|">
+                            <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
+                        </a>
                     </div>
-                    <img class="ui image" src="#" th:src="${photo.thumbnail()}" />
                 </div>
             </div>
         </div>
@@ -294,63 +285,47 @@
         </div>
 
         <!--IMAGE IS CLICKED-->
-        <div class="ui basic fullscreen modal" id="modal-image">
-            <div class="image content">
-                <img class="ui huge image" src="#" id="modal-image-src"> 
-                <div class="description">
+        <div class="ui basic small modal" id="modal-image">
+            <div class="content">
 
-                    <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
-                        <input type="hidden" id="photo-delete-id" name="id" value=""/>
-                        <input type="hidden" id="photo-delete-cloud" name="cloud" value=""/>
-                        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                    </form>
+                <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
+                    <input type="hidden" id="photo-delete-id" name="id" value=""/>
+                    <input type="hidden" id="photo-delete-cloud" name="cloud" value=""/>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
 
-                    <div class="ui red inverted button icon" 
-                         targetId=""
-                         targetCloudName=""
-                         onclick="deletePhoto(this.targetId, this.targetCloudName)" 
-                         id="delete-image-details"
-                         th:if="${!isGuest}">
-                        <i class="trash alternate icon"></i>
+                <p id="modal-image-caption" style="white-space: pre-line"></p>
+                <div class="ui red inverted button icon" 
+                     targetId=""
+                     targetCloudName=""
+                     onclick="deletePhoto(this.targetId, this.targetCloudName)" 
+                     id="delete-image-details"
+                     th:if="${!isGuest}">
+                    <i class="trash alternate icon"></i>
+                </div>
+
+                <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide');">
+                    <i class="close icon"></i>
+                </div>
+                <br/>
+                <br/>
+
+                <div class="ui basic mini modal" id="modal-photo-delete">
+                    <div class="ui icon header">
+                        <i class="archive icon"></i>
+                        Delete Photo
                     </div>
-
-                    <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide')">
-                        <i class="close icon"></i>
+                    <div class="content">
+                        <p>You will not be able to recover this photo. Do you still want to delete?</p>
                     </div>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <div>
-                        <p id="modal-image-caption" style="white-space: pre-line"></p>
-                    </div>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-                    <br/>
-
-                    <div class="ui basic mini modal" id="modal-photo-delete">
-                        <div class="ui icon header">
-                            <i class="archive icon"></i>
-                            Delete Photo
+                    <div class="actions">
+                        <div class="ui red basic cancel inverted button">
+                            <i class="remove icon"></i>
+                            Cancel
                         </div>
-                        <div class="content">
-                            <p>You will not be able to recover this photo. Do you still want to delete?</p>
-                        </div>
-                        <div class="actions">
-                            <div class="ui red basic cancel inverted button">
-                                <i class="remove icon"></i>
-                                Cancel
-                            </div>
-                            <div class="ui green ok inverted button" onclick="doDeletePhoto()">
-                                <i class="checkmark icon"></i>
-                                Delete
-                            </div>
+                        <div class="ui green ok inverted button" onclick="doDeletePhoto()">
+                            <i class="checkmark icon"></i>
+                            Delete
                         </div>
                     </div>
                 </div>
@@ -423,13 +398,9 @@
                 on: 'hover',
                 action: 'nothing'
             })
-            $('.special.cards .image').dimmer({
-                on: 'hover'
-            });
 
-            function popupImage(imgSrc, id, cloud, elem) {
+            function popupImage(id, cloud, elem) {
                 $('#modal-image').modal('show');
-                document.getElementById('modal-image-src').src = imgSrc;
                 document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
 
                 // Delete button.
