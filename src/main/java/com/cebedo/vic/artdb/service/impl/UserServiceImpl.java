@@ -94,6 +94,24 @@ public class UserServiceImpl implements UserService {
             return ResponseDto.newInstanceWithErrors(errors);
         }
 
+        // If invite codes are enabled.
+        boolean inviteCodesEnabled = true;
+        if (inviteCodesEnabled) {
+
+            String inviteCode = userDto.getInviteCode();
+
+            // Check if invite code exists.
+            // And if invite code remaining > 0.
+            int remaining = this.userDao.getInviteCodeRemaining(inviteCode);
+            if (remaining == 0) {
+                return ResponseDto.newInstanceWithError("The invite code you provided is not valid. Please try again.");
+            }
+
+            // If invite code remaining > 0,
+            // deduct 1 from remaining.
+            this.userDao.decrementInviteCodeRemaining(inviteCode, remaining - 1);
+        }
+
         // Normal behaviour.
         User user = new UserBuilder(0, username, ENCODER.encode(password), "", "", "", "", "", "").build();
         this.userDao.create(user);

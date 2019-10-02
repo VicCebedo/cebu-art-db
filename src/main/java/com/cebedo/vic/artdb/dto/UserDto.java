@@ -21,6 +21,15 @@ public class UserDto {
     private String password;
     private String newPassword;
     private String newPasswordRetype;
+    private String inviteCode;
+
+    public String getInviteCode() {
+        return inviteCode;
+    }
+
+    public void setInviteCode(String inviteCode) {
+        this.inviteCode = inviteCode;
+    }
 
     public String getNewPassword() {
         return newPassword;

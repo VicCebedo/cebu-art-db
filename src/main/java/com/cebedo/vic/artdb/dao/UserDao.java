@@ -29,4 +29,8 @@ public interface UserDao {
 
     void updateProfileCurrentUser(ProfileDto user);
 
+    int getInviteCodeRemaining(String code);
+
+    void decrementInviteCodeRemaining(String code, int newRemaining);
+
 }

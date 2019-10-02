@@ -71,6 +71,18 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
+    public void decrementInviteCodeRemaining(String code, int newRemaining) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("UPDATE invite_codes SET remaining = ? WHERE code = ?");
+            stmt.setInt(1, newRemaining);
+            stmt.setString(2, code);
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void create(User user) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("INSERT INTO public.users(username, password, name, bio, website, email, phone, profile_pic) "
@@ -112,6 +124,21 @@ public class UserDaoImpl implements UserDao {
             e.printStackTrace();
         }
         return UserBuilder.newInstance();
+    }
+
+    @Override
+    public int getInviteCodeRemaining(String code) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM invite_codes WHERE code = ?");
+            stmt.setString(1, code);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("remaining");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     @Override
