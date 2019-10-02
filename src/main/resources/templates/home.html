@@ -99,13 +99,13 @@
             <div class="ui segment left aligned">
                 <div class="ui items">
                     <div class="item">
-                        <a class="ui medium image">
+                        <div class="ui medium image">
                             <div class="ui grey ribbon label large" th:if="${profile.getName() != ''}">
                                 [[${profile.getName()}]]
                             </div>
                             <img th:if="${profile.getProfilePic()} == ''" src="https://semantic-ui.com/images/wireframe/image.png" />
                             <img th:unless="${profile.getProfilePic()} == ''" th:src="${profile.getProfilePic()}" />
-                        </a>
+                        </div>
                         <div class="content center">
                             <div class="description" th:if="${profile.getBio() != ''}">
                                 <p style="white-space: pre-line">[[${profile.getBio()}]]</p>
@@ -135,11 +135,10 @@
         <div class="ui container">
             <div class="ui cards three stackable">
                 <div class="card" th:each="photo : ${photos}" style="box-shadow: none; background: none; margin-bottom: 30px;">
-                    <div class="image">
-                        <a th:caption="${photo.caption()}"
-                           th:attr="onclick=|popupImage(${photo.id()}, '${photo.cloud()}', this);|">
-                            <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
-                        </a>
+                    <div class="image"
+                         th:caption="${photo.caption()}"
+                         th:attr="onclick=|popupImage(${photo.id()}, '${photo.cloud()}', this);|">
+                        <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
                     </div>
                 </div>
             </div>

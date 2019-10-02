@@ -98,11 +98,10 @@
         <div class="ui container">
             <div class="ui cards three stackable">
                 <div class="card" th:each="photo : ${photos}" style="box-shadow: none; background: none; margin-bottom: 30px;">
-                    <div class="image">
-                        <a th:caption="${photo.caption()}"
-                           th:attr="onclick=|event.preventDefault(); popupImage(this);|">
-                            <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
-                        </a>
+                    <div class="image"
+                         th:caption="${photo.caption()}"
+                         th:attr="onclick=|event.preventDefault(); popupImage(this);|">
+                        <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
                     </div>
                     <div class="content" style="padding: 9px">
                         <div class="ui label" onclick="#" th:attr="onclick=|location.href='/${photo.user().username()}';|">
