@@ -22,6 +22,10 @@
 
     </head>
     <body>
+        <div class="ui active inverted dimmer" id="global-loader" style="display: none">
+            <div class="ui small text loader"></div>
+        </div>
+
         <!--MESSAGES-->
         <div class="ui container">
             <div sec:authorize="isAuthenticated()" 
@@ -345,10 +349,10 @@
                 <div class="item">
                     <img src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569575644/static/jo8jab4kzemksimbcyte.jpg">
                 </div>
-                <a class="item icon" href="/">
+                <a class="item icon" href="/" onclick="document.getElementById('global-loader').style = ''">
                     <i class="home icon"></i>
                 </a>
-                <a class="item icon" href="/artists">
+                <a class="item icon" href="/artists" onclick="document.getElementById('global-loader').style = ''">
                     <i class="users icon"></i>
                 </a>
                 <a class="item icon"
@@ -365,7 +369,7 @@
                         <div class="item" onclick="$('#modal-edit-profile').modal('show')" th:if="${!isGuest}">Edit Profile</div>
                         <div class="item" onclick="$('#modal-profile-pic').modal('show')" th:if="${!isGuest}">Change Profile Photo</div>
                         <div class="item" onclick="$('#modal-change-password').modal('show')" th:if="${!isGuest}">Change Password</div>
-                        <div class="item" onclick="document.getElementById('form-logout').submit()">Logout</div>
+                        <div class="item" onclick="document.getElementById('global-loader').style = ''; document.getElementById('form-logout').submit()">Logout</div>
                     </div>
                 </div>
             </div>
@@ -375,16 +379,16 @@
                 <div class="item">
                     <img src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569575644/static/jo8jab4kzemksimbcyte.jpg">
                 </div>
-                <a class="item icon" href="/">
+                <a class="item icon" href="/" onclick="document.getElementById('global-loader').style = ''">
                     <i class="home icon"></i>
                 </a>
-                <a class="item icon" href="/artists">
+                <a class="item icon" href="/artists" onclick="document.getElementById('global-loader').style = ''">
                     <i class="users icon"></i>
                 </a>
-                <a class="ui item" href="/login">
+                <a class="ui item" href="/login" onclick="document.getElementById('global-loader').style = ''">
                     <i class="sign in alternate icon"></i>
                 </a>
-                <a class="ui item" href="/register">
+                <a class="ui item" href="/register" onclick="document.getElementById('global-loader').style = ''">
                     <i class="user plus icon"></i>
                 </a>
             </div>

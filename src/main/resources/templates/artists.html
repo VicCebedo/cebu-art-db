@@ -21,6 +21,9 @@
         </style>
     </head>
     <body>
+        <div class="ui active inverted dimmer" id="global-loader" style="display: none">
+            <div class="ui small text loader"></div>
+        </div>
 
         <!--NAVIGATION BAR-->
         <form th:action="@{/logged-in/logout}" method="post" id="form-logout" style="display: none">
@@ -31,16 +34,16 @@
                 <div class="item">
                     <img src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569575644/static/jo8jab4kzemksimbcyte.jpg">
                 </div>
-                <a class="item icon" href="/">
+                <a class="item icon" href="/" onclick="document.getElementById('global-loader').style = ''">
                     <i class="home icon"></i>
                 </a>
-                <a class="item active icon" href="/artists">
+                <a class="item active icon" href="/artists" onclick="document.getElementById('global-loader').style = ''">
                     <i class="users icon"></i>
                 </a>
-                <a class="ui item" href="/login">
+                <a class="ui item" href="/login" onclick="document.getElementById('global-loader').style = ''">
                     <i class="sign in alternate icon"></i>
                 </a>
-                <a class="ui item" href="/register">
+                <a class="ui item" href="/register" onclick="document.getElementById('global-loader').style = ''">
                     <i class="user plus icon"></i>
                 </a>
             </div>
@@ -50,16 +53,17 @@
                 <div class="item">
                     <img src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569575644/static/jo8jab4kzemksimbcyte.jpg">
                 </div>
-                <a class="item icon" href="/">
+                <a class="item icon" href="/" onclick="document.getElementById('global-loader').style = ''">
                     <i class="home icon"></i>
                 </a>
-                <a class="item active icon" href="/artists">
+                <a class="item active icon" href="/artists" onclick="document.getElementById('global-loader').style = ''">
                     <i class="users icon"></i>
                 </a>
-                <a class="item icon" href="/logged-in/home">
+                <a class="item icon" href="/logged-in/home" onclick="document.getElementById('global-loader').style = ''">
                     <i class="user icon"></i>
                 </a>
-                <a class="item icon" href="#" onclick="document.getElementById('form-logout').submit()">
+                <a class="item icon" href="#" 
+                   onclick="document.getElementById('global-loader').style = ''; document.getElementById('form-logout').submit()">
                     <i class="sign out alternate icon"></i>
                 </a>
             </div>
