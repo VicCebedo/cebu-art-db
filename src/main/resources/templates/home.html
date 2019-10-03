@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-84479704-5"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'UA-84479704-5');
+        </script>
+
         <title>Catch | [[${user.username()}]]</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -76,7 +88,7 @@
                 <div class="ui success message">
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
-                        Successfully completed your request
+                        Success!
                     </div>
                     <ul class="list" th:each="msg : ${responseMessages}">
                         <li>[[${msg}]]</li>
@@ -88,7 +100,7 @@
                 <div class="ui error message">
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
-                        There was an error with your request
+                        Error!
                     </div>
                     <ul class="list" th:each="error : ${responseErrors}">
                         <li>[[${error}]]</li>
@@ -145,12 +157,6 @@
                 </form>
 
                 <div class="card" th:each="photo : ${photos}" style="box-shadow: none; background: none; margin-bottom: 30px;">
-                    <div class="image"
-                         th:caption="${photo.caption()}"
-                         th:attr="onclick=|popupImage(this);|">
-                        <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
-                    </div>
-
                     <div class="content" th:if="${!isGuest}">
                         <span class="right floated">
                             <div class="ui dropdown">
@@ -169,6 +175,12 @@
                             </div>
                         </span>
                     </div>
+                    <div class="image"
+                         th:caption="${photo.caption()}"
+                         th:attr="onclick=|popupImage(this);|">
+                        <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -358,7 +370,7 @@
                 <a class="item icon" href="/artists" onclick="loading()">
                     <i class="users icon"></i>
                 </a>
-                
+
                 <!--3rd Icon-->
                 <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isGuest}">
                     <i class="user icon"></i>
@@ -369,12 +381,13 @@
                    th:if="${!isGuest}">
                     <i class="plus square outline icon"></i>
                 </a>
-                
+
                 <!--4th Icon-->
                 <a class="item icon" 
                    href="#" 
                    th:if="${isGuest}"
-                   onclick="loading(); document.getElementById('form-logout').submit()">
+                   onclick="loading();
+                           document.getElementById('form-logout').submit()">
                     <i class="sign out alternate icon"></i>
                 </a>
                 <div class="ui dropdown item" th:if="${!isGuest}">
@@ -385,7 +398,8 @@
                         <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
                         <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
                         <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
-                        <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
+                        <div class="item" onclick="loading();
+                                document.getElementById('form-logout').submit()">Logout</div>
                     </div>
                 </div>
             </div>

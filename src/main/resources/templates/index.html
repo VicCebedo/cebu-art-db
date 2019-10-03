@@ -1,6 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
     <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-84479704-5"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'UA-84479704-5');
+        </script>
+
         <title>Catch | Art</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,7 +75,8 @@
                     <i class="user icon"></i>
                 </a>
                 <a class="item icon" href="#" 
-                   onclick="loading(); document.getElementById('form-logout').submit()">
+                   onclick="loading();
+                           document.getElementById('form-logout').submit()">
                     <i class="sign out alternate icon"></i>
                 </a>
             </div>
@@ -75,7 +88,7 @@
                 <div class="ui success message">
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
-                        Successfully completed your request
+                        Success!
                     </div>
                     <ul class="list" th:each="msg : ${responseMessages}">
                         <li>[[${msg}]]</li>
@@ -87,7 +100,7 @@
                 <div class="ui error message">
                     <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
                     <div class="header">
-                        There was an error with your request
+                        Error!
                     </div>
                     <ul class="list" th:each="error : ${responseErrors}">
                         <li>[[${error}]]</li>
