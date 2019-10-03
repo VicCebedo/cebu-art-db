@@ -361,20 +361,33 @@
                 <a class="item icon" href="/artists" onclick="loading()">
                     <i class="users icon"></i>
                 </a>
+                
+                <!--3rd Icon-->
+                <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isGuest}">
+                    <i class="user icon"></i>
+                </a>
                 <a class="item icon"
                    href="#"
                    onclick="$('#modal-upload').modal('show'); event.preventDefault();"
                    th:if="${!isGuest}">
                     <i class="plus square outline icon"></i>
                 </a>
-                <div class="ui dropdown item">
+                
+                <!--4th Icon-->
+                <a class="item icon" 
+                   href="#" 
+                   th:if="${isGuest}"
+                   onclick="loading(); document.getElementById('form-logout').submit()">
+                    <i class="sign out alternate icon"></i>
+                </a>
+                <div class="ui dropdown item" th:if="${!isGuest}">
                     <span class="icon">
                         <i class="cog icon"></i>
                     </span>
                     <div class="menu">
-                        <div class="item" onclick="$('#modal-edit-profile').modal('show')" th:if="${!isGuest}">Edit Profile</div>
-                        <div class="item" onclick="$('#modal-profile-pic').modal('show')" th:if="${!isGuest}">Change Profile Photo</div>
-                        <div class="item" onclick="$('#modal-change-password').modal('show')" th:if="${!isGuest}">Change Password</div>
+                        <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
+                        <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
+                        <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
                         <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
                     </div>
                 </div>
