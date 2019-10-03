@@ -138,11 +138,36 @@
         <div class="ui hidden divider"></div>
         <div class="ui container">
             <div class="ui cards three stackable">
+                <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
+                    <input type="hidden" id="photo-delete-id" name="id" value=""/>
+                    <input type="hidden" id="photo-delete-cloud" name="cloud" value=""/>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+
                 <div class="card" th:each="photo : ${photos}" style="box-shadow: none; background: none; margin-bottom: 30px;">
                     <div class="image"
                          th:caption="${photo.caption()}"
-                         th:attr="onclick=|popupImage(${photo.id()}, '${photo.cloud()}', this);|">
+                         th:attr="onclick=|popupImage(this);|">
                         <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
+                    </div>
+
+                    <div class="content" th:if="${!isGuest}">
+                        <span class="right floated">
+                            <div class="ui dropdown">
+                                <div class="text">
+                                    <i class="ellipsis horizontal icon"></i>
+                                </div>
+                                <div class="left floated menu">
+                                    <div class="item"
+                                         th:targetId="${photo.id()}"
+                                         th:targetCloudName="${photo.cloud()}"
+                                         onclick="deletePhoto(this)" 
+                                         id="delete-image-details">
+                                        Delete
+                                    </div>
+                                </div>
+                            </div>
+                        </span>
                     </div>
                 </div>
             </div>
@@ -291,26 +316,7 @@
         <!--IMAGE IS CLICKED-->
         <div class="ui basic small modal" id="modal-image">
             <div class="content">
-
-                <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
-                    <input type="hidden" id="photo-delete-id" name="id" value=""/>
-                    <input type="hidden" id="photo-delete-cloud" name="cloud" value=""/>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-
-                <p id="modal-image-caption" style="white-space: pre-line"></p>
-                <div class="ui red inverted button icon" 
-                     targetId=""
-                     targetCloudName=""
-                     onclick="deletePhoto(this.targetId, this.targetCloudName)" 
-                     id="delete-image-details"
-                     th:if="${!isGuest}">
-                    <i class="trash alternate icon"></i>
-                </div>
-
-                <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide');">
-                    <i class="close icon"></i>
-                </div>
+                <p id="modal-image-caption" style="white-space: pre-line" onclick="$('#modal-image').modal('hide');"></p>
                 <br/>
                 <br/>
 
@@ -403,22 +409,15 @@
                 action: 'nothing'
             })
 
-            function popupImage(id, cloud, elem) {
+            function popupImage(elem) {
                 $('#modal-image').modal('show');
                 document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
-
-                // Delete button.
-                var imageDetails = document.getElementById('delete-image-details');
-                if (imageDetails) {
-                    imageDetails.targetId = id;
-                    imageDetails.targetCloudName = cloud;
-                }
                 $('#modal-image').modal('refresh');
             }
 
-            function deletePhoto(id, cloud) {
-                document.getElementById('photo-delete-id').value = id;
-                document.getElementById('photo-delete-cloud').value = cloud;
+            function deletePhoto(elem) {
+                document.getElementById('photo-delete-id').value = elem.attributes.targetid.value;
+                document.getElementById('photo-delete-cloud').value = elem.attributes.targetcloudname.value;
                 $('#modal-photo-delete').modal('show');
             }
 

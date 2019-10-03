@@ -102,8 +102,10 @@
         <div class="ui container">
             <div class="ui cards three stackable">
                 <div class="card" th:each="photo : ${photos}" style="box-shadow: none; background: none; margin-bottom: 50px;">
-                    <div class="ui tiny header" onclick="#" th:attr="onclick=|loading(); location.href='/${photo.user().username()}';|">
-                        [[${photo.user().name() == '' ? photo.user().username() : photo.user().name() }]]
+                    <div class="content">
+                        <div class="ui small header" onclick="#" th:attr="onclick=|loading(); location.href='/${photo.user().username()}';|">
+                            [[${photo.user().name() == '' ? photo.user().username() : photo.user().name() }]]
+                        </div>
                     </div>
                     <div class="image"
                          th:caption="${photo.caption()}"
@@ -123,10 +125,7 @@
         <!--IMAGE IS CLICKED-->
         <div class="ui basic small modal" id="modal-image">
             <div class="content">
-                <p id="modal-image-caption" style="white-space: pre-line"></p>
-                <div class="ui right floated inverted button icon" onclick="$('#modal-image').modal('hide');">
-                    <i class="close icon"></i>
-                </div>
+                <p id="modal-image-caption" style="white-space: pre-line" onclick="$('#modal-image').modal('hide');"></p>
                 <br/>
                 <br/>
             </div>
