@@ -89,24 +89,17 @@
                                 </div>
                             </div>
                             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                            <button class="ui fluid large black submit button">Login</button>
+                            <button class="ui fluid large black submit button" onclick="loading()">Login</button>
                         </div>
                         <div class="ui error message"></div>
                     </form>
-
-                    <!--                    <div class="ui message">
-                                            <div class="ui buttons">
-                                                <a href="/">
-                                                    <button class="ui button">Go Back</button>
-                                                </a>
-                                                <div class="or"></div>
-                                                <a href="/register">
-                                                    <button class="ui grey button">Register</button>
-                                                </a>
-                                            </div>
-                                        </div>-->
                 </div>
             </div>
         </div>
+        <script type="text/javascript">
+            function loading() {
+                document.getElementById('global-loader').style = '';
+            }
+        </script>
     </body>
 </html>

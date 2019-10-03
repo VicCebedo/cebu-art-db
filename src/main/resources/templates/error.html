@@ -13,6 +13,9 @@
         </style>
     </head>
     <body>
+        <div class="ui active inverted page dimmer" id="global-loader" style="display: none">
+            <div class="ui small text loader"></div>
+        </div>
         <div class="ui container">
             <div class="ui hidden divider"></div>
             <div class="ui icon error message">
@@ -28,8 +31,13 @@
         <br/>
         <div class="ui container center aligned">
             <a href="/">
-                <button class="ui button">Go Back</button>
+                <button class="ui button" onclick="loading()">Go Back</button>
             </a>
         </div>
+        <script type="text/javascript">
+            function loading() {
+                document.getElementById('global-loader').style = '';
+            }
+        </script>
     </body>
 </html>

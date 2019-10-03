@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
     public ResponseDto updateProfileCurrentUser(final ProfileDto profile) {
         // Websites must be prefixed with http or https.
         String web = profile.getWebsite();
-        if (!web.startsWith("http")) {
+        if (!web.isEmpty() && !web.startsWith("http")) {
             profile.setWebsite("http://" + web);
         }
 
