@@ -67,9 +67,6 @@ public class NavigationController {
 
     @GetMapping("/logged-in/home")
     String pageHome(Model model) {
-        // TODO (Beta) Mobile compatible website.
-        // TODO (Beta) Create android app.
-        // TODO (Beta) "Random" button?
         User user = AuthUtils.getAuth().user();
         MutableUser profile = AuthUtils.getAuth().profile();
         model.addAttribute("user", user);

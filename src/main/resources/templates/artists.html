@@ -37,6 +37,16 @@
             <div class="ui small text loader"></div>
         </div>
 
+        <!--INTRODUCTION-->
+        <div class="ui container">
+            <div class="ui basic segment" style="padding-top: 9%">
+                <img class="ui tiny image" 
+                     src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1570074412/static/ybakvuon4wtyyiftrqno.png"
+                     style="padding-bottom: 4%">
+                <p>Catch supports disruptive and unconventional forms of art.</p>
+            </div>
+        </div>
+
         <!--NAVIGATION BAR-->
         <form th:action="@{/logged-in/logout}" method="post" id="form-logout" style="display: none">
             <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>

@@ -5,6 +5,7 @@
  */
 package com.cebedo.vic.artdb.dao;
 
+import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.model.Photo;
 import java.util.List;
 
@@ -21,5 +22,7 @@ public interface PhotoDao {
     void delete(long id);
 
     List<Photo> getAll();
+
+    void updateCaption(PhotoDto photo);
 
 }

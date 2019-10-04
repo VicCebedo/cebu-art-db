@@ -28,9 +28,15 @@ public class PhotoController {
 
     @PostMapping("/upload")
     String upload(final PhotoDto photo, RedirectAttributes attrs) {
-        // TODO (Beta) Optimize thumbnails, should pre-transform before upload to cloud.
-        // TODO (Beta) Handle valid image extensions only when uploading. Front-end validation only.
         ResponseDto rsp = this.photoService.create(photo);
+        attrs.addFlashAttribute("responseErrors", rsp.getErrors());
+        attrs.addFlashAttribute("responseMessages", rsp.getMessages());
+        return "redirect:/logged-in/home";
+    }
+
+    @PostMapping("/caption/update")
+    String updateCaption(final PhotoDto photo, RedirectAttributes attrs) {
+        ResponseDto rsp = this.photoService.updateCaption(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
         return "redirect:/logged-in/home";

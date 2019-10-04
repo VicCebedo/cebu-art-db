@@ -26,4 +26,6 @@ public interface PhotoService {
 
     List<Photo> getAllByUserId(long id);
 
+    ResponseDto updateCaption(PhotoDto photo);
+
 }

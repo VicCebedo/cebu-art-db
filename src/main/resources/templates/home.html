@@ -166,9 +166,14 @@
                                 <div class="left floated menu">
                                     <div class="item"
                                          th:targetId="${photo.id()}"
+                                         th:targetCaption="${photo.caption()}"
+                                         onclick="popupEditCaption(this)">
+                                        Edit Caption
+                                    </div>
+                                    <div class="item"
+                                         th:targetId="${photo.id()}"
                                          th:targetCloudName="${photo.cloud()}"
-                                         onclick="deletePhoto(this)" 
-                                         id="delete-image-details">
+                                         onclick="deletePhoto(this)">
                                         Delete
                                     </div>
                                 </div>
@@ -286,6 +291,33 @@
                 <a href="#" onclick="uploadProfilePhoto();">
                     <div class="ui green button">
                         Upload
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!--EDIT CAPTION MODAL-->
+        <div class="ui tiny modal" id="modal-edit-caption" sec:authorize="isAuthenticated()" th:if="${!isGuest}">
+            <div class="header">
+                Edit Caption
+            </div>
+            <div class="content">
+                <form th:action="@{/logged-in/photo/caption/update}" th:object="${photo}" method="post" class="ui form" id="form-edit-caption">
+                    <div class="field">
+                        <label>Caption</label>
+                        <textarea placeholder="Caption" id="edit-caption-value" th:field="*{caption}" rows="5"></textarea>
+                    </div>
+                    <input type="hidden" th:field="*{id}" id="edit-caption-id"/>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button">
+                    Cancel
+                </div>
+                <a onclick="$('#form-edit-caption').submit()">
+                    <div class="ui green button">
+                        Update
                     </div>
                 </a>
             </div>
@@ -539,6 +571,12 @@
 
             function loading() {
                 document.getElementById('global-loader').style = '';
+            }
+
+            function popupEditCaption(elem) {
+                document.getElementById('edit-caption-id').value = elem.attributes.targetid.value;
+                document.getElementById('edit-caption-value').value = elem.attributes.targetcaption.value;
+                $('#modal-edit-caption').modal('show');
             }
         </script>
     </body>

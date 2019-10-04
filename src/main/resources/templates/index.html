@@ -82,35 +82,17 @@
             </div>
         </div>
 
+        <!--INTRODUCTION-->
         <div class="ui container">
-            <div th:if="${not #lists.isEmpty(responseMessages)}" id="message-container">
-                <div class="ui hidden divider"></div>
-                <div class="ui success message">
-                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
-                    <div class="header">
-                        Success!
-                    </div>
-                    <ul class="list" th:each="msg : ${responseMessages}">
-                        <li>[[${msg}]]</li>
-                    </ul>
-                </div>
-            </div>
-            <div th:if="${not #lists.isEmpty(responseErrors)}" id="message-container">
-                <div class="ui hidden divider"></div>
-                <div class="ui error message">
-                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
-                    <div class="header">
-                        Error!
-                    </div>
-                    <ul class="list" th:each="error : ${responseErrors}">
-                        <li>[[${error}]]</li>
-                    </ul>
-                </div>
+            <div class="ui basic segment" style="padding-top: 9%">
+                <img class="ui tiny image" 
+                     src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1570074412/static/ybakvuon4wtyyiftrqno.png"
+                     style="padding-bottom: 4%">
+                <p>Catch is an art-focused, curated, online gallery. <i>Made by artists, for artists</i>.</p>
             </div>
         </div>
 
         <!--CURRENT USER PHOTO GRID-->
-        <div class="ui hidden divider"></div>
         <div class="ui hidden divider"></div>
         <div class="ui container">
             <div class="ui cards three stackable">

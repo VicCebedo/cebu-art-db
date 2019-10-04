@@ -53,11 +53,21 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseDto changePassword(final UserDto changePass) {
         // Validations.
-        // TODO (Beta) Error-handling/validation if passwords are not secure.
         String newPassword = changePass.getNewPassword();
         boolean retypeMatch = newPassword.equals(changePass.getNewPasswordRetype());
 
         if (retypeMatch) {
+
+            // General validation.
+            Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(changePass);
+            if (constraintViolations.size() > 0) {
+                List<String> errors = new ArrayList<>();
+                for (ConstraintViolation violation : constraintViolations) {
+                    errors.add(violation.getMessage());
+                }
+                return ResponseDto.newInstanceWithErrors(errors);
+            }
+
             User user = AuthUtils.getAuth().user();
             if (ENCODER.matches(changePass.getPassword(), user.password())) {
                 this.userDao.changePassword(user.username(), ENCODER.encode(newPassword));

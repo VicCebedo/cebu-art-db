@@ -9,6 +9,7 @@ import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.dao.UserDao;
+import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.utils.AuthUtils;
@@ -16,7 +17,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +43,22 @@ public class PhotoDaoImpl implements PhotoDao {
             stmt.setString(2, photo.url());
             stmt.setString(3, photo.caption());
             stmt.setTimestamp(4, photo.timestamp());
+            stmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void updateCaption(PhotoDto photo) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "UPDATE photos "
+                    + "SET caption = ? "
+                    + "WHERE id = ? AND user_id = ?";
+            PreparedStatement stmt = connection.prepareStatement(sql);
+            stmt.setString(1, photo.getCaption());
+            stmt.setLong(2, photo.getId());
+            stmt.setLong(3, AuthUtils.getAuth().user().id());
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

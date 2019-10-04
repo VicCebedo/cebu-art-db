@@ -5,7 +5,6 @@
  */
 package com.cebedo.vic.artdb.dto;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -14,12 +13,15 @@ import javax.validation.constraints.Size;
  */
 public class UserDto {
 
-    @NotNull
     @Size(max = 30, message = "Username must not be more than 30 characters.")
     private String username;
 
+    @Size(min = 6, message = "Password length must be at least 6 digits.")
     private String password;
+
+    @Size(min = 6, message = "New password length must be at least 6 digits.")
     private String newPassword;
+
     private String newPasswordRetype;
     private String inviteCode;
 

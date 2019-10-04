@@ -64,6 +64,21 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
+    public ResponseDto updateCaption(PhotoDto photo) {
+        Set<ConstraintViolation<PhotoDto>> constraintViolations = validator.validate(photo);
+        if (constraintViolations.size() > 0) {
+            List<String> errors = new ArrayList<>();
+            for (ConstraintViolation violation : constraintViolations) {
+                errors.add(violation.getMessage());
+            }
+            return ResponseDto.newInstanceWithErrors(errors);
+        }
+
+        this.photoDao.updateCaption(photo);
+        return ResponseDto.newInstanceWithMessage("You have updated the caption.");
+    }
+
+    @Override
     public List<Photo> getAllByCurrentUser() {
         return this.photoDao.getAllByUserId(AuthUtils.getAuth().user().id());
     }
