@@ -78,9 +78,39 @@ public class PhotoDaoImpl implements PhotoDao {
     }
 
     @Override
+    @Deprecated
     public List<Photo> getAllByUserId(long userId) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos WHERE user_id = ? ORDER BY timestamp DESC");
+            stmt.setLong(1, userId);
+
+            ResultSet rs = stmt.executeQuery();
+            List<Photo> photos = new ArrayList<>();
+            User user = this.userDao.get(userId);
+
+            while (rs.next()) {
+                photos.add(new PhotoBuilder(
+                        rs.getLong("id"),
+                        rs.getString("url"),
+                        rs.getString("caption"),
+                        rs.getTimestamp("timestamp"),
+                        user).build());
+            }
+
+            return photos;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public List<Photo> getPhotosByUserId(long userId, int offset) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos "
+                    + "WHERE user_id = ? "
+                    + "ORDER BY timestamp DESC "
+                    + "LIMIT 5 OFFSET " + offset);
             stmt.setLong(1, userId);
 
             ResultSet rs = stmt.executeQuery();

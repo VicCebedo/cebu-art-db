@@ -39,6 +39,7 @@ public class NavigationController {
     String pageIndex(Model model, HttpServletRequest request) {
         model.addAttribute("photos", this.photoService.getPhotos(0));
         request.getSession().setAttribute("pagination-offset", 0);
+        request.getSession().setAttribute("home-pagination-offset", 0);
         return "index";
     }
 
@@ -46,6 +47,7 @@ public class NavigationController {
     String pageArtists(Model model, HttpServletRequest request) {
         model.addAttribute("artists", this.userService.getAll());
         request.getSession().setAttribute("pagination-offset", 0);
+        request.getSession().setAttribute("home-pagination-offset", 0);
         return "artists";
     }
 
@@ -53,6 +55,7 @@ public class NavigationController {
     String pageLogin(Model model, HttpServletRequest request) {
         model.addAttribute("user", new UserDto());
         request.getSession().setAttribute("pagination-offset", 0);
+        request.getSession().setAttribute("home-pagination-offset", 0);
         return "login";
     }
 
@@ -67,6 +70,7 @@ public class NavigationController {
     String pageRegister(Model model, HttpServletRequest request) {
         model.addAttribute("user", new UserDto());
         request.getSession().setAttribute("pagination-offset", 0);
+        request.getSession().setAttribute("home-pagination-offset", 0);
         return "register";
     }
 
@@ -87,6 +91,7 @@ public class NavigationController {
         model.addAttribute("missingProfilePic", StringUtils.isBlank(profile.profilePic()));
         model.addAttribute("isGuest", false);
         request.getSession().setAttribute("pagination-offset", 0);
+        request.getSession().setAttribute("home-pagination-offset", 0);
         return "home";
     }
 }

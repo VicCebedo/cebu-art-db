@@ -5,14 +5,18 @@
  */
 package com.cebedo.vic.artdb.controller;
 
+import com.cebedo.vic.artdb.config.WebAuthenticationToken;
 import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.dto.UserDto;
+import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
+import java.util.List;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +45,6 @@ public class UserController {
 
     @PostMapping("/user/register")
     String create(final UserDto user, RedirectAttributes attrs) {
-        // TODO (v1.1.0) Implement non-artist accounts using Redis(?). Can only view, comment and message.
         ResponseDto rsp = this.userService.create(user);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -81,6 +84,68 @@ public class UserController {
         this.userService.deleteProfilePic();
     }
 
+    @GetMapping("/user/{id}/photo/pagination/next")
+    @ResponseBody
+    String paginationNext(@PathVariable("id") final long id, Model model, HttpServletRequest request) {
+        // Get current offset value.
+        HttpSession session = request.getSession();
+        int offset = session.getAttribute("home-pagination-offset") == null
+                ? 0
+                : (int) session.getAttribute("home-pagination-offset");
+
+        // Process the response.
+        List<Photo> photos = this.photoService.getPhotosByUserId(id, offset);
+        boolean isGuest = !(AuthUtils.isCustomToken() && id == AuthUtils.getAuth().user().id());
+        StringBuilder response = new StringBuilder();
+        for (Photo photo : photos) {
+            String template = "";
+            if (isGuest) {
+                template = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 30px;\">\n"
+                        + "    <div class=\"image\"\n"
+                        + "         caption=\"" + photo.caption() + "\"\n"
+                        + "         onclick=\"popupImage(this);\">\n"
+                        + "        <img class=\"ui image\" src=\"" + photo.url() + "\" style=\"border-radius: 0px !important\"/>\n"
+                        + "    </div>\n"
+                        + "</div>\n";
+            } else {
+                template = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 30px;\">\n"
+                        + "    <div class=\"content\">\n"
+                        + "        <span class=\"right floated\">\n"
+                        + "            <div class=\"ui dropdown\">\n"
+                        + "                <div class=\"text\">\n"
+                        + "                    <i class=\"ellipsis horizontal icon\"></i>\n"
+                        + "                </div>\n"
+                        + "                <div class=\"left floated menu\">\n"
+                        + "                    <div class=\"item\"\n"
+                        + "                         targetId=\"" + photo.id() + "\"\n"
+                        + "                         targetCaption=\"" + photo.caption() + "\"\n"
+                        + "                         onclick=\"popupEditCaption(this)\">\n"
+                        + "                        Edit Caption\n"
+                        + "                    </div>\n"
+                        + "                    <div class=\"item\"\n"
+                        + "                         targetId=\"" + photo.id() + "\"\n"
+                        + "                         targetCloudName=\"" + photo.cloud() + "\"\n"
+                        + "                         onclick=\"deletePhoto(this)\">\n"
+                        + "                        Delete\n"
+                        + "                    </div>\n"
+                        + "                </div>\n"
+                        + "            </div>\n"
+                        + "        </span>\n"
+                        + "    </div>\n"
+                        + "    <div class=\"image\"\n"
+                        + "         caption=\"" + photo.caption() + "\"\n"
+                        + "         onclick=\"popupImage(this);\">\n"
+                        + "        <img class=\"ui image\" src=\"" + photo.url() + "\" style=\"border-radius: 0px !important\"/>\n"
+                        + "    </div>\n"
+                        + "</div>\n";
+            }
+            response.append(template);
+        }
+
+        session.setAttribute("home-pagination-offset", offset + 5);
+        return response.toString();
+    }
+
     @GetMapping("/{username}")
     String pageUser(@PathVariable("username") final String username,
             Model model,
@@ -95,9 +160,9 @@ public class UserController {
         User user = this.userService.get(username);
         model.addAttribute("user", user);
         model.addAttribute("profile", new ProfileDto(user));
-        model.addAttribute("photos", this.photoService.getAllByUserId(user.id()));
         model.addAttribute("isGuest", true);
         request.getSession().setAttribute("pagination-offset", 0);
+        request.getSession().setAttribute("home-pagination-offset", 0);
         return "home";
     }
 }

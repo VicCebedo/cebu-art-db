@@ -79,19 +79,33 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
+    @Deprecated
     public List<Photo> getAllByCurrentUser() {
         return this.photoDao.getAllByUserId(AuthUtils.getAuth().user().id());
     }
 
     @Override
+    @Deprecated
     public List<Photo> getAllByUserId(long id) {
         return this.photoDao.getAllByUserId(id);
+    }
+
+    @Override
+    public List<Photo> getPhotosByCurrentUser(int offset) {
+        return this.getPhotosByUserId(AuthUtils.getAuth().user().id(), offset);
+    }
+
+    @Override
+    public List<Photo> getPhotosByUserId(long id, int offset) {
+        return this.photoDao.getPhotosByUserId(id, offset);
     }
 
     @Override
     public List<PhotoDto> getPhotos(int offset) {
         List<Photo> photos = this.photoDao.getPhotos(offset);
         List<PhotoDto> objs = new ArrayList<>();
+
+        // TODO Optimize.
         for (Photo photo : photos) {
             objs.add(new PhotoDto(photo));
         }

@@ -149,44 +149,19 @@
         <div class="ui horizontal divider">&nbsp;</div>
         <div class="ui hidden divider"></div>
         <div class="ui container">
-            <div class="ui cards three stackable">
+            <div class="ui cards three stackable" id="photostream">
                 <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
                     <input type="hidden" id="photo-delete-id" name="id" value=""/>
                     <input type="hidden" id="photo-delete-cloud" name="cloud" value=""/>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
 
-                <div class="card" th:each="photo : ${photos}" style="box-shadow: none; background: none; margin-bottom: 30px;">
-                    <div class="content" th:if="${!isGuest}">
-                        <span class="right floated">
-                            <div class="ui dropdown">
-                                <div class="text">
-                                    <i class="ellipsis horizontal icon"></i>
-                                </div>
-                                <div class="left floated menu">
-                                    <div class="item"
-                                         th:targetId="${photo.id()}"
-                                         th:targetCaption="${photo.caption()}"
-                                         onclick="popupEditCaption(this)">
-                                        Edit Caption
-                                    </div>
-                                    <div class="item"
-                                         th:targetId="${photo.id()}"
-                                         th:targetCloudName="${photo.cloud()}"
-                                         onclick="deletePhoto(this)">
-                                        Delete
-                                    </div>
-                                </div>
-                            </div>
-                        </span>
-                    </div>
-                    <div class="image"
-                         th:caption="${photo.caption()}"
-                         th:attr="onclick=|popupImage(this);|">
-                        <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
-                    </div>
-
+                <div class="card" style="box-shadow: none; background: none; margin-bottom: 30px;">
                 </div>
+            </div>
+            <div id="photostream-loader" style="display: none">
+                <div class="ui active centered inline loader"></div>
+                <br/>
             </div>
         </div>
 
@@ -480,12 +455,7 @@
             function doDeletePhoto() {
                 document.getElementById('form-photo-delete').submit();
             }
-        </script>
 
-        <!--Code for upload functionality-->
-        <script type="text/javascript">
-
-            // Upload variables.
             const cloudName = 'hqx5vpvj4';
 
             // Do upload to Cloudinary.
@@ -578,6 +548,26 @@
                 document.getElementById('edit-caption-value').value = elem.attributes.targetcaption.value;
                 $('#modal-edit-caption').modal('show');
             }
+
+            $('#photostream').visibility({
+                once: false,
+                onBottomVisible: function () {
+                    document.getElementById('photostream-loader').style = '';
+                    $.ajax({
+                        url: `/user/[[${user.id()}]]/photo/pagination/next`,
+                        type: 'get',
+                        success: function (responseBody) {
+                            document.getElementById('photostream').insertAdjacentHTML('beforeend', responseBody);
+                            document.getElementById('photostream-loader').style = 'display: none';
+
+                            $('.ui.dropdown').dropdown({
+                                on: 'hover',
+                                action: 'nothing'
+                            })
+                        }
+                    });
+                }
+            });
         </script>
     </body>
 

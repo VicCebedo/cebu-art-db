@@ -15,7 +15,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -126,6 +128,21 @@ public class UserDaoImpl implements UserDao {
         return UserBuilder.newInstance();
     }
 
+//    public Set<Long> getSubscriptions() {
+//        try (Connection connection = dataSource.getConnection()) {
+//            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM subscriptions WHERE subscriber = ?");
+//            stmt.setLong(1, AuthUtils.getAuth().user().id());
+//            ResultSet rs = stmt.executeQuery();
+//            Set<Long> subscriptions = new HashSet<>();
+//
+//            if (rs.next()) {
+//                subscriptions.add(rs.getLong("subscribed_to"));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return new HashSet<>();
+//    }
     @Override
     public int getInviteCodeRemaining(String code) {
         try (Connection connection = dataSource.getConnection()) {
