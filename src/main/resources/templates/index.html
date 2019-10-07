@@ -132,7 +132,7 @@
                     document.getElementById('photostream-loader').style = '';
 
                     $.ajax({
-                        url: 'logged-in/photo/pagination/next',
+                        url: '/photo/pagination/next',
                         type: 'get',
                         success: function (responseBody) {
                             for (var i = 0; i < responseBody.length; i++) {
@@ -143,8 +143,9 @@
                                 // Do append.
                                 const cloneId = 'photostream-card-' + photo.id;
                                 const uploader = photo.user.name === '' ? photo.user.username : photo.user.name;
-                                const appendString = '<div class="card" style="box-shadow: none; background: none; margin-bottom: 50px;" id="' + cloneId + '"><div class="content"><div class="ui small header photostream-card-user" onclick="loading(); location.href=\'' + photo.user.username + '\'">' + uploader + '</div></div><div class="image photostream-card-image-div" caption="' + escape(photo.caption) + '" onclick="popupImage(this)"><img src="' + photo.url + '" class="ui image photostream-card-image-elem" style="border-radius: 0px !important"/></div></div>';
+                                const appendString = '<div class="card" style="box-shadow: none; background: none; margin-bottom: 50px;" id="' + cloneId + '"><div class="content"><div class="ui small header photostream-card-user" onclick="loading(); location.href=\'' + photo.user.username + '\'">' + uploader + '</div></div><div class="image photostream-card-image-div" id="' + cloneId + '-div" caption="" onclick="popupImage(this)"><img src="' + photo.url + '" class="ui image photostream-card-image-elem" style="border-radius: 0px !important"/></div></div>';
                                 document.getElementById('photostream').insertAdjacentHTML('beforeend', appendString);
+                                document.getElementById(cloneId + '-div').setAttribute('caption', photo.caption);
                             }
 
                             document.getElementById('photostream-loader').style = 'display: none';

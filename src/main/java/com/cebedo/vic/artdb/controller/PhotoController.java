@@ -26,13 +26,12 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
 @Controller
-@RequestMapping("/logged-in/photo")
 public class PhotoController {
 
     @Autowired
     private PhotoService photoService;
 
-    @GetMapping("/pagination/next")
+    @GetMapping("/photo/pagination/next")
     @ResponseBody
     List<PhotoDto> paginationNext(Model model, HttpServletRequest request) {
         // Get current offset value.
@@ -46,7 +45,7 @@ public class PhotoController {
         return this.photoService.getPhotos(offset);
     }
 
-    @PostMapping("/upload")
+    @PostMapping("/logged-in/photo/upload")
     String upload(final PhotoDto photo, RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.create(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
@@ -54,7 +53,7 @@ public class PhotoController {
         return "redirect:/logged-in/home";
     }
 
-    @PostMapping("/caption/update")
+    @PostMapping("/logged-in/photo/caption/update")
     String updateCaption(final PhotoDto photo, RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.updateCaption(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
@@ -62,7 +61,7 @@ public class PhotoController {
         return "redirect:/logged-in/home";
     }
 
-    @DeleteMapping("/delete")
+    @DeleteMapping("/logged-in/photo/delete")
     String delete(final PhotoDto photo, RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.delete(photo.getId(), photo.getCloud());
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
