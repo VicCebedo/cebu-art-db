@@ -24,6 +24,10 @@ public class MutableUser implements User {
     private String phone;
     private String profilePic;
 
+    public MutableUser() {
+        ;
+    }
+
     public MutableUser(User usr) {
         Objects.requireNonNull(usr);
         this.id = usr.id();
@@ -117,4 +121,41 @@ public class MutableUser implements User {
     public void setProfilePic(String profilePic) {
         this.profilePic = profilePic;
     }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public String getWebsite() {
+        return website;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
 }

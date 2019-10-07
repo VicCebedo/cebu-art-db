@@ -6,12 +6,12 @@
 package com.cebedo.vic.artdb.dao.impl;
 
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
-import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.model.impl.MutableUser;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -104,25 +104,29 @@ public class PhotoDaoImpl implements PhotoDao {
     }
 
     @Override
-    public List<Photo> getAll() {
+    public List<Photo> getPhotos(int offset) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "SELECT photos.id, photos.url, photos.caption, photos.timestamp, users.username, users.name\n"
                     + "FROM photos\n"
                     + "INNER JOIN users ON photos.user_id = users.id\n"
-                    + "ORDER BY timestamp DESC";
+                    + "ORDER BY timestamp DESC\n"
+                    + "LIMIT 5 OFFSET " + offset;
             PreparedStatement stmt = connection.prepareStatement(sql);
-
             ResultSet rs = stmt.executeQuery();
             List<Photo> photos = new ArrayList<>();
 
             while (rs.next()) {
-                User user = new UserBuilder(0, rs.getString("username"), "", rs.getString("name"), "", "", "", "", "").build();
+
+                MutableUser usr = new MutableUser();
+                usr.setUsername(rs.getString("username"));
+                usr.setName(rs.getString("name"));
+
                 photos.add(new PhotoBuilder(
                         rs.getLong("id"),
                         rs.getString("url"),
                         rs.getString("caption"),
                         rs.getTimestamp("timestamp"),
-                        user).build());
+                        usr).build());
             }
 
             return photos;

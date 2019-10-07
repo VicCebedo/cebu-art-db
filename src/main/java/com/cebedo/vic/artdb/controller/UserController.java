@@ -12,6 +12,7 @@ import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -81,7 +82,9 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    String pageUser(@PathVariable("username") final String username, Model model) {
+    String pageUser(@PathVariable("username") final String username,
+            Model model,
+            HttpServletRequest request) {
         // If this username is equal to mine,
         // redirect to home.
         if (AuthUtils.isCustomToken() && username.equals(AuthUtils.getAuth().user().username())) {
@@ -94,6 +97,7 @@ public class UserController {
         model.addAttribute("profile", new ProfileDto(user));
         model.addAttribute("photos", this.photoService.getAllByUserId(user.id()));
         model.addAttribute("isGuest", true);
+        request.getSession().setAttribute("pagination-offset", 0);
         return "home";
     }
 }

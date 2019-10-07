@@ -21,7 +21,7 @@ public interface PhotoDao {
 
     void delete(long id);
 
-    List<Photo> getAll();
+    List<Photo> getPhotos(int offset);
 
     void updateCaption(PhotoDto photo);
 

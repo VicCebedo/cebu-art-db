@@ -22,10 +22,10 @@ public interface PhotoService {
 
     ResponseDto delete(long id, String cloudName);
 
-    List<Photo> getAll();
-
     List<Photo> getAllByUserId(long id);
 
     ResponseDto updateCaption(PhotoDto photo);
+
+    List<PhotoDto> getPhotos(int offset);
 
 }

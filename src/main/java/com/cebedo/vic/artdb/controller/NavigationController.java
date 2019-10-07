@@ -14,6 +14,7 @@ import com.cebedo.vic.artdb.model.impl.MutableUser;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,20 +36,23 @@ public class NavigationController {
     private UserService userService;
 
     @GetMapping("/")
-    String pageIndex(Model model) {
-        model.addAttribute("photos", this.photoService.getAll());
+    String pageIndex(Model model, HttpServletRequest request) {
+        model.addAttribute("photos", this.photoService.getPhotos(0));
+        request.getSession().setAttribute("pagination-offset", 0);
         return "index";
     }
 
     @GetMapping("/artists")
-    String pageArtists(Model model) {
+    String pageArtists(Model model, HttpServletRequest request) {
         model.addAttribute("artists", this.userService.getAll());
+        request.getSession().setAttribute("pagination-offset", 0);
         return "artists";
     }
 
     @GetMapping("/login")
-    String pageLogin(Model model) {
+    String pageLogin(Model model, HttpServletRequest request) {
         model.addAttribute("user", new UserDto());
+        request.getSession().setAttribute("pagination-offset", 0);
         return "login";
     }
 
@@ -60,13 +64,14 @@ public class NavigationController {
     }
 
     @GetMapping("/register")
-    String pageRegister(Model model) {
+    String pageRegister(Model model, HttpServletRequest request) {
         model.addAttribute("user", new UserDto());
+        request.getSession().setAttribute("pagination-offset", 0);
         return "register";
     }
 
     @GetMapping("/logged-in/home")
-    String pageHome(Model model) {
+    String pageHome(Model model, HttpServletRequest request) {
         User user = AuthUtils.getAuth().user();
         MutableUser profile = AuthUtils.getAuth().profile();
         model.addAttribute("user", user);
@@ -81,6 +86,7 @@ public class NavigationController {
         model.addAttribute("missingWebsite", StringUtils.isBlank(profile.website()));
         model.addAttribute("missingProfilePic", StringUtils.isBlank(profile.profilePic()));
         model.addAttribute("isGuest", false);
+        request.getSession().setAttribute("pagination-offset", 0);
         return "home";
     }
 }

@@ -9,7 +9,6 @@
                 dataLayer.push(arguments);
             }
             gtag('js', new Date());
-
             gtag('config', 'UA-84479704-5');
         </script>
 
@@ -95,19 +94,11 @@
         <!--CURRENT USER PHOTO GRID-->
         <div class="ui hidden divider"></div>
         <div class="ui container">
-            <div class="ui cards three stackable">
-                <div class="card" th:each="photo : ${photos}" style="box-shadow: none; background: none; margin-bottom: 50px;">
-                    <div class="content">
-                        <div class="ui small header" onclick="#" th:attr="onclick=|loading(); location.href='/${photo.user().username()}';|">
-                            [[${photo.user().name() == '' ? photo.user().username() : photo.user().name() }]]
-                        </div>
-                    </div>
-                    <div class="image"
-                         th:caption="${photo.caption()}"
-                         th:attr="onclick=|event.preventDefault(); popupImage(this);|">
-                        <img class="ui image" th:src="${photo.url()}" style="border-radius: 0px !important"/>
-                    </div>
-                </div>
+            <div class="ui cards three stackable" id="photostream">
+            </div>
+            <div id="photostream-loader" style="display: none">
+                <div class="ui active centered inline loader"></div>
+                <br/>
             </div>
         </div>
 
@@ -134,6 +125,33 @@
             function loading() {
                 document.getElementById('global-loader').style = '';
             }
+
+            $('#photostream').visibility({
+                once: false,
+                onBottomVisible: function () {
+                    document.getElementById('photostream-loader').style = '';
+
+                    $.ajax({
+                        url: 'logged-in/photo/pagination/next',
+                        type: 'get',
+                        success: function (responseBody) {
+                            for (var i = 0; i < responseBody.length; i++) {
+
+                                // Create a clone of template.
+                                const photo = responseBody[i];
+
+                                // Do append.
+                                const cloneId = 'photostream-card-' + photo.id;
+                                const uploader = photo.user.name === '' ? photo.user.username : photo.user.name;
+                                const appendString = '<div class="card" style="box-shadow: none; background: none; margin-bottom: 50px;" id="' + cloneId + '"><div class="content"><div class="ui small header photostream-card-user" onclick="loading(); location.href=\'' + photo.user.username + '\'">' + uploader + '</div></div><div class="image photostream-card-image-div" caption="' + photo.caption + '" onclick="popupImage(this)"><img src="' + photo.url + '" class="ui image photostream-card-image-elem" style="border-radius: 0px !important"/></div></div>';
+                                document.getElementById('photostream').insertAdjacentHTML('beforeend', appendString);
+                            }
+
+                            document.getElementById('photostream-loader').style = 'display: none';
+                        }
+                    });
+                }
+            });
         </script>
     </body>
 </html>
