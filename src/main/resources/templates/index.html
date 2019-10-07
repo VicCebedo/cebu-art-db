@@ -117,8 +117,8 @@
 
         <script type="text/javascript">
             function popupImage(elem) {
-                $('#modal-image').modal('show');
                 document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
+                $('#modal-image').modal('show');
                 $('#modal-image').modal('refresh');
             }
 
@@ -143,7 +143,7 @@
                                 // Do append.
                                 const cloneId = 'photostream-card-' + photo.id;
                                 const uploader = photo.user.name === '' ? photo.user.username : photo.user.name;
-                                const appendString = '<div class="card" style="box-shadow: none; background: none; margin-bottom: 50px;" id="' + cloneId + '"><div class="content"><div class="ui small header photostream-card-user" onclick="loading(); location.href=\'' + photo.user.username + '\'">' + uploader + '</div></div><div class="image photostream-card-image-div" caption="' + photo.caption + '" onclick="popupImage(this)"><img src="' + photo.url + '" class="ui image photostream-card-image-elem" style="border-radius: 0px !important"/></div></div>';
+                                const appendString = '<div class="card" style="box-shadow: none; background: none; margin-bottom: 50px;" id="' + cloneId + '"><div class="content"><div class="ui small header photostream-card-user" onclick="loading(); location.href=\'' + photo.user.username + '\'">' + uploader + '</div></div><div class="image photostream-card-image-div" caption="' + escape(photo.caption) + '" onclick="popupImage(this)"><img src="' + photo.url + '" class="ui image photostream-card-image-elem" style="border-radius: 0px !important"/></div></div>';
                                 document.getElementById('photostream').insertAdjacentHTML('beforeend', appendString);
                             }
 
