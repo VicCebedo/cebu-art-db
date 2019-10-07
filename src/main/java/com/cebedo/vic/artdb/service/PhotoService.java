@@ -28,7 +28,7 @@ public interface PhotoService {
 
     ResponseDto updateCaption(PhotoDto photo);
 
-    List<PhotoDto> getPhotos(int offset);
+    List<Photo> getPhotos(int offset);
 
     List<Photo> getPhotosByCurrentUser(int offset);
 

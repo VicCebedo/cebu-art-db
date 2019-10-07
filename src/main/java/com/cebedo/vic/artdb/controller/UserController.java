@@ -161,7 +161,7 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("profile", new ProfileDto(user));
         model.addAttribute("isGuest", true);
-        request.getSession().setAttribute("pagination-offset", 0);
+        request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         return "home";
     }

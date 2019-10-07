@@ -101,15 +101,8 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public List<PhotoDto> getPhotos(int offset) {
-        List<Photo> photos = this.photoDao.getPhotos(offset);
-        List<PhotoDto> objs = new ArrayList<>();
-
-        // TODO Optimize.
-        for (Photo photo : photos) {
-            objs.add(new PhotoDto(photo));
-        }
-        return objs;
+    public List<Photo> getPhotos(int offset) {
+        return this.photoDao.getPhotos(offset);
     }
 
     @Override

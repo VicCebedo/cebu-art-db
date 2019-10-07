@@ -155,9 +155,6 @@
                     <input type="hidden" id="photo-delete-cloud" name="cloud" value=""/>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
-
-                <div class="card" style="box-shadow: none; background: none; margin-bottom: 30px;">
-                </div>
             </div>
             <div id="photostream-loader" style="display: none">
                 <div class="ui active centered inline loader"></div>
@@ -290,7 +287,7 @@
                 <div class="ui black deny button">
                     Cancel
                 </div>
-                <a onclick="$('#form-edit-caption').submit()">
+                <a onclick="$('#modal-edit-caption').modal('hide'); loading(); $('#form-edit-caption').submit()">
                     <div class="ui green button">
                         Update
                     </div>
@@ -559,7 +556,6 @@
                         success: function (responseBody) {
                             document.getElementById('photostream').insertAdjacentHTML('beforeend', responseBody);
                             document.getElementById('photostream-loader').style = 'display: none';
-
                             $('.ui.dropdown').dropdown({
                                 on: 'hover',
                                 action: 'nothing'
