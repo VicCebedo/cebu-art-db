@@ -23,7 +23,7 @@ public interface UserService {
 
     User get(String username);
 
-    List<User> getAll();
+    List<User> getUsers(int offset);
 
     ResponseDto updateProfileCurrentUser(ProfileDto user);
 

@@ -165,8 +165,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return this.userDao.getAll();
+    public List<User> getUsers(int offset) {
+        return this.userDao.getUsers(offset);
     }
 
     @Override

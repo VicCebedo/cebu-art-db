@@ -25,7 +25,7 @@ public interface UserDao {
 
     void create(User user);
 
-    List<User> getAll();
+    List<User> getUsers(int offset);
 
     void updateProfileCurrentUser(ProfileDto user);
 

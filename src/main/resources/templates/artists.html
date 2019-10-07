@@ -93,32 +93,11 @@
 
         <div class="ui hidden divider"></div>
         <div class="ui container">
-            <div class="ui divided items">
-                <div class="item" th:each="user : ${artists}">
-                    <div class="image" onclick="#" th:attr="onclick=|loading(); location.href='/${user.username()}';|">
-                        <img th:if="${user.profilePic()} == ''" src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569906610/static/ecmvsberhzwodn6roitt.png" />
-                        <img th:unless="${user.profilePic()} == ''" th:src="${user.profilePic()}" />
-                    </div>
-                    <div class="content">
-                        <a href="#" onclick="#" th:attr="onclick=|loading(); location.href='/${user.username()}';|" class="header" th:if="${user.name() != ''}">
-                            [[${user.name()}]]
-                        </a>
-                        <div class="extra">
-                            <div class="ui label"><i class="user icon"></i> [[${user.username()}]]</div>
-                            <a href="#"
-                               onclick="#"
-                               th:attr="onclick=|window.open('${user.website()}', '_blank'); event.preventDefault();|"
-                               th:if="${user.website() != ''}">
-                                <div class="ui label"><i class="globe icon"></i> [[${user.website()}]]</div>
-                            </a>
-                            <div class="ui label" th:if="${user.email() != ''}"><i class="envelope icon"></i> [[${user.email()}]]</div>
-                            <div class="ui label" th:if="${user.phone() != ''}"><i class="phone icon"></i> [[${user.phone()}]]</div>
-                        </div>
-                        <div class="description">
-                            <p style="white-space: pre-line">[[${user.bio()}]]</p>
-                        </div>
-                    </div>
-                </div>
+            <div class="ui divided items" id="userstream">
+            </div>
+            <div id="userstream-loader" style="display: none">
+                <div class="ui active centered inline loader"></div>
+                <br/>
             </div>
         </div>
 
@@ -132,6 +111,21 @@
             function loading() {
                 document.getElementById('global-loader').style = '';
             }
+
+            $('#userstream').visibility({
+                once: false,
+                onBottomVisible: function () {
+                    document.getElementById('userstream-loader').style = '';
+                    $.ajax({
+                        url: '/artists/pagination/next',
+                        type: 'get',
+                        success: function (responseBody) {
+                            document.getElementById('userstream').insertAdjacentHTML('beforeend', responseBody);
+                            document.getElementById('userstream-loader').style = 'display: none';
+                        }
+                    });
+                }
+            });
         </script>
     </body>
 </html>

@@ -15,9 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -184,10 +182,10 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> getUsers(int offset) {
         try (Connection connection = dataSource.getConnection()) {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM users");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users LIMIT 5 OFFSET " + offset);
 
             List<User> users = new ArrayList<>();
             while (rs.next()) {

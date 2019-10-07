@@ -5,7 +5,6 @@
  */
 package com.cebedo.vic.artdb.controller;
 
-import com.cebedo.vic.artdb.config.WebAuthenticationToken;
 import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.dto.UserDto;
@@ -55,6 +54,7 @@ public class UserController {
 
     @PutMapping("/logged-in/user/password/update")
     String updatePassword(final UserDto changePass, RedirectAttributes attrs) {
+        // TODO (Beta) Implement non-artist accounts.
         // TODO (Beta) Implement forget password.
         // TODO (Beta) Captcha for registration.
         ResponseDto rsp = this.userService.changePassword(changePass);
@@ -163,6 +163,7 @@ public class UserController {
         model.addAttribute("isGuest", true);
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
+        request.getSession().setAttribute("users-pagination-offset", 0);
         return "home";
     }
 }
