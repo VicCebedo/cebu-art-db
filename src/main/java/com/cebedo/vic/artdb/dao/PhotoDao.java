@@ -17,9 +17,6 @@ public interface PhotoDao {
 
     void create(Photo photo);
 
-    @Deprecated
-    List<Photo> getAllByUserId(long userId);
-
     List<Photo> getPhotosByUserId(long userId, int offset);
 
     void delete(long id);

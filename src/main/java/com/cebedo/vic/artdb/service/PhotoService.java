@@ -18,13 +18,7 @@ public interface PhotoService {
 
     ResponseDto create(PhotoDto photo);
 
-    @Deprecated
-    List<Photo> getAllByCurrentUser();
-
     ResponseDto delete(long id, String cloudName);
-
-    @Deprecated
-    List<Photo> getAllByUserId(long id);
 
     ResponseDto updateCaption(PhotoDto photo);
 

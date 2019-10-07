@@ -80,7 +80,7 @@ public class NavigationController {
         MutableUser profile = AuthUtils.getAuth().profile();
         model.addAttribute("user", user);
         model.addAttribute("profile", new ProfileDto(profile));
-        model.addAttribute("photos", this.photoService.getAllByCurrentUser());
+        model.addAttribute("photos", this.photoService.getPhotosByCurrentUser(0));
         model.addAttribute("photo", new PhotoDto());
         model.addAttribute("changePass", new UserDto());
         model.addAttribute("missingBio", StringUtils.isBlank(profile.bio()));
