@@ -33,34 +33,15 @@ public class PhotoController {
 
     @GetMapping("/photo/pagination/next")
     @ResponseBody
-    String paginationNext(Model model, HttpServletRequest request) {
+    List<PhotoDto> indexPaginationNext(Model model, HttpServletRequest request) {
         // Get current offset value.
         HttpSession session = request.getSession();
         int offset = session.getAttribute("index-pagination-offset") == null
                 ? 0
                 : (int) session.getAttribute("index-pagination-offset");
 
-        // Get photos.
-        List<Photo> photos = this.photoService.getPhotos(offset);
-        StringBuilder returnString = new StringBuilder();
-        for (Photo photo : photos) {
-            String id = "photostream-card-" + photo.id();
-            String uploader = photo.user().name().isEmpty() ? photo.user().username() : photo.user().name();
-            String template
-                    = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 50px;\" id=\"" + id + "\">\n"
-                    + "    <div class=\"content\">\n"
-                    + "        <div class=\"ui small header\" onclick=\"loading(); location.href='" + photo.user().username() + "'\">" + uploader + "</div>\n"
-                    + "    </div>\n"
-                    + "    <div class=\"image\" caption=\"" + photo.caption() + "\" onclick=\"popupImage(this)\">\n"
-                    + "        <img src=\"" + photo.url() + "\" class=\"ui image\" style=\"border-radius: 0px !important\" />\n"
-                    + "    </div>\n"
-                    + "</div>\n";
-            returnString.append(template);
-        }
-
-        // Increment offset by five, then save.
         session.setAttribute("index-pagination-offset", offset + 5);
-        return returnString.toString();
+        return this.photoService.getPhotos(offset);
     }
 
     @PostMapping("/logged-in/photo/upload")

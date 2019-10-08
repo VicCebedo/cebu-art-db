@@ -554,7 +554,63 @@
                         url: `/user/[[${user.id()}]]/photo/pagination/next`,
                         type: 'get',
                         success: function (responseBody) {
-                            document.getElementById('photostream').insertAdjacentHTML('beforeend', responseBody);
+
+                            for (var i = 0; i < responseBody.length; i++) {
+                                const photo = responseBody[i];
+                                const imgSrcId = "photostream-card-" + photo.id + "img-src";
+                                const editCaptionId = "photostream-card-" + photo.id + "edit-caption";
+                                const isGuest = `[[${isGuest}]]` === `true`;
+
+                                var template = "";
+                                if (isGuest) {
+                                    template = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 30px;\">\n"
+                                            + "    <div class=\"image\"\n"
+                                            + "         id=\"" + imgSrcId + "\"\n"
+                                            + "         caption=\"\"\n"
+                                            + "         onclick=\"popupImage(this);\">\n"
+                                            + "        <img class=\"ui image\" src=\"" + photo.url + "\" style=\"border-radius: 0px !important\"/>\n"
+                                            + "    </div>\n"
+                                            + "</div>\n";
+                                    document.getElementById('photostream').insertAdjacentHTML('beforeend', template);
+                                    document.getElementById(imgSrcId).setAttribute("caption", photo.caption);
+                                } else {
+                                    template = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 30px;\">\n"
+                                            + "    <div class=\"content\">\n"
+                                            + "        <span class=\"right floated\">\n"
+                                            + "            <div class=\"ui dropdown\">\n"
+                                            + "                <div class=\"text\">\n"
+                                            + "                    <i class=\"ellipsis horizontal icon\"></i>\n"
+                                            + "                </div>\n"
+                                            + "                <div class=\"left floated menu\">\n"
+                                            + "                    <div class=\"item\"\n"
+                                            + "                         id=\"" + editCaptionId + "\"\n"
+                                            + "                         targetId=\"" + photo.id + "\"\n"
+                                            + "                         targetCaption=\"\"\n"
+                                            + "                         onclick=\"popupEditCaption(this)\">\n"
+                                            + "                        Edit Caption\n"
+                                            + "                    </div>\n"
+                                            + "                    <div class=\"item\"\n"
+                                            + "                         targetId=\"" + photo.id + "\"\n"
+                                            + "                         targetCloudName=\"" + photo.cloud + "\"\n"
+                                            + "                         onclick=\"deletePhoto(this)\">\n"
+                                            + "                        Delete\n"
+                                            + "                    </div>\n"
+                                            + "                </div>\n"
+                                            + "            </div>\n"
+                                            + "        </span>\n"
+                                            + "    </div>\n"
+                                            + "    <div class=\"image\"\n"
+                                            + "         id=\"" + imgSrcId + "\"\n"
+                                            + "         caption=\"\"\n"
+                                            + "         onclick=\"popupImage(this);\">\n"
+                                            + "        <img class=\"ui image\" src=\"" + photo.url + "\" style=\"border-radius: 0px !important\"/>\n"
+                                            + "    </div>\n"
+                                            + "</div>\n";
+                                    document.getElementById('photostream').insertAdjacentHTML('beforeend', template);
+                                    document.getElementById(editCaptionId).setAttribute("targetCaption", photo.caption);
+                                    document.getElementById(imgSrcId).setAttribute("caption", photo.caption);
+                                }
+                            }
                             document.getElementById('photostream-loader').style = 'display: none';
                             $('.ui.dropdown').dropdown({
                                 on: 'hover',

@@ -22,10 +22,10 @@ public interface PhotoService {
 
     ResponseDto updateCaption(PhotoDto photo);
 
-    List<Photo> getPhotos(int offset);
+    List<PhotoDto> getPhotos(int offset);
 
-    List<Photo> getPhotosByCurrentUser(int offset);
+    List<PhotoDto> getPhotosByCurrentUser(int offset);
 
-    List<Photo> getPhotosByUserId(long id, int offset);
+    List<PhotoDto> getPhotosByUserId(long id, int offset);
 
 }

@@ -58,7 +58,7 @@ public class NavigationController {
 
     @GetMapping("/artists/pagination/next")
     @ResponseBody
-    String paginationNext(Model model, HttpServletRequest request) {
+    String artistsPaginationNext(Model model, HttpServletRequest request) {
         // Get current offset value.
         HttpSession session = request.getSession();
         int offset = session.getAttribute("users-pagination-offset") == null

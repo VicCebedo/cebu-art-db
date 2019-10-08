@@ -96,7 +96,7 @@ public class PhotoDaoImpl implements PhotoDao {
                         rs.getString("url"),
                         rs.getString("caption"),
                         rs.getTimestamp("timestamp"),
-                        user).build());
+                        new MutableUser(user)).build());
             }
 
             return photos;
