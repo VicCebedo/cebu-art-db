@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
  */
 public class UserDto {
 
-    @Size(max = 30, message = "Username must not be more than 30 characters.")
+    @Size(min = 4, max = 30, message = "Username must be at least 4 characters long, but not more than 30.")
     private String username;
 
     @Size(min = 6, message = "Password length must be at least 6 digits.")
