@@ -78,6 +78,20 @@ public class NavigationController {
                     ? user.username()
                     : user.name();
 
+            String email = user.email().isEmpty()
+                    ? ""
+                    : "            <div class=\"ui label\"><i class=\"envelope icon\"></i> " + user.email() + "</div>\n";
+
+            String website = user.website().isEmpty()
+                    ? ""
+                    : "            <a onclick=\"window.open('" + user.website() + "', '_blank');\">\n"
+                    + "                <div class=\"ui label\"><i class=\"globe icon\"></i> " + user.website() + "</div>\n"
+                    + "            </a>\n";
+
+            String phone = user.phone().isEmpty()
+                    ? ""
+                    : "            <div class=\"ui label\"><i class=\"phone icon\"></i> " + user.phone() + "</div>\n";
+
             String template
                     = "<div class=\"item\">\n"
                     + "    <div class=\"image\" onclick=\"loading(); location.href='/" + user.username() + "';\">\n"
@@ -89,11 +103,9 @@ public class NavigationController {
                     + "        </a>\n"
                     + "        <div class=\"extra\">\n"
                     + "            <div class=\"ui label\"><i class=\"user icon\"></i> " + user.username() + "</div>\n"
-                    + "            <a onclick=\"window.open('" + user.website() + "', '_blank');\">\n"
-                    + "                <div class=\"ui label\"><i class=\"globe icon\"></i> " + user.website() + "</div>\n"
-                    + "            </a>\n"
-                    + "            <div class=\"ui label\"><i class=\"envelope icon\"></i> " + user.email() + "</div>\n"
-                    + "            <div class=\"ui label\"><i class=\"phone icon\"></i> " + user.phone() + "</div>\n"
+                    + website
+                    + email
+                    + phone
                     + "        </div>\n"
                     + "        <div class=\"description\">\n"
                     + "            <p style=\"white-space: pre-line\">" + user.bio() + "</p>\n"

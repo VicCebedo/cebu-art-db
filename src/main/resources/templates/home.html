@@ -15,7 +15,7 @@
 
         <title>Catch | [[${user.username()}]]</title>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, minimal-ui">
 
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
         <link rel="shortcut icon" href="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569985458/static/njwnn4takgv2rqo7ks9i.ico">
@@ -157,6 +157,7 @@
                 </form>
             </div>
             <div id="photostream-loader" style="display: none">
+                <br/>
                 <div class="ui active centered inline loader"></div>
                 <br/>
             </div>
@@ -387,13 +388,14 @@
                 </a>
 
                 <!--4th Icon-->
-                <a class="item icon" 
-                   href="#" 
-                   th:if="${isGuest}"
-                   onclick="loading();
-                           document.getElementById('form-logout').submit()">
-                    <i class="sign out alternate icon"></i>
-                </a>
+                <div class="ui dropdown item" th:if="${isGuest}">
+                    <span class="icon">
+                        <i class="cog icon"></i>
+                    </span>
+                    <div class="menu">
+                        <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
+                    </div>
+                </div>
                 <div class="ui dropdown item" th:if="${!isGuest}">
                     <span class="icon">
                         <i class="cog icon"></i>
