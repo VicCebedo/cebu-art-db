@@ -32,7 +32,7 @@ public class WebAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
 
         // Raw data from request.
-        String username = auth.getName();
+        String username = auth.getName().toLowerCase();
         String rawPassword = auth.getCredentials().toString();
 
         // Get user object based on username,

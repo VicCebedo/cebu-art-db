@@ -98,67 +98,6 @@ public class UserController {
         session.setAttribute("home-pagination-offset", offset + 5);
         return this.photoService.getPhotosByUserId(id, offset);
     }
-    //    @GetMapping("/user/{id}/photo/pagination/next")
-    //    @ResponseBody
-    //    String homePaginationNext(@PathVariable("id") final long id, Model model, HttpServletRequest request) {
-    //        // Get current offset value.
-    //        HttpSession session = request.getSession();
-    //        int offset = session.getAttribute("home-pagination-offset") == null
-    //                ? 0
-    //                : (int) session.getAttribute("home-pagination-offset");
-    //
-    //        // Process the response.
-    //        List<PhotoDto> photos = this.photoService.getPhotosByUserId(id, offset);
-    //        boolean isGuest = !(AuthUtils.isCustomToken() && id == AuthUtils.getAuth().user().id());
-    //        StringBuilder response = new StringBuilder();
-    //        for (Photo photo : photos) {
-    //            String template = "";
-    //            if (isGuest) {
-    //                template = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 30px;\">\n"
-    //                        + "    <div class=\"image\"\n"
-    //                        + "         caption=\"" + photo.caption() + "\"\n"
-    //                        + "         onclick=\"popupImage(this);\">\n"
-    //                        + "        <img class=\"ui image\" src=\"" + photo.url() + "\" style=\"border-radius: 0px !important\"/>\n"
-    //                        + "    </div>\n"
-    //                        + "</div>\n";
-    //            } else {
-    //                template = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 30px;\">\n"
-    //                        + "    <div class=\"content\">\n"
-    //                        + "        <span class=\"right floated\">\n"
-    //                        + "            <div class=\"ui dropdown\">\n"
-    //                        + "                <div class=\"text\">\n"
-    //                        + "                    <i class=\"ellipsis horizontal icon\"></i>\n"
-    //                        + "                </div>\n"
-    //                        + "                <div class=\"left floated menu\">\n"
-    //                        + "                    <div class=\"item\"\n"
-    //                        + "                         targetId=\"" + photo.id() + "\"\n"
-    //                        + "                         targetCaption=\"" + photo.caption() + "\"\n"
-    //                        + "                         onclick=\"popupEditCaption(this)\">\n"
-    //                        + "                        Edit Caption\n"
-    //                        + "                    </div>\n"
-    //                        + "                    <div class=\"item\"\n"
-    //                        + "                         targetId=\"" + photo.id() + "\"\n"
-    //                        + "                         targetCloudName=\"" + photo.cloud() + "\"\n"
-    //                        + "                         onclick=\"deletePhoto(this)\">\n"
-    //                        + "                        Delete\n"
-    //                        + "                    </div>\n"
-    //                        + "                </div>\n"
-    //                        + "            </div>\n"
-    //                        + "        </span>\n"
-    //                        + "    </div>\n"
-    //                        + "    <div class=\"image\"\n"
-    //                        + "         caption=\"" + photo.caption() + "\"\n"
-    //                        + "         onclick=\"popupImage(this);\">\n"
-    //                        + "        <img class=\"ui image\" src=\"" + photo.url() + "\" style=\"border-radius: 0px !important\"/>\n"
-    //                        + "    </div>\n"
-    //                        + "</div>\n";
-    //            }
-    //            response.append(template);
-    //        }
-    //
-    //        session.setAttribute("home-pagination-offset", offset + 5);
-    //        return response.toString();
-    //    }
 
     @GetMapping("/{username}")
     String pageUser(@PathVariable("username") final String username,

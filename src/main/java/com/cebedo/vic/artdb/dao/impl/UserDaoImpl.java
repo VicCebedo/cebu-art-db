@@ -35,7 +35,7 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET password = ? WHERE username = ?");
             stmt.setString(1, newPassword);
-            stmt.setString(2, username);
+            stmt.setString(2, username.toLowerCase());
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,7 +87,7 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("INSERT INTO public.users(username, password, name, bio, website, email, phone, profile_pic) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            stmt.setString(1, user.username());
+            stmt.setString(1, user.username().toLowerCase());
             stmt.setString(2, user.password());
             stmt.setString(3, "");
             stmt.setString(4, "");
@@ -104,6 +104,7 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User get(String username) {
         try (Connection connection = dataSource.getConnection()) {
+            username = username.toLowerCase();
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
@@ -166,7 +167,7 @@ public class UserDaoImpl implements UserDao {
             if (rs.next()) {
                 return new UserBuilder(
                         id,
-                        rs.getString("username"),
+                        rs.getString("username").toLowerCase(),
                         rs.getString("password"),
                         rs.getString("name"),
                         rs.getString("bio"),
@@ -191,7 +192,7 @@ public class UserDaoImpl implements UserDao {
             while (rs.next()) {
                 User user = new UserBuilder(
                         rs.getLong("id"),
-                        rs.getString("username"),
+                        rs.getString("username").toLowerCase(),
                         "",
                         rs.getString("name"),
                         rs.getString("bio"),
