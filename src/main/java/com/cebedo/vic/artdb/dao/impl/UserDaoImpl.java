@@ -85,8 +85,8 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void create(User user) {
         try (Connection connection = dataSource.getConnection()) {
-            PreparedStatement stmt = connection.prepareStatement("INSERT INTO public.users(username, password, name, bio, website, email, phone, profile_pic) "
-                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement stmt = connection.prepareStatement("INSERT INTO public.users(username, password, name, bio, website, email, phone, profile_pic, artist) "
+                    + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
             stmt.setString(1, user.username().toLowerCase());
             stmt.setString(2, user.password());
             stmt.setString(3, "");
@@ -95,6 +95,7 @@ public class UserDaoImpl implements UserDao {
             stmt.setString(6, "");
             stmt.setString(7, "");
             stmt.setString(8, "");
+            stmt.setBoolean(9, user.artist());
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,7 +120,8 @@ public class UserDaoImpl implements UserDao {
                         rs.getString("website"),
                         rs.getString("email"),
                         rs.getString("phone"),
-                        rs.getString("profile_pic")).build();
+                        rs.getString("profile_pic"),
+                        rs.getBoolean("artist")).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -174,7 +176,8 @@ public class UserDaoImpl implements UserDao {
                         rs.getString("website"),
                         rs.getString("email"),
                         rs.getString("phone"),
-                        rs.getString("profile_pic")).build();
+                        rs.getString("profile_pic"),
+                        rs.getBoolean("artist")).build();
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -199,7 +202,8 @@ public class UserDaoImpl implements UserDao {
                         rs.getString("website"),
                         rs.getString("email"),
                         rs.getString("phone"),
-                        rs.getString("profile_pic")).build();
+                        rs.getString("profile_pic"),
+                        rs.getBoolean("artist")).build();
                 users.add(user);
             }
 

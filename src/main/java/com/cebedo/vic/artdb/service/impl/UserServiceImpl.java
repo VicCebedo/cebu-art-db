@@ -104,11 +104,11 @@ public class UserServiceImpl implements UserService {
             return ResponseDto.newInstanceWithErrors(errors);
         }
 
-        // If invite codes are enabled.
-        boolean inviteCodesEnabled = true;
-        if (inviteCodesEnabled) {
-
-            String inviteCode = userDto.getInviteCode();
+        // If user has a code, then check if the code is valid.
+        // Else, account will be basic, not artist account.
+        String inviteCode = userDto.getInviteCode();
+        boolean hasCode = !inviteCode.isEmpty();
+        if (hasCode) {
 
             // Check if invite code exists.
             // And if invite code remaining > 0.
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Normal behaviour.
-        User user = new UserBuilder(0, username, ENCODER.encode(password), "", "", "", "", "", "").build();
+        User user = new UserBuilder(0, username, ENCODER.encode(password), "", "", "", "", "", "", hasCode).build();
         this.userDao.create(user);
         return ResponseDto.newInstanceWithMessage("Your user registration was successful.");
     }

@@ -23,6 +23,7 @@ public class MutableUser implements User {
     private String email;
     private String phone;
     private String profilePic;
+    private boolean artist;
 
     public MutableUser() {
         ;
@@ -39,6 +40,15 @@ public class MutableUser implements User {
         this.email = usr.email();
         this.phone = usr.phone();
         this.profilePic = usr.profilePic();
+        this.artist = usr.artist();
+    }
+
+    public boolean isArtist() {
+        return artist;
+    }
+
+    public void setArtist(boolean artist) {
+        this.artist = artist;
     }
 
     @Override
@@ -156,6 +166,11 @@ public class MutableUser implements User {
 
     public String getProfilePic() {
         return profilePic;
+    }
+
+    @Override
+    public boolean artist() {
+        return this.artist;
     }
 
 }

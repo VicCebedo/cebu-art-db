@@ -90,14 +90,14 @@
                                     <input type="password" placeholder="Retype Password" th:field="*{newPasswordRetype}">
                                 </div>
                             </div>
-                            <div class="field">
-                                <div class="ui left icon input">
-                                    <i class="key icon"></i>
-                                    <input type="text" placeholder="Invite Code" th:field="*{inviteCode}">
-                                </div>
-                            </div>
-                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                             <button class="ui fluid large black submit button" onclick="loading()">Register</button>
+                            <p>
+                            </p>
+                            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                            <div class="ui left icon small input">
+                                <i class="paint brush icon"></i>
+                                <input type="text" placeholder="Artist Code (Optional)" th:field="*{inviteCode}">
+                            </div>
                         </div>
                     </form>
                     <div class="ui basic secondary segment">

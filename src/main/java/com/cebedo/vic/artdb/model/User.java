@@ -28,4 +28,6 @@ public interface User {
     String phone();
 
     String profilePic();
+    
+    boolean artist();
 }
