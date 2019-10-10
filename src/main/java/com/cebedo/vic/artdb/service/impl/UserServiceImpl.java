@@ -130,6 +130,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseDto updateProfileCurrentUser(final ProfileDto profile) {
+        // Artist only feature.
+        if (!AuthUtils.isArtist()) {
+            return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");
+        }
+
         // Websites must be prefixed with http or https.
         String web = profile.getWebsite();
         if (!web.isEmpty() && !web.startsWith("http")) {
@@ -159,6 +164,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseDto updateProfilePic(String profilePic) {
+        // Artist only feature.
+        if (!AuthUtils.isArtist()) {
+            return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");
+        }
+
         this.userDao.updateProfilePhoto(profilePic);
         AuthUtils.getAuth().profile().setProfilePic(profilePic);
         return ResponseDto.newInstanceWithMessage("Your profile photo is now updated.");

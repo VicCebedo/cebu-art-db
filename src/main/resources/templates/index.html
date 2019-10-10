@@ -51,7 +51,7 @@
                 <a class="item icon" href="/logged-in/artists" onclick="loading()">
                     <i class="users icon"></i>
                 </a>
-                <a class="item icon" href="/logged-in/home" onclick="loading()">
+                <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isArtist}">
                     <i class="user icon"></i>
                 </a>
                 <div class="ui dropdown item">
@@ -59,8 +59,37 @@
                         <i class="cog icon"></i>
                     </span>
                     <div class="menu">
+                        <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
                         <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!--MESSAGES-->
+        <div class="ui container">
+            <div th:if="${not #lists.isEmpty(responseMessages)}" id="message-container">
+                <div class="ui hidden divider"></div>
+                <div class="ui success message">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Success!
+                    </div>
+                    <ul class="list" th:each="msg : ${responseMessages}">
+                        <li>[[${msg}]]</li>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${not #lists.isEmpty(responseErrors)}" id="message-container">
+                <div class="ui hidden divider"></div>
+                <div class="ui error message">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Error!
+                    </div>
+                    <ul class="list" th:each="error : ${responseErrors}">
+                        <li>[[${error}]]</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -92,6 +121,40 @@
         <div class="ui hidden divider"></div>
         <div class="ui hidden divider"></div>
         <div class="ui hidden divider"></div>
+
+        <!--CHANGE PASSWORD-->        
+        <div id="modal-change-password" class="ui mini modal">
+            <div class="header">
+                Change Password
+            </div>
+            <div class="content">
+                <form th:action="@{/logged-in/user/password/update}" th:object="${changePass}" th:method="put" class="ui form" id="form-change-password">
+                    <div class="field">
+                        <label>Current Password</label>
+                        <input type="password" placeholder="Current Password" th:field="*{password}" />
+                    </div>
+                    <div class="field">
+                        <label>New Password</label>
+                        <input type="password" placeholder="New Password" th:field="*{newPassword}" />
+                    </div>
+                    <div class="field">
+                        <label>Retype New Password:</label>
+                        <input type="password" placeholder="Retype Password" th:field="*{newPasswordRetype}" />
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button">
+                    Cancel
+                </div>
+                <a href="#" onclick="loading(); document.getElementById('form-change-password').submit()">
+                    <div class="ui positive button">
+                        Update
+                    </div>
+                </a>
+            </div>
+        </div>
 
         <!--IMAGE IS CLICKED-->
         <div class="ui basic small modal" id="modal-image">

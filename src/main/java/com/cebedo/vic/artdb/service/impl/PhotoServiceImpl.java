@@ -44,6 +44,11 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public ResponseDto create(PhotoDto photo) {
+        // Artist only feature.
+        if (!AuthUtils.isArtist()) {
+            return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");
+        }
+
         Set<ConstraintViolation<PhotoDto>> constraintViolations = validator.validate(photo);
         if (constraintViolations.size() > 0) {
             List<String> errors = new ArrayList<>();
@@ -65,6 +70,11 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public ResponseDto updateCaption(PhotoDto photo) {
+        // Artist only feature.
+        if (!AuthUtils.isArtist()) {
+            return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");
+        }
+
         Set<ConstraintViolation<PhotoDto>> constraintViolations = validator.validate(photo);
         if (constraintViolations.size() > 0) {
             List<String> errors = new ArrayList<>();
@@ -104,6 +114,11 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public ResponseDto delete(long id, String cloudName) {
+        // Artist only feature.
+        if (!AuthUtils.isArtist()) {
+            return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");
+        }
+
         this.photoDao.delete(id);
         try {
             String uname = AuthUtils.getAuth().user().username();

@@ -18,6 +18,11 @@ public class AuthUtils {
         return (WebAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
     }
 
+    public static boolean isArtist() {
+        WebAuthenticationToken token = (WebAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+        return token.user().artist();
+    }
+
     public static boolean isAuthenticated() {
         return SecurityContextHolder.getContext().getAuthentication() instanceof WebAuthenticationToken;
     }

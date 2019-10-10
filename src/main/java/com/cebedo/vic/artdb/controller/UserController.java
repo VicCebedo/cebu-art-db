@@ -54,14 +54,20 @@ public class UserController {
     }
 
     @PutMapping("/logged-in/user/password/update")
-    String updatePassword(final UserDto changePass, RedirectAttributes attrs) {
+    String updatePassword(final UserDto changePass, HttpServletRequest request, RedirectAttributes attrs) {
         // TODO (Beta) Implement non-artist accounts.
         // TODO (Beta) Implement forget password.
         // TODO (Beta) Captcha for registration.
         ResponseDto rsp = this.userService.changePassword(changePass);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
-        return "redirect:/logged-in/home";
+
+        // If artist, back to profile.
+        // Else, to index.
+        if (AuthUtils.isArtist()) {
+            return "redirect:/logged-in/home";
+        }
+        return "redirect:/";
     }
 
     @PutMapping("/logged-in/user/profile-pic/update")
@@ -110,7 +116,13 @@ public class UserController {
 
         // If this username is equal to mine,
         // redirect to home.
+        boolean isArtist = AuthUtils.isArtist();
         if (username.equals(AuthUtils.getAuth().user().username())) {
+
+            // If non-artist, redirect to index.
+            if (!isArtist) {
+                return "redirect:/";
+            }
             return "redirect:/logged-in/home";
         }
 
@@ -119,6 +131,8 @@ public class UserController {
         model.addAttribute("user", user);
         model.addAttribute("profile", new ProfileDto(user));
         model.addAttribute("isGuest", true);
+        model.addAttribute("isArtist", isArtist);
+        model.addAttribute("changePass", new UserDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);

@@ -189,7 +189,7 @@ public class UserDaoImpl implements UserDao {
     public List<User> getUsers(int offset) {
         try (Connection connection = dataSource.getConnection()) {
             Statement stmt = connection.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM users LIMIT 5 OFFSET " + offset);
+            ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE artist = true LIMIT 5 OFFSET " + offset);
 
             List<User> users = new ArrayList<>();
             while (rs.next()) {

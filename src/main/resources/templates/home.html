@@ -204,8 +204,8 @@
             </div>
         </div>
 
-        <!--CHANGE PROFILE PIC-->        
-        <div id="modal-change-password" class="ui mini modal" th:if="${!isGuest}">
+        <!--CHANGE PASSWORD-->        
+        <div id="modal-change-password" class="ui mini modal">
             <div class="header">
                 Change Password
             </div>
@@ -368,19 +368,22 @@
                 <div class="item">
                     <img src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1570074412/static/ybakvuon4wtyyiftrqno.png">
                 </div>
+
+                <!--Home-->
                 <a class="item icon" href="/" onclick="loading()">
                     <i class="home icon"></i>
                 </a>
+
+                <!--Artists-->
                 <a class="item icon" href="/logged-in/artists" onclick="loading()">
                     <i class="users icon"></i>
                 </a>
 
-                <!--3rd Icon-->
-                <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isGuest}">
+                <!--Upload or Profile-->
+                <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isGuest && isArtist}">
                     <i class="user icon"></i>
                 </a>
                 <a class="item icon"
-                   href="#"
                    onclick="$('#modal-upload').modal('show'); event.preventDefault();"
                    th:if="${!isGuest}">
                     <i class="plus square outline icon"></i>
@@ -392,6 +395,7 @@
                         <i class="cog icon"></i>
                     </span>
                     <div class="menu">
+                        <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
                         <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
                     </div>
                 </div>

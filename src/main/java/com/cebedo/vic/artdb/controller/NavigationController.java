@@ -45,7 +45,9 @@ public class NavigationController {
             return "redirect:/login";
         }
 
+        model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("photos", this.photoService.getPhotos(0));
+        model.addAttribute("changePass", new UserDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);
@@ -54,7 +56,9 @@ public class NavigationController {
 
     @GetMapping("/logged-in/artists")
     String pageArtists(Model model, HttpServletRequest request) {
+        model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("artists", this.userService.getUsers(0));
+        model.addAttribute("changePass", new UserDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);
@@ -153,6 +157,11 @@ public class NavigationController {
 
     @GetMapping("/logged-in/home")
     String pageHome(Model model, HttpServletRequest request) {
+        // If non-artist account, redirect to index.
+        if (!AuthUtils.isArtist()) {
+            return "redirect:/";
+        }
+
         User user = AuthUtils.getAuth().user();
         MutableUser profile = AuthUtils.getAuth().profile();
         model.addAttribute("user", user);
