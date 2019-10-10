@@ -85,7 +85,7 @@ public class UserController {
         this.userService.deleteProfilePic();
     }
 
-    @GetMapping("/user/{id}/photo/pagination/next")
+    @GetMapping("/logged-in/user/{id}/photo/pagination/next")
     @ResponseBody
     List<PhotoDto> homePaginationNext(@PathVariable("id") final long id, Model model, HttpServletRequest request) {
         // Get current offset value.
@@ -103,9 +103,14 @@ public class UserController {
     String pageUser(@PathVariable("username") final String username,
             Model model,
             HttpServletRequest request) {
+        // If not yet authenticated, redirect to login.
+        if (!AuthUtils.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
         // If this username is equal to mine,
         // redirect to home.
-        if (AuthUtils.isCustomToken() && username.equals(AuthUtils.getAuth().user().username())) {
+        if (username.equals(AuthUtils.getAuth().user().username())) {
             return "redirect:/logged-in/home";
         }
 

@@ -7,7 +7,6 @@ package com.cebedo.vic.artdb.controller;
 
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
-import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.service.PhotoService;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
@@ -31,7 +30,7 @@ public class PhotoController {
     @Autowired
     private PhotoService photoService;
 
-    @GetMapping("/photo/pagination/next")
+    @GetMapping("/logged-in/photo/pagination/next")
     @ResponseBody
     List<PhotoDto> indexPaginationNext(Model model, HttpServletRequest request) {
         // Get current offset value.

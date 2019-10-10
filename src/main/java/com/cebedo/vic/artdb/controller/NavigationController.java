@@ -40,6 +40,11 @@ public class NavigationController {
 
     @GetMapping("/")
     String pageIndex(Model model, HttpServletRequest request) {
+        // If not yet authenticated, redirect to login.
+        if (!AuthUtils.isAuthenticated()) {
+            return "redirect:/login";
+        }
+
         model.addAttribute("photos", this.photoService.getPhotos(0));
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
@@ -47,7 +52,7 @@ public class NavigationController {
         return "index";
     }
 
-    @GetMapping("/artists")
+    @GetMapping("/logged-in/artists")
     String pageArtists(Model model, HttpServletRequest request) {
         model.addAttribute("artists", this.userService.getUsers(0));
         request.getSession().setAttribute("index-pagination-offset", 0);
@@ -56,7 +61,7 @@ public class NavigationController {
         return "artists";
     }
 
-    @GetMapping("/artists/pagination/next")
+    @GetMapping("/logged-in/artists/pagination/next")
     @ResponseBody
     String artistsPaginationNext(Model model, HttpServletRequest request) {
         // Get current offset value.
