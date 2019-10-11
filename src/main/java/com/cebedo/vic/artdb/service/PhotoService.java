@@ -5,9 +5,9 @@
  */
 package com.cebedo.vic.artdb.service;
 
+import com.cebedo.vic.artdb.dto.CommentDto;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
-import com.cebedo.vic.artdb.model.Photo;
 import java.util.List;
 
 /**
@@ -27,5 +27,9 @@ public interface PhotoService {
     List<PhotoDto> getPhotosByCurrentUser(int offset);
 
     List<PhotoDto> getPhotosByUserId(long id, int offset);
+
+    List<CommentDto> getCommentsByPhotoId(long id);
+
+    CommentDto createComment(CommentDto comment);
 
 }

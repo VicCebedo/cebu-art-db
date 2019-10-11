@@ -5,6 +5,7 @@
  */
 package com.cebedo.vic.artdb.controller;
 
+import com.cebedo.vic.artdb.dto.CommentDto;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
@@ -45,9 +46,11 @@ public class NavigationController {
             return "redirect:/login";
         }
 
+        model.addAttribute("user", AuthUtils.getAuth().user());
         model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("photos", this.photoService.getPhotos(0));
         model.addAttribute("changePass", new UserDto());
+        model.addAttribute("comment", new CommentDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);

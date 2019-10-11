@@ -54,7 +54,7 @@ public class UserController {
     }
 
     @PutMapping("/logged-in/user/password/update")
-    String updatePassword(final UserDto changePass, HttpServletRequest request, RedirectAttributes attrs) {
+    String updatePassword(final UserDto changePass, RedirectAttributes attrs) {
         // TODO (Beta) Implement non-artist accounts.
         // TODO (Beta) Implement forget password.
         // TODO (Beta) Captcha for registration.

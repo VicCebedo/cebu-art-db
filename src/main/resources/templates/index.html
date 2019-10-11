@@ -163,11 +163,51 @@
             </div>
         </div>
 
+        <!--COMMENTS MODAL-->
+        <div class="ui mini modal" id="comments-modal">
+            <form th:action="@{/logged-in/photo/comment/create}" th:object="${comment}" th:method="post" id="form-comment">
+                <input type="hidden" th:field="*{photoId}" id="form-comment-photo-id"/>
+                <input type="hidden" th:field="*{userId}" id="form-comment-user-id"/>
+                <input type="hidden" th:field="*{username}" id="form-comment-username"/>
+                <input type="hidden" th:field="*{content}" id="form-comment-content"/>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+            <div class="content">
+                <div class="ui comments">
+                    <h4 class="ui dividing header">Comments</h4>
+                    <div id="modal-comments-data"></div>
+                    <div class="ui reply form">
+                        <div class="field">
+                            <input type="text" id="comment-field"/>
+                        </div>
+                        <div class="ui right floated basic secondary mini circular button" 
+                             style="margin-bottom: 5%;"
+                             onclick="document.getElementById('form-comment-content').value = document.getElementById('comment-field').value; submitComment()">
+                            Post
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
             $('.ui.dropdown').dropdown({
                 on: 'hover',
                 action: 'nothing'
             })
+
+            function submitComment() {
+                $.ajax({
+                    url: '/logged-in/photo/comment/create',
+                    type: 'post',
+                    data: $('#form-comment').serialize(),
+                    success: function (response) {
+                        const row = '<div class="comment"><div class="content"><a class="author">' + response.username + '</a>&nbsp;&nbsp;' + response.content + '</div></div>';
+                        document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
+                        document.getElementById('comment-field').value = '';
+                    }
+                });
+            }
 
             function popupImage(elem) {
                 document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
@@ -177,6 +217,26 @@
 
             function loading() {
                 document.getElementById('global-loader').style = '';
+            }
+
+            function openComments(id) {
+                document.getElementById('modal-comments-data').innerHTML = '';
+                document.getElementById('form-comment-photo-id').value = id;
+                document.getElementById('form-comment-user-id').value = `[[${user.id()}]]`;
+                document.getElementById('form-comment-username').value = `[[${user.username()}]]`;
+
+                $.ajax({
+                    url: "/logged-in/photo/comment/" + id,
+                    type: 'get',
+                    success: function (comments) {
+                        for (var i = 0; i < comments.length; i++) {
+                            const comment = comments[i];
+                            const row = '<div class="comment"><div class="content"><a class="author">' + comment.username + '</a>&nbsp;&nbsp;' + comment.content + '</div></div>';
+                            document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
+                        }
+                    }
+                });
+                $('#comments-modal').modal('show');
             }
 
             $('#photostream').visibility({
@@ -192,15 +252,17 @@
                                 const photo = responseBody[i];
                                 const id = "photostream-card-" + photo.id;
                                 const uploader = photo.user.name === '' ? photo.user.username : photo.user.name;
-                                const template
+                                var template
                                         = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 50px;\" id=\"" + id + "\">\n"
-                                        + "    <div class=\"content\">\n"
-                                        + "        <div class=\"ui small header\" onclick=\"loading(); location.href='" + photo.user.username + "'\">" + uploader + "</div>\n"
-                                        + "    </div>\n"
+                                        + "        <div style=\"padding: 2%\" onclick=\"loading(); location.href='" + photo.user.username + "'\"><b>" + uploader + "</b></div>\n"
                                         + "    <div class=\"image\" id=\"" + id + "-img-src\" caption=\"\" onclick=\"popupImage(this)\">\n"
                                         + "        <img src=\"" + photo.url + "\" class=\"ui image\" style=\"border-radius: 0px !important\" />\n"
                                         + "    </div>\n"
-                                        + "</div>\n";
+                                        + "    <div style=\"padding-top: 3%\">\n"
+                                        + "        <div class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini button\"><i style=\"margin: 0px\" class=\"heart icon\"></i></div><div class=\"ui basic left pointing label\">1,048</div></div>"
+                                        + "        <div onclick=\"openComments(" + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div class=\"ui basic left pointing label\">1,048</div></div>"
+                                        + "    </div>\n";
+                                +" </div>\n"
                                 document.getElementById('photostream').insertAdjacentHTML('beforeend', template);
                                 document.getElementById(id + "-img-src").setAttribute("caption", photo.caption);
                             }

@@ -7,9 +7,11 @@ package com.cebedo.vic.artdb.service.impl;
 
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
+import com.cebedo.vic.artdb.dto.CommentDto;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.model.Photo;
+import com.cebedo.vic.artdb.repository.CommentRepository;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import com.cloudinary.Cloudinary;
@@ -17,6 +19,7 @@ import com.cloudinary.utils.ObjectUtils;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import javax.validation.ConstraintViolation;
@@ -41,6 +44,9 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Autowired
     private Cloudinary cloudinary;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Override
     public ResponseDto create(PhotoDto photo) {
@@ -128,5 +134,17 @@ public class PhotoServiceImpl implements PhotoService {
             ex.printStackTrace();
         }
         return ResponseDto.newInstanceWithError("Something wrong happened when we tried to delete your photo. Please try again.");
+    }
+
+    @Override
+    public List<CommentDto> getCommentsByPhotoId(long id) {
+        return this.commentRepository.findByPhotoId(id);
+    }
+
+    @Override
+    public CommentDto createComment(CommentDto comment) {
+        // TODO Comment validations(?).        
+        comment.setDatetime(new Date());
+        return this.commentRepository.save(comment);
     }
 }

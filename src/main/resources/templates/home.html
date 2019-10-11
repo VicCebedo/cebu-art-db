@@ -274,7 +274,7 @@
                 Edit Caption
             </div>
             <div class="content">
-                <form th:action="@{/logged-in/photo/caption/update}" th:object="${photo}" method="post" class="ui form" id="form-edit-caption">
+                <form th:action="@{/logged-in/photo/caption/update}" th:object="${photo}" th:method="put" class="ui form" id="form-edit-caption">
                     <div class="field">
                         <label>Caption</label>
                         <textarea placeholder="Caption" id="edit-caption-value" th:field="*{caption}" rows="5"></textarea>

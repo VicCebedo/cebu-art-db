@@ -5,6 +5,7 @@
  */
 package com.cebedo.vic.artdb.controller;
 
+import com.cebedo.vic.artdb.dto.CommentDto;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.service.PhotoService;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -43,6 +46,18 @@ public class PhotoController {
         return this.photoService.getPhotos(offset);
     }
 
+    @GetMapping("/logged-in/photo/comment/{id}")
+    @ResponseBody
+    List<CommentDto> getPhotoComments(@PathVariable("id") final long id) {
+        return this.photoService.getCommentsByPhotoId(id);
+    }
+
+    @PostMapping("/logged-in/photo/comment/create")
+    @ResponseBody
+    CommentDto createComment(final CommentDto comment) {
+        return this.photoService.createComment(comment);
+    }
+
     @PostMapping("/logged-in/photo/upload")
     String upload(final PhotoDto photo, RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.create(photo);
@@ -51,7 +66,7 @@ public class PhotoController {
         return "redirect:/logged-in/home";
     }
 
-    @PostMapping("/logged-in/photo/caption/update")
+    @PutMapping("/logged-in/photo/caption/update")
     String updateCaption(final PhotoDto photo, RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.updateCaption(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
