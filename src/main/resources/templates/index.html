@@ -164,7 +164,7 @@
         </div>
 
         <!--DELETE COMMENT CONFIRMATION-->
-        <div class="ui basic mini modal" id="modal-delete-comment">
+        <div class="ui basic fullscreen modal" id="modal-delete-comment">
             <form th:action="@{/logged-in/photo/comment/delete}" th:object="${comment}" th:method="delete" id="form-delete-comment">
                 <input type="hidden" th:field="*{id}" id="form-comment-id"/>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -218,6 +218,11 @@
                         <div class="field">
                             <input type="text" id="comment-field"/>
                         </div>
+                        <div class="ui left floated basic tertiary mini circular button" 
+                             style="margin-bottom: 5%;"
+                             onclick="$('#comments-modal').modal('hide')">
+                            Cancel
+                        </div>
                         <div class="ui right floated basic secondary mini circular button" 
                              style="margin-bottom: 5%;"
                              onclick="document.getElementById('form-comment-content').value = document.getElementById('comment-field').value; submitComment()">
@@ -260,12 +265,13 @@
 
                         var deleteIcon = '';
                         if (canDelete) {
-                            deleteIcon = '<a style="-webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + response.id + '\')"><i class="trash alternate icon"></i></a>';
+                            deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + response.id + '\')"><i class="trash alternate icon"></i></a>';
                         }
                         const row = '<div class="comment"><div class="content"><a class="author">' + response.username + '</a>&nbsp;&nbsp;' + response.content + deleteIcon + '</div></div>';
                         document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
                         document.getElementById('comment-field').value = '';
                         document.getElementById('comments-loader').style = 'display: none';
+                        $('#comments-modal').modal('refresh');
                     }
                 });
             }
@@ -284,9 +290,10 @@
                 $('#comments-modal').modal({'duration': 0}).modal('hide');
                 document.getElementById('form-comment-id').value = uuid;
                 $('#modal-delete-comment').modal('show');
+                $('#modal-delete-comment').modal('refresh');
             }
 
-            function openComments(id) {
+            function openComments(count, id) {
                 document.getElementById('comments-loader').style = '';
                 document.getElementById('modal-comments-data').innerHTML = '';
                 document.getElementById('form-comment-photo-id').value = id;
@@ -294,6 +301,8 @@
                 document.getElementById('form-comment-username').value = `[[${user.username()}]]`;
                 $('#comments-modal').modal({'duration': 0}).modal('show');
 
+                // TODO Consider count optimization after auto-count update.
+                // if (count > 0) {
                 $.ajax({
                     url: "/logged-in/photo/comment/" + id,
                     type: 'get',
@@ -304,17 +313,19 @@
 
                             var deleteIcon = '';
                             if (canDelete) {
-                                deleteIcon = '<a style="-webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + comment.id + '\')"><i class="trash alternate icon"></i></a>';
+                                deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + comment.id + '\')"><i class="trash alternate icon"></i></a>';
                             }
 
                             const row = '<div class="comment"><div class="content"><a class="author">' + comment.username + '</a>&nbsp;&nbsp;' + comment.content + deleteIcon + '</div></div>';
                             document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
                         }
-
                         document.getElementById('comments-loader').style = 'display: none';
                         $('#comments-modal').modal('refresh');
                     }
                 });
+                // } else {
+                //     document.getElementById('comments-loader').style = 'display: none';
+                // }
             }
 
             $('#photostream').visibility({
@@ -350,7 +361,7 @@
                                         + "    </div>\n"
                                         + "    <div style=\"padding-top: 3%\">\n"
                                         + "        <div class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini button\"><i style=\"margin: 0px\" class=\"heart icon\"></i></div><div class=\"ui basic left pointing label\">0</div></div>"
-                                        + "        <div onclick=\"openComments(" + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini " + commentColor + " button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div class=\"ui basic left pointing " + commentColor + " label\">" + commentDisplay + "</div></div>"
+                                        + "        <div onclick=\"openComments(" + photo.commentCount + ", " + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini " + commentColor + " button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div class=\"ui basic left pointing " + commentColor + " label\">" + commentDisplay + "</div></div>"
                                         + "    </div>\n"
                                         + " </div>\n";
                                 document.getElementById('photostream').insertAdjacentHTML('beforeend', template);
