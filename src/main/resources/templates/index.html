@@ -281,11 +281,9 @@
             }
 
             function deleteCommentConfirm(uuid) {
-                $('#comments-modal').modal('hide');
+                $('#comments-modal').modal({'duration': 0}).modal('hide');
                 document.getElementById('form-comment-id').value = uuid;
-                setTimeout(function () {
-                    $('#modal-delete-comment').modal('show');
-                }, 500);
+                $('#modal-delete-comment').modal('show');
             }
 
             function openComments(id) {
@@ -294,7 +292,7 @@
                 document.getElementById('form-comment-photo-id').value = id;
                 document.getElementById('form-comment-user-id').value = `[[${user.id()}]]`;
                 document.getElementById('form-comment-username').value = `[[${user.username()}]]`;
-                $('#comments-modal').modal('show');
+                $('#comments-modal').modal({'duration': 0}).modal('show');
 
                 $.ajax({
                     url: "/logged-in/photo/comment/" + id,
