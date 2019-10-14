@@ -256,24 +256,29 @@
 
             function submitComment() {
                 document.getElementById('comments-loader').style = '';
-                $.ajax({
-                    url: '/logged-in/photo/comment/create',
-                    type: 'post',
-                    data: $('#form-comment').serialize(),
-                    success: function (response) {
-                        const canDelete = `[[${user.id()}]]` === `` + response.userId + ``;
+                const hasContent = document.getElementById('form-comment-content').value !== '';
 
-                        var deleteIcon = '';
-                        if (canDelete) {
-                            deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + response.id + '\')"><i class="trash alternate icon"></i></a>';
+                if (hasContent) {
+                    $.ajax({
+                        url: '/logged-in/photo/comment/create',
+                        type: 'post',
+                        data: $('#form-comment').serialize(),
+                        success: function (response) {
+                            const canDelete = `[[${user.id()}]]` === `` + response.userId + ``;
+
+                            var deleteIcon = '';
+                            if (canDelete) {
+                                deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + response.id + '\')"><i class="trash alternate icon"></i></a>';
+                            }
+                            const row = '<div class="comment"><div class="content"><a class="author">' + response.username + '</a>&nbsp;&nbsp;' + response.content + deleteIcon + '</div></div>';
+                            document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
+                            document.getElementById('comment-field').value = '';
+                            document.getElementById('comments-loader').style = 'display: none';
+                            $('#modal-comments-data').scrollTop($('#modal-comments-data')[0].scrollHeight);
+                            $('#comments-modal').modal('refresh');
                         }
-                        const row = '<div class="comment"><div class="content"><a class="author">' + response.username + '</a>&nbsp;&nbsp;' + response.content + deleteIcon + '</div></div>';
-                        document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
-                        document.getElementById('comment-field').value = '';
-                        document.getElementById('comments-loader').style = 'display: none';
-                        $('#comments-modal').modal('refresh');
-                    }
-                });
+                    });
+                }
             }
 
             function popupImage(elem) {
