@@ -304,7 +304,7 @@
                 document.getElementById('form-comment-photo-id').value = id;
                 document.getElementById('form-comment-user-id').value = `[[${user.id()}]]`;
                 document.getElementById('form-comment-username').value = `[[${user.username()}]]`;
-                $('#comments-modal').modal({'duration': 0}).modal('show');
+                $('#comments-modal').modal({'duration': 0, 'autofocus': false}).modal('show');
 
                 // TODO Consider count optimization after auto-count update.
                 // if (count > 0) {
