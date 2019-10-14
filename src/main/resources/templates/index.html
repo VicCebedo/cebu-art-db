@@ -283,7 +283,9 @@
             function deleteCommentConfirm(uuid) {
                 $('#comments-modal').modal('hide');
                 document.getElementById('form-comment-id').value = uuid;
-                $('#modal-delete-comment').modal('show');
+                setTimeout(function () {
+                    $('#modal-delete-comment').modal('show');
+                }, 500);
             }
 
             function openComments(id) {
