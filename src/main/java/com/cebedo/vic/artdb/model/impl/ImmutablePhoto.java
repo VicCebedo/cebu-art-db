@@ -21,10 +21,15 @@ public final class ImmutablePhoto implements Photo {
     private final String url;
     private final String caption;
     private final String cloud;
+
+    @Deprecated
     private final String thumbnail;
+
+    @Deprecated
     private final String thumbnailCaption;
     private final Timestamp timestamp;
     private final User user;
+    private final long commentCount;
 
     public ImmutablePhoto(PhotoBuilder b) {
         Objects.requireNonNull(b);
@@ -34,6 +39,7 @@ public final class ImmutablePhoto implements Photo {
         this.cloud = this.url.substring(this.url.lastIndexOf('/') + 1, this.url.lastIndexOf('.'));
         this.timestamp = b.timestamp();
         this.user = b.user();
+        this.commentCount = b.commentCount();
 
         // Caption for thumbnails.
         this.thumbnailCaption
@@ -66,6 +72,7 @@ public final class ImmutablePhoto implements Photo {
         return this.cloud;
     }
 
+    @Deprecated
     @Override
     public String thumbnail() {
         return this.thumbnail;
@@ -81,8 +88,14 @@ public final class ImmutablePhoto implements Photo {
         return this.user;
     }
 
+    @Deprecated
     @Override
     public String thumbnailCaption() {
         return this.thumbnailCaption;
+    }
+
+    @Override
+    public long commentCount() {
+        return this.commentCount;
     }
 }

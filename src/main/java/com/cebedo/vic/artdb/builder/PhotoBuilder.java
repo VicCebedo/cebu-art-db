@@ -22,8 +22,9 @@ public final class PhotoBuilder {
     private final String caption;
     private final Timestamp timestamp;
     private final User user;
+    private final long commentCount;
 
-    public PhotoBuilder(long i, String u, String c, Timestamp t, User user) {
+    public PhotoBuilder(long i, String u, String c, Timestamp t, User user, long cCount) {
         Objects.requireNonNull(i);
         Objects.requireNonNull(u);
         Objects.requireNonNull(c);
@@ -34,6 +35,7 @@ public final class PhotoBuilder {
         this.caption = c;
         this.timestamp = t;
         this.user = user;
+        this.commentCount = cCount;
     }
 
     public Photo build() {
@@ -46,12 +48,17 @@ public final class PhotoBuilder {
                 "",
                 "",
                 new Timestamp(System.currentTimeMillis()),
-                UserBuilder.newInstance()
+                UserBuilder.newInstance(),
+                0
         ));
     }
 
     public long id() {
         return this.id;
+    }
+
+    public long commentCount() {
+        return this.commentCount;
     }
 
     public String url() {

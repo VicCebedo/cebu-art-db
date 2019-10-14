@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,7 +70,8 @@ public class PhotoServiceImpl implements PhotoService {
                 photo.getUrl(),
                 photo.getCaption(),
                 new Timestamp(System.currentTimeMillis()),
-                AuthUtils.getAuth().user())
+                AuthUtils.getAuth().user(),
+                0)
                 .build());
         return ResponseDto.newInstanceWithMessage("You have uploaded a new photo.");
     }
@@ -143,8 +145,16 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public CommentDto createComment(CommentDto comment) {
-        // TODO Comment validations(?).        
+        // TODO Comment validations(?). 
+        comment.setId(UUID.randomUUID().toString());
         comment.setDatetime(new Date());
         return this.commentRepository.save(comment);
+    }
+
+    @Override
+    public boolean deleteComment(CommentDto comment) {
+        // TODO Make sure I'm deleting my comment.
+        this.commentRepository.deleteById(comment.getId());
+        return true;
     }
 }

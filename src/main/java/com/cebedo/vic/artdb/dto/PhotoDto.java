@@ -29,6 +29,7 @@ public class PhotoDto {
     private String thumbnail;
     private Timestamp timestamp;
     private User user;
+    private long commentCount;
 
     public PhotoDto() {
         ;
@@ -43,6 +44,15 @@ public class PhotoDto {
         this.thumbnail = p.thumbnail();
         this.timestamp = p.timestamp();
         this.user = p.user();
+        this.commentCount = p.commentCount();
+    }
+
+    public long getCommentCount() {
+        return commentCount;
+    }
+
+    public void setCommentCount(long commentCount) {
+        this.commentCount = commentCount;
     }
 
     public String getThumbnailCaption() {

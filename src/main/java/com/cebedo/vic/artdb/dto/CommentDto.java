@@ -16,11 +16,20 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "comment")
 public class CommentDto {
 
+    private String id;
     private long photoId;
     private long userId;
     private String username;
     private String content;
     private Date datetime;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;

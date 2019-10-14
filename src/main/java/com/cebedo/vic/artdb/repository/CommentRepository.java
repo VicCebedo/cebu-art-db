@@ -17,4 +17,6 @@ public interface CommentRepository extends MongoRepository<CommentDto, String> {
 
     List<CommentDto> findByPhotoId(long photoId);
 
+    long countByPhotoId(long photoId);
+
 }

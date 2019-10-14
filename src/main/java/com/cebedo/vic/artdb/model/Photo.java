@@ -19,14 +19,18 @@ public interface Photo {
 
     String caption();
 
+    @Deprecated
     String thumbnailCaption();
 
     String cloud();
 
+    @Deprecated
     String thumbnail();
 
     Timestamp timestamp();
 
     User user();
+
+    long commentCount();
 
 }

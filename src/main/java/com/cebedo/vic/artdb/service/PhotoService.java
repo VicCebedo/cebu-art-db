@@ -32,4 +32,6 @@ public interface PhotoService {
 
     CommentDto createComment(CommentDto comment);
 
+    boolean deleteComment(CommentDto comment);
+
 }

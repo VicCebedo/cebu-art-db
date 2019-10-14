@@ -12,6 +12,7 @@ import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.model.impl.MutableUser;
+import com.cebedo.vic.artdb.repository.CommentRepository;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -34,6 +35,9 @@ public class PhotoDaoImpl implements PhotoDao {
 
     @Autowired
     private UserDao userDao;
+
+    @Autowired
+    private CommentRepository commentRepository;
 
     @Override
     public void create(Photo photo) {
@@ -91,12 +95,17 @@ public class PhotoDaoImpl implements PhotoDao {
             User user = this.userDao.get(userId);
 
             while (rs.next()) {
+                long photoId = rs.getLong("id");
+                long commentCount = this.commentRepository.countByPhotoId(photoId);
+
                 photos.add(new PhotoBuilder(
-                        rs.getLong("id"),
+                        photoId,
                         rs.getString("url"),
                         rs.getString("caption"),
                         rs.getTimestamp("timestamp"),
-                        new MutableUser(user)).build());
+                        new MutableUser(user),
+                        commentCount)
+                        .build());
             }
 
             return photos;
@@ -124,12 +133,18 @@ public class PhotoDaoImpl implements PhotoDao {
                 usr.setUsername(rs.getString("username"));
                 usr.setName(rs.getString("name"));
 
+                // Get number of comments.
+                long photoId = rs.getLong("id");
+                long commentCount = this.commentRepository.countByPhotoId(photoId);
+
                 photos.add(new PhotoBuilder(
-                        rs.getLong("id"),
+                        photoId,
                         rs.getString("url"),
                         rs.getString("caption"),
                         rs.getTimestamp("timestamp"),
-                        usr).build());
+                        usr,
+                        commentCount)
+                        .build());
             }
 
             return photos;

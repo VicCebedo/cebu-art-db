@@ -163,6 +163,38 @@
             </div>
         </div>
 
+        <!--DELETE COMMENT CONFIRMATION-->
+        <div class="ui basic mini modal" id="modal-delete-comment">
+            <form th:action="@{/logged-in/photo/comment/delete}" th:object="${comment}" th:method="delete" id="form-delete-comment">
+                <input type="hidden" th:field="*{id}" id="form-comment-id"/>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+            <div class="ui icon header">
+                <i class="trash icon"></i>
+                Delete Comment
+            </div>
+            <div class="content">
+                <p>You sure you want to delete this comment?</p>
+            </div>
+            <div class="actions">
+                <div class="ui red basic cancel inverted button" onclick="$('#modal-delete-comment').modal('hide')">
+                    <i class="remove icon"></i>
+                    Cancel
+                </div>
+                <div class="ui green ok inverted button" onclick="doDeleteComment()">
+                    <i class="checkmark icon"></i>
+                    Delete
+                </div>
+            </div>
+        </div>
+
+        <div class="ui basic mini modal" id="modal-delete-success">
+            <div class="ui icon green header">
+                <i class="check icon"></i>
+                Done!
+            </div>
+        </div>
+
         <!--COMMENTS MODAL-->
         <div class="ui mini modal" id="comments-modal">
             <form th:action="@{/logged-in/photo/comment/create}" th:object="${comment}" th:method="post" id="form-comment">
@@ -175,6 +207,12 @@
             <div class="content">
                 <div class="ui comments">
                     <h4 class="ui dividing header">Comments</h4>
+                    <div class="ui" id="comments-loader">
+                        <div class="ui active inverted dimmer">
+                            <div class="ui text loader"></div>
+                        </div>
+                        <p></p>
+                    </div>
                     <div id="modal-comments-data"></div>
                     <div class="ui reply form">
                         <div class="field">
@@ -191,20 +229,43 @@
         </div>
 
         <script type="text/javascript">
+            function doDeleteComment() {
+                $('#modal-delete-comment').modal({'duration': 300}).modal('hide');
+                $.ajax({
+                    url: "/logged-in/photo/comment/delete",
+                    type: 'delete',
+                    data: $('#form-delete-comment').serialize(),
+                    success: function (response) {
+                        $('#modal-delete-success').modal('show');
+                        setTimeout(function () {
+                            $('#modal-delete-success').modal('hide');
+                        }, 1000);
+                    }
+                });
+            }
+
             $('.ui.dropdown').dropdown({
                 on: 'hover',
                 action: 'nothing'
-            })
+            });
 
             function submitComment() {
+                document.getElementById('comments-loader').style = '';
                 $.ajax({
                     url: '/logged-in/photo/comment/create',
                     type: 'post',
                     data: $('#form-comment').serialize(),
                     success: function (response) {
-                        const row = '<div class="comment"><div class="content"><a class="author">' + response.username + '</a>&nbsp;&nbsp;' + response.content + '</div></div>';
+                        const canDelete = `[[${user.id()}]]` === `` + response.userId + ``;
+
+                        var deleteIcon = '';
+                        if (canDelete) {
+                            deleteIcon = '<a style="-webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + response.id + '\')"><i class="trash alternate icon"></i></a>';
+                        }
+                        const row = '<div class="comment"><div class="content"><a class="author">' + response.username + '</a>&nbsp;&nbsp;' + response.content + deleteIcon + '</div></div>';
                         document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
                         document.getElementById('comment-field').value = '';
+                        document.getElementById('comments-loader').style = 'display: none';
                     }
                 });
             }
@@ -219,11 +280,18 @@
                 document.getElementById('global-loader').style = '';
             }
 
+            function deleteCommentConfirm(uuid) {
+                document.getElementById('form-comment-id').value = uuid;
+                $('#modal-delete-comment').modal('show');
+            }
+
             function openComments(id) {
+                document.getElementById('comments-loader').style = '';
                 document.getElementById('modal-comments-data').innerHTML = '';
                 document.getElementById('form-comment-photo-id').value = id;
                 document.getElementById('form-comment-user-id').value = `[[${user.id()}]]`;
                 document.getElementById('form-comment-username').value = `[[${user.username()}]]`;
+                $('#comments-modal').modal('show');
 
                 $.ajax({
                     url: "/logged-in/photo/comment/" + id,
@@ -231,12 +299,21 @@
                     success: function (comments) {
                         for (var i = 0; i < comments.length; i++) {
                             const comment = comments[i];
-                            const row = '<div class="comment"><div class="content"><a class="author">' + comment.username + '</a>&nbsp;&nbsp;' + comment.content + '</div></div>';
+                            const canDelete = `[[${user.id()}]]` === `` + comment.userId + ``;
+
+                            var deleteIcon = '';
+                            if (canDelete) {
+                                deleteIcon = '<a style="-webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + comment.id + '\')"><i class="trash alternate icon"></i></a>';
+                            }
+
+                            const row = '<div class="comment"><div class="content"><a class="author">' + comment.username + '</a>&nbsp;&nbsp;' + comment.content + deleteIcon + '</div></div>';
                             document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
                         }
+
+                        document.getElementById('comments-loader').style = 'display: none';
+                        $('#comments-modal').modal('refresh');
                     }
                 });
-                $('#comments-modal').modal('show');
             }
 
             $('#photostream').visibility({
@@ -252,17 +329,29 @@
                                 const photo = responseBody[i];
                                 const id = "photostream-card-" + photo.id;
                                 const uploader = photo.user.name === '' ? photo.user.username : photo.user.name;
-                                var template
+
+                                // Diplay on label.
+                                var commentColor = '';
+                                var commentDisplay = '';
+                                if (photo.commentCount === 0) {
+                                    commentDisplay = '<i style="color: gray">Add comment..</i>';
+                                    commentColor = '';
+                                } else {
+                                    commentDisplay = photo.commentCount;
+                                    commentColor = 'blue';
+                                }
+
+                                const template
                                         = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 50px;\" id=\"" + id + "\">\n"
                                         + "        <div style=\"padding: 2%\" onclick=\"loading(); location.href='" + photo.user.username + "'\"><b>" + uploader + "</b></div>\n"
                                         + "    <div class=\"image\" id=\"" + id + "-img-src\" caption=\"\" onclick=\"popupImage(this)\">\n"
                                         + "        <img src=\"" + photo.url + "\" class=\"ui image\" style=\"border-radius: 0px !important\" />\n"
                                         + "    </div>\n"
                                         + "    <div style=\"padding-top: 3%\">\n"
-                                        + "        <div class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini button\"><i style=\"margin: 0px\" class=\"heart icon\"></i></div><div class=\"ui basic left pointing label\">1,048</div></div>"
-                                        + "        <div onclick=\"openComments(" + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div class=\"ui basic left pointing label\">1,048</div></div>"
-                                        + "    </div>\n";
-                                +" </div>\n"
+                                        + "        <div class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini button\"><i style=\"margin: 0px\" class=\"heart icon\"></i></div><div class=\"ui basic left pointing label\">0</div></div>"
+                                        + "        <div onclick=\"openComments(" + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini " + commentColor + " button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div class=\"ui basic left pointing " + commentColor + " label\">" + commentDisplay + "</div></div>"
+                                        + "    </div>\n"
+                                        + " </div>\n";
                                 document.getElementById('photostream').insertAdjacentHTML('beforeend', template);
                                 document.getElementById(id + "-img-src").setAttribute("caption", photo.caption);
                             }

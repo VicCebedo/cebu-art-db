@@ -52,6 +52,12 @@ public class PhotoController {
         return this.photoService.getCommentsByPhotoId(id);
     }
 
+    @DeleteMapping("/logged-in/photo/comment/delete")
+    @ResponseBody
+    boolean deletePhotoComment(final CommentDto comment) {
+        return this.photoService.deleteComment(comment);
+    }
+
     @PostMapping("/logged-in/photo/comment/create")
     @ResponseBody
     CommentDto createComment(final CommentDto comment) {
