@@ -213,7 +213,7 @@
                         </div>
                         <p></p>
                     </div>
-                    <div id="modal-comments-data"></div>
+                    <div id="modal-comments-data" style="overflow-y: auto; height: 300px;"></div>
                     <div class="ui reply form">
                         <div class="field">
                             <input type="text" id="comment-field"/>
@@ -319,6 +319,7 @@
                             const row = '<div class="comment"><div class="content"><a class="author">' + comment.username + '</a>&nbsp;&nbsp;' + comment.content + deleteIcon + '</div></div>';
                             document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
                         }
+                        $('#modal-comments-data').scrollTop($('#modal-comments-data')[0].scrollHeight);
                         document.getElementById('comments-loader').style = 'display: none';
                         $('#comments-modal').modal('refresh');
                     }
