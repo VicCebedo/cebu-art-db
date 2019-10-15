@@ -108,8 +108,29 @@
             </div>
         </div>
 
+        <!--SETTINGS-->
+        <div class="ui container">
+            <div class="ui right aligned basic segment">
+                <h2 class="ui header">
+                    <div class="content">
+                        <div class="ui inline dropdown" th:if="${!isGuest}">
+                            <span class="icon">
+                                <i class="cog icon"></i>
+                            </span>
+                            <div class="menu">
+                                <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
+                                <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
+                                <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
+                                <div class="item" onclick="loading();
+                                        document.getElementById('form-logout').submit()">Logout</div>
+                            </div>
+                        </div>
+                    </div>
+                </h2>
+            </div>
+        </div>
+
         <!--HEADER PROFILE DISPLAY-->
-        <div class="ui hidden divider"></div>
         <div class="ui container">
             <div class="ui segment left aligned">
                 <div class="ui items">
@@ -388,29 +409,6 @@
                    th:if="${!isGuest}">
                     <i class="plus square outline icon"></i>
                 </a>
-
-                <!--4th Icon-->
-                <div class="ui dropdown item" th:if="${isGuest}">
-                    <span class="icon">
-                        <i class="cog icon"></i>
-                    </span>
-                    <div class="menu">
-                        <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
-                        <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
-                    </div>
-                </div>
-                <div class="ui dropdown item" th:if="${!isGuest}">
-                    <span class="icon">
-                        <i class="cog icon"></i>
-                    </span>
-                    <div class="menu">
-                        <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
-                        <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
-                        <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
-                        <div class="item" onclick="loading();
-                                document.getElementById('form-logout').submit()">Logout</div>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="ui hidden divider"></div>

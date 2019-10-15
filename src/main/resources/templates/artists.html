@@ -48,9 +48,6 @@
         </div>
 
         <!--NAVIGATION BAR-->
-        <form th:action="@{/logged-in/logout}" method="post" id="form-logout" style="display: none">
-            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-        </form>
         <div class="ui container">
             <div class="ui bottom fixed huge menu">
                 <div class="item">
@@ -64,49 +61,6 @@
                 </a>
                 <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isArtist}">
                     <i class="user icon"></i>
-                </a>
-                <div class="ui dropdown item">
-                    <span class="icon">
-                        <i class="cog icon"></i>
-                    </span>
-                    <div class="menu">
-                        <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
-                        <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!--CHANGE PASSWORD-->        
-        <div id="modal-change-password" class="ui mini modal">
-            <div class="header">
-                Change Password
-            </div>
-            <div class="content">
-                <form th:action="@{/logged-in/user/password/update}" th:object="${changePass}" th:method="put" class="ui form" id="form-change-password">
-                    <div class="field">
-                        <label>Current Password</label>
-                        <input type="password" placeholder="Current Password" th:field="*{password}" />
-                    </div>
-                    <div class="field">
-                        <label>New Password</label>
-                        <input type="password" placeholder="New Password" th:field="*{newPassword}" />
-                    </div>
-                    <div class="field">
-                        <label>Retype New Password:</label>
-                        <input type="password" placeholder="Retype Password" th:field="*{newPasswordRetype}" />
-                    </div>
-                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-                </form>
-            </div>
-            <div class="actions">
-                <div class="ui black deny button">
-                    Cancel
-                </div>
-                <a href="#" onclick="loading(); document.getElementById('form-change-password').submit()">
-                    <div class="ui positive button">
-                        Update
-                    </div>
                 </a>
             </div>
         </div>
