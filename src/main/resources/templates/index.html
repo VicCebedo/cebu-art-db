@@ -167,6 +167,7 @@
         <div class="ui basic fullscreen modal" id="modal-delete-comment">
             <form th:action="@{/logged-in/photo/comment/delete}" th:object="${comment}" th:method="delete" id="form-delete-comment">
                 <input type="hidden" th:field="*{id}" id="form-comment-id"/>
+                <input type="hidden" th:field="*{photoId}" id="form-comment-photo-id-delete"/>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
             <div class="ui icon header">
@@ -247,6 +248,13 @@
                     data: $('#form-delete-comment').serialize(),
                     success: function (response) {
                         $('#modal-delete-success').modal('show');
+
+                        // Update comment count.
+                        console.log(response);
+                        const photoId = document.getElementById('form-comment-photo-id-delete').value;
+                        const commentCount = Number(document.getElementById('comment-label-' + photoId).innerHTML) - 1;
+                        document.getElementById('comment-label-' + photoId).innerHTML = commentCount;
+
                         setTimeout(function () {
                             $('#modal-delete-success').modal('hide');
                         }, 1000);
@@ -273,7 +281,7 @@
 
                             var deleteIcon = '';
                             if (canDelete) {
-                                deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + response.id + '\')"><i class="trash alternate icon"></i></a>';
+                                deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + response.id + '\', ' + response.photoId + ')"><i class="trash alternate icon"></i></a>';
                             }
                             const row = '<div class="comment"><div class="content"><a class="author">' + response.username + '</a>&nbsp;&nbsp;' + response.content + deleteIcon + '</div></div>';
                             document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
@@ -281,6 +289,10 @@
                             document.getElementById('comments-loader').style = 'display: none';
                             $('#modal-comments-data').scrollTop($('#modal-comments-data')[0].scrollHeight);
                             $('#comments-modal').modal('refresh');
+
+                            // Update comment count.
+                            const commentCount = Number(document.getElementById('comment-label-' + response.photoId).innerHTML) + 1;
+                            document.getElementById('comment-label-' + response.photoId).innerHTML = commentCount;
                         }
                     });
                 }
@@ -296,9 +308,10 @@
                 document.getElementById('global-loader').style = '';
             }
 
-            function deleteCommentConfirm(uuid) {
+            function deleteCommentConfirm(uuid, photoId) {
                 $('#comments-modal').modal({'duration': 0}).modal('hide');
                 document.getElementById('form-comment-id').value = uuid;
+                document.getElementById('form-comment-photo-id-delete').value = photoId;
                 $('#modal-delete-comment').modal('show');
                 $('#modal-delete-comment').modal('refresh');
             }
@@ -323,7 +336,7 @@
 
                             var deleteIcon = '';
                             if (canDelete) {
-                                deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + comment.id + '\')"><i class="trash alternate icon"></i></a>';
+                                deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + comment.id + '\', ' + comment.photoId + ')"><i class="trash alternate icon"></i></a>';
                             }
 
                             const row = '<div class="comment"><div class="content"><a class="author">' + comment.username + '</a>&nbsp;&nbsp;' + comment.content + deleteIcon + '</div></div>';
@@ -384,15 +397,9 @@
                                 const uploader = photo.user.name === '' ? photo.user.username : photo.user.name;
 
                                 // Diplay on label.
-                                var commentColor = '';
-                                var commentDisplay = '';
-                                if (photo.commentCount === 0) {
-                                    commentDisplay = '<i style="color: gray">Add reply..</i>';
-                                    commentColor = '';
-                                } else {
-                                    commentDisplay = photo.commentCount;
-                                    commentColor = 'blue';
-                                }
+                                const commentColor = photo.commentCount === 0 ? '' : 'blue';
+                                const commentDisplay = photo.commentCount;
+                                const commentHtml = "<div onclick=\"openComments(" + photo.commentCount + ", " + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div id=\"comment-button-" + photo.id + "\" class=\"ui mini " + commentColor + " button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div id=\"comment-label-" + photo.id + "\" class=\"ui basic left pointing " + commentColor + " label\">" + commentDisplay + "</div></div>";
 
                                 // Like display.
                                 const likeCss = photo.liked ? "red" : "";
@@ -406,7 +413,7 @@
                                         + "    </div>\n"
                                         + "    <div style=\"padding-top: 3%\">\n"
                                         + likeHtml
-                                        + "        <div onclick=\"openComments(" + photo.commentCount + ", " + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini " + commentColor + " button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div class=\"ui basic left pointing " + commentColor + " label\">" + commentDisplay + "</div></div>"
+                                        + commentHtml
                                         + "    </div>\n"
                                         + " </div>\n";
                                 document.getElementById('photostream').insertAdjacentHTML('beforeend', template);
