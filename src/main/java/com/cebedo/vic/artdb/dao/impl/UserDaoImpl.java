@@ -31,7 +31,7 @@ public class UserDaoImpl implements UserDao {
     private DataSource dataSource;
 
     @Override
-    public void changePassword(String username, String newPassword) {
+    public void changePassword(final String username, final String newPassword) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET password = ? WHERE username = ?");
             stmt.setString(1, newPassword);
@@ -43,7 +43,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateProfileCurrentUser(ProfileDto profile) {
+    public void updateProfileCurrentUser(final ProfileDto profile) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET name=?, bio=?, website=?, email=?, phone=? WHERE id=?");
             stmt.setString(1, profile.getName());
@@ -59,7 +59,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void updateProfilePhoto(String profilePic) {
+    public void updateProfilePhoto(final String profilePic) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET profile_pic=? WHERE id=?");
             stmt.setString(1, profilePic);
@@ -71,7 +71,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void decrementInviteCodeRemaining(String code, int newRemaining) {
+    public void decrementInviteCodeRemaining(final String code, final int newRemaining) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("UPDATE invite_codes SET remaining = ? WHERE code = ?");
             stmt.setInt(1, newRemaining);
@@ -83,7 +83,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void create(User user) {
+    public void create(final User user) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("INSERT INTO public.users(username, password, name, bio, website, email, phone, profile_pic, artist) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -103,17 +103,16 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User get(String username) {
+    public User get(final String username) {
         try (Connection connection = dataSource.getConnection()) {
-            username = username.toLowerCase();
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
-            stmt.setString(1, username);
+            stmt.setString(1, username.toLowerCase());
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 return new UserBuilder(
                         rs.getLong("id"),
-                        username,
+                        username.toLowerCase(),
                         rs.getString("password"),
                         rs.getString("name"),
                         rs.getString("bio"),
@@ -129,23 +128,8 @@ public class UserDaoImpl implements UserDao {
         return UserBuilder.newInstance();
     }
 
-//    public Set<Long> getSubscriptions() {
-//        try (Connection connection = dataSource.getConnection()) {
-//            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM subscriptions WHERE subscriber = ?");
-//            stmt.setLong(1, AuthUtils.getAuth().user().id());
-//            ResultSet rs = stmt.executeQuery();
-//            Set<Long> subscriptions = new HashSet<>();
-//
-//            if (rs.next()) {
-//                subscriptions.add(rs.getLong("subscribed_to"));
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return new HashSet<>();
-//    }
     @Override
-    public int getInviteCodeRemaining(String code) {
+    public int getInviteCodeRemaining(final String code) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM invite_codes WHERE code = ?");
             stmt.setString(1, code);
@@ -160,7 +144,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User get(long id) {
+    public User get(final long id) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE id = ?");
             stmt.setLong(1, id);
@@ -186,7 +170,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getUsers(int offset) {
+    public List<User> getUsers(final int offset) {
         try (Connection connection = dataSource.getConnection()) {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE artist = true LIMIT 5 OFFSET " + offset);

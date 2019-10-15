@@ -163,7 +163,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDto updateProfilePic(String profilePic) {
+    public ResponseDto updateProfilePic(final String profilePic) {
         // Artist only feature.
         if (!AuthUtils.isArtist()) {
             return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");
@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers(int offset) {
+    public List<User> getUsers(final int offset) {
         return this.userDao.getUsers(offset);
     }
 

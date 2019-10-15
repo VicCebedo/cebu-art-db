@@ -5,9 +5,9 @@
  */
 package com.cebedo.vic.artdb.builder;
 
+import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.impl.ImmutablePhoto;
 import java.sql.Timestamp;
 import java.util.Objects;
 
@@ -26,28 +26,41 @@ public final class PhotoBuilder {
     private final long likeCount;
     private final boolean liked;
 
-    public PhotoBuilder(long i, String u, String c, Timestamp t, User user, long cCount, long lCount, boolean isLiked) {
+    public PhotoBuilder(
+            final long i,
+            final String u,
+            final String c,
+            final Timestamp t,
+            final User user,
+            final long cCount,
+            final long lCount,
+            final boolean isLiked) {
+
         Objects.requireNonNull(i);
         Objects.requireNonNull(u);
         Objects.requireNonNull(c);
         Objects.requireNonNull(t);
         Objects.requireNonNull(user);
+        Objects.requireNonNull(cCount);
+        Objects.requireNonNull(lCount);
+        Objects.requireNonNull(isLiked);
+
         this.id = i;
         this.url = u;
         this.caption = c;
         this.timestamp = t;
         this.user = user;
         this.commentCount = cCount;
-        this.liked = isLiked;
         this.likeCount = lCount;
+        this.liked = isLiked;
     }
 
     public Photo build() {
-        return new ImmutablePhoto(this);
+        return new PhotoDto(this);
     }
 
     public static Photo newInstance() {
-        return new ImmutablePhoto(new PhotoBuilder(
+        return new PhotoDto(new PhotoBuilder(
                 0,
                 "",
                 "",

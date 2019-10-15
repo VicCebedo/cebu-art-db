@@ -41,7 +41,7 @@ public class NavigationController {
     private UserService userService;
 
     @GetMapping("/")
-    String pageIndex(Model model, HttpServletRequest request) {
+    String pageIndex(final Model model, final HttpServletRequest request) {
         // If not yet authenticated, redirect to login.
         if (!AuthUtils.isAuthenticated()) {
             return "redirect:/login";
@@ -60,7 +60,7 @@ public class NavigationController {
     }
 
     @GetMapping("/logged-in/artists")
-    String pageArtists(Model model, HttpServletRequest request) {
+    String pageArtists(final Model model, final HttpServletRequest request) {
         model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("artists", this.userService.getUsers(0));
         model.addAttribute("changePass", new UserDto());
@@ -72,7 +72,7 @@ public class NavigationController {
 
     @GetMapping("/logged-in/artists/pagination/next")
     @ResponseBody
-    String artistsPaginationNext(Model model, HttpServletRequest request) {
+    String artistsPaginationNext(final Model model, final HttpServletRequest request) {
         // Get current offset value.
         HttpSession session = request.getSession();
         int offset = session.getAttribute("users-pagination-offset") == null
@@ -136,7 +136,7 @@ public class NavigationController {
     }
 
     @GetMapping("/login")
-    String pageLogin(Model model, HttpServletRequest request) {
+    String pageLogin(final Model model, final HttpServletRequest request) {
         model.addAttribute("user", new UserDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
@@ -145,14 +145,14 @@ public class NavigationController {
     }
 
     @GetMapping("/login/fail")
-    String pageLoginFail(RedirectAttributes attrs) {
+    String pageLoginFail(final RedirectAttributes attrs) {
         ResponseDto rsp = ResponseDto.newInstanceWithError("Incorrect username or password.");
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         return "redirect:/login";
     }
 
     @GetMapping("/register")
-    String pageRegister(Model model, HttpServletRequest request) {
+    String pageRegister(final Model model, final HttpServletRequest request) {
         model.addAttribute("user", new UserDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
@@ -161,7 +161,7 @@ public class NavigationController {
     }
 
     @GetMapping("/logged-in/home")
-    String pageHome(Model model, HttpServletRequest request) {
+    String pageHome(final Model model, final HttpServletRequest request) {
         // If non-artist account, redirect to index.
         if (!AuthUtils.isArtist()) {
             return "redirect:/";

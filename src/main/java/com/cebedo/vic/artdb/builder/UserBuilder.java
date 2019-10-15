@@ -26,7 +26,18 @@ public final class UserBuilder {
     private final String profilePic;
     private final boolean artist;
 
-    public UserBuilder(long i, String u, String p, String name, String bio, String website, String email, String phone, String profPic, boolean art) {
+    public UserBuilder(
+            final long i,
+            final String u,
+            final String p,
+            final String name,
+            final String bio,
+            final String website,
+            final String email,
+            final String phone,
+            final String profPic,
+            final boolean art) {
+
         Objects.requireNonNull(i);
         Objects.requireNonNull(u);
         Objects.requireNonNull(p);
@@ -35,6 +46,9 @@ public final class UserBuilder {
         Objects.requireNonNull(website);
         Objects.requireNonNull(email);
         Objects.requireNonNull(phone);
+        Objects.requireNonNull(profPic);
+        Objects.requireNonNull(art);
+
         this.id = i;
         this.username = u;
         this.password = p;

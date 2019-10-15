@@ -5,7 +5,6 @@
  */
 package com.cebedo.vic.artdb.controller;
 
-import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.dto.UserDto;
@@ -44,7 +43,7 @@ public class UserController {
     private PhotoService photoService;
 
     @PostMapping("/user/register")
-    String create(final UserDto user, RedirectAttributes attrs) {
+    String create(final UserDto user, final RedirectAttributes attrs) {
         ResponseDto rsp = this.userService.create(user);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -54,7 +53,7 @@ public class UserController {
     }
 
     @PutMapping("/logged-in/user/password/update")
-    String updatePassword(final UserDto changePass, RedirectAttributes attrs) {
+    String updatePassword(final UserDto changePass, final RedirectAttributes attrs) {
         // TODO (Beta) Implement non-artist accounts.
         // TODO (Beta) Implement forget password.
         // TODO (Beta) Captcha for registration.
@@ -71,14 +70,14 @@ public class UserController {
     }
 
     @PutMapping("/logged-in/user/profile-pic/update")
-    String updateProfilePic(final ProfileDto profile, RedirectAttributes attrs) {
+    String updateProfilePic(final ProfileDto profile, final RedirectAttributes attrs) {
         ResponseDto rsp = this.userService.updateProfilePic(profile.getProfilePic());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
         return "redirect:/logged-in/home";
     }
 
     @PutMapping("/logged-in/user/profile/update")
-    String updateProfileCurrentUser(final ProfileDto profile, RedirectAttributes attrs) {
+    String updateProfileCurrentUser(final ProfileDto profile, final RedirectAttributes attrs) {
         ResponseDto rsp = this.userService.updateProfileCurrentUser(profile);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -93,7 +92,11 @@ public class UserController {
 
     @GetMapping("/logged-in/user/{id}/photo/pagination/next")
     @ResponseBody
-    List<PhotoDto> homePaginationNext(@PathVariable("id") final long id, Model model, HttpServletRequest request) {
+    List<Photo> homePaginationNext(
+            @PathVariable("id") final long id,
+            final Model model,
+            final HttpServletRequest request) {
+
         // Get current offset value.
         HttpSession session = request.getSession();
         int offset = session.getAttribute("home-pagination-offset") == null
@@ -106,9 +109,11 @@ public class UserController {
     }
 
     @GetMapping("/{username}")
-    String pageUser(@PathVariable("username") final String username,
-            Model model,
-            HttpServletRequest request) {
+    String pageUser(
+            @PathVariable("username") final String username,
+            final Model model,
+            final HttpServletRequest request) {
+
         // If not yet authenticated, redirect to login.
         if (!AuthUtils.isAuthenticated()) {
             return "redirect:/login";

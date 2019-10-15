@@ -5,9 +5,11 @@
  */
 package com.cebedo.vic.artdb.dto;
 
+import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.model.User;
 import java.sql.Timestamp;
+import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -15,7 +17,7 @@ import javax.validation.constraints.Size;
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class PhotoDto {
+public class PhotoDto implements Photo {
 
     private long id;
     private String url;
@@ -24,9 +26,7 @@ public class PhotoDto {
     @Size(max = 2000, message = "Caption must not be more than 2000 characters.")
     private String caption;
 
-    private String thumbnailCaption;
     private String cloud;
-    private String thumbnail;
     private Timestamp timestamp;
     private User user;
     private long commentCount;
@@ -37,18 +37,17 @@ public class PhotoDto {
         ;
     }
 
-    public PhotoDto(Photo p) {
-        this.id = p.id();
-        this.url = p.url();
-        this.caption = p.caption();
-        this.thumbnailCaption = p.thumbnailCaption();
-        this.cloud = p.cloud();
-        this.thumbnail = p.thumbnail();
-        this.timestamp = p.timestamp();
-        this.user = p.user();
-        this.commentCount = p.commentCount();
-        this.likeCount = p.likeCount();
-        this.liked = p.liked();
+    public PhotoDto(PhotoBuilder b) {
+        Objects.requireNonNull(b);
+        this.id = b.id();
+        this.url = b.url();
+        this.caption = b.caption();
+        this.cloud = this.url.substring(this.url.lastIndexOf('/') + 1, this.url.lastIndexOf('.'));
+        this.timestamp = b.timestamp();
+        this.user = b.user();
+        this.commentCount = b.commentCount();
+        this.likeCount = b.likeCount();
+        this.liked = b.liked();
     }
 
     public boolean isLiked() {
@@ -73,22 +72,6 @@ public class PhotoDto {
 
     public void setCommentCount(long commentCount) {
         this.commentCount = commentCount;
-    }
-
-    public String getThumbnailCaption() {
-        return thumbnailCaption;
-    }
-
-    public void setThumbnailCaption(String thumbnailCaption) {
-        this.thumbnailCaption = thumbnailCaption;
-    }
-
-    public String getThumbnail() {
-        return thumbnail;
-    }
-
-    public void setThumbnail(String thumbnail) {
-        this.thumbnail = thumbnail;
     }
 
     public Timestamp getTimestamp() {
@@ -137,6 +120,51 @@ public class PhotoDto {
 
     public void setCaption(String caption) {
         this.caption = caption;
+    }
+
+    @Override
+    public long id() {
+        return this.id;
+    }
+
+    @Override
+    public String url() {
+        return this.url;
+    }
+
+    @Override
+    public String caption() {
+        return this.caption;
+    }
+
+    @Override
+    public String cloud() {
+        return this.cloud;
+    }
+
+    @Override
+    public Timestamp timestamp() {
+        return this.timestamp;
+    }
+
+    @Override
+    public User user() {
+        return this.user;
+    }
+
+    @Override
+    public long commentCount() {
+        return this.id;
+    }
+
+    @Override
+    public long likeCount() {
+        return this.id;
+    }
+
+    @Override
+    public boolean liked() {
+        return this.liked;
     }
 
 }

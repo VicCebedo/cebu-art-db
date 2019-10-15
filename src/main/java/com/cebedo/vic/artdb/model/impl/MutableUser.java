@@ -29,7 +29,7 @@ public class MutableUser implements User {
         ;
     }
 
-    public MutableUser(User usr) {
+    public MutableUser(final User usr) {
         Objects.requireNonNull(usr);
         this.id = usr.id();
         this.username = usr.username();

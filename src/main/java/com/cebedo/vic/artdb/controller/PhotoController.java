@@ -9,6 +9,7 @@ import com.cebedo.vic.artdb.dto.CommentDto;
 import com.cebedo.vic.artdb.dto.LikeDto;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
+import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.util.List;
@@ -37,7 +38,7 @@ public class PhotoController {
 
     @GetMapping("/logged-in/photo/pagination/next")
     @ResponseBody
-    List<PhotoDto> indexPaginationNext(Model model, HttpServletRequest request) {
+    List<Photo> indexPaginationNext(final Model model, final HttpServletRequest request) {
         // Get current offset value.
         HttpSession session = request.getSession();
         int offset = session.getAttribute("index-pagination-offset") == null
@@ -74,7 +75,7 @@ public class PhotoController {
     }
 
     @PostMapping("/logged-in/photo/upload")
-    String upload(final PhotoDto photo, RedirectAttributes attrs) {
+    String upload(final PhotoDto photo, final RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.create(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -82,7 +83,7 @@ public class PhotoController {
     }
 
     @PutMapping("/logged-in/photo/caption/update")
-    String updateCaption(final PhotoDto photo, RedirectAttributes attrs) {
+    String updateCaption(final PhotoDto photo, final RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.updateCaption(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -90,7 +91,7 @@ public class PhotoController {
     }
 
     @DeleteMapping("/logged-in/photo/delete")
-    String delete(final PhotoDto photo, RedirectAttributes attrs) {
+    String delete(final PhotoDto photo, final RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.delete(photo.getId(), photo.getCloud());
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());

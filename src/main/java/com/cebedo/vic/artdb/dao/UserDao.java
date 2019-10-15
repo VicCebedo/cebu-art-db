@@ -15,22 +15,22 @@ import java.util.List;
  */
 public interface UserDao {
 
-    User get(String username);
+    User get(final String username);
 
-    User get(long id);
+    User get(final long id);
 
-    void changePassword(String username, String newPassword);
+    void changePassword(final String username, final String newPassword);
 
-    void updateProfilePhoto(String profilePic);
+    void updateProfilePhoto(final String profilePic);
 
-    void create(User user);
+    void create(final User user);
 
-    List<User> getUsers(int offset);
+    List<User> getUsers(final int offset);
 
-    void updateProfileCurrentUser(ProfileDto user);
+    void updateProfileCurrentUser(final ProfileDto user);
 
-    int getInviteCodeRemaining(String code);
+    int getInviteCodeRemaining(final String code);
 
-    void decrementInviteCodeRemaining(String code, int newRemaining);
+    void decrementInviteCodeRemaining(final String code, final int newRemaining);
 
 }

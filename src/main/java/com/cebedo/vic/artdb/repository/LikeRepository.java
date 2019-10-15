@@ -14,8 +14,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface LikeRepository extends MongoRepository<LikeDto, String> {
 
-    LikeDto findByPhotoIdAndUserId(long photoId, long userId);
+    LikeDto findByPhotoIdAndUserId(final long photoId, final long userId);
 
-    long countByPhotoId(long photoId);
+    long countByPhotoId(final long photoId);
 
 }

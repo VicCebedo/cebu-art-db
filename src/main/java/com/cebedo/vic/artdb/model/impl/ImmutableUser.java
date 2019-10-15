@@ -26,7 +26,7 @@ public final class ImmutableUser implements User {
     private final String profilePic;
     private final boolean artist;
 
-    public ImmutableUser(UserBuilder b) {
+    public ImmutableUser(final UserBuilder b) {
         Objects.requireNonNull(b);
         this.id = b.id();
         this.username = b.username();

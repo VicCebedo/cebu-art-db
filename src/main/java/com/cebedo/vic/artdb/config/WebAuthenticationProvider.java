@@ -29,7 +29,7 @@ public class WebAuthenticationProvider implements AuthenticationProvider {
     private UserService userService;
 
     @Override
-    public Authentication authenticate(Authentication auth) throws AuthenticationException {
+    public Authentication authenticate(final Authentication auth) throws AuthenticationException {
 
         // Raw data from request.
         String username = auth.getName().toLowerCase();

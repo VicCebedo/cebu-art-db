@@ -7,8 +7,8 @@ package com.cebedo.vic.artdb.service;
 
 import com.cebedo.vic.artdb.dto.CommentDto;
 import com.cebedo.vic.artdb.dto.LikeDto;
-import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
+import com.cebedo.vic.artdb.model.Photo;
 import java.util.List;
 
 /**
@@ -17,24 +17,24 @@ import java.util.List;
  */
 public interface PhotoService {
 
-    ResponseDto create(PhotoDto photo);
+    ResponseDto create(final Photo photo);
 
-    ResponseDto delete(long id, String cloudName);
+    ResponseDto delete(final long id, final String cloudName);
 
-    ResponseDto updateCaption(PhotoDto photo);
+    ResponseDto updateCaption(final Photo photo);
 
-    List<PhotoDto> getPhotos(int offset);
+    List<Photo> getPhotos(final int offset);
 
-    List<PhotoDto> getPhotosByCurrentUser(int offset);
+    List<Photo> getPhotosByCurrentUser(final int offset);
 
-    List<PhotoDto> getPhotosByUserId(long id, int offset);
+    List<Photo> getPhotosByUserId(final long id, final int offset);
 
-    List<CommentDto> getCommentsByPhotoId(long id);
+    List<CommentDto> getCommentsByPhotoId(final long id);
 
-    CommentDto createComment(CommentDto comment);
+    CommentDto createComment(final CommentDto comment);
 
-    boolean deleteComment(CommentDto comment);
+    boolean deleteComment(final CommentDto comment);
 
-    LikeDto toggleLike(LikeDto like);
+    LikeDto toggleLike(final LikeDto like);
 
 }

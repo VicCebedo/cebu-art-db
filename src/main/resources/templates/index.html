@@ -204,7 +204,6 @@
                         $('#modal-delete-success').modal('show');
 
                         // Update comment count.
-                        console.log(response);
                         const photoId = document.getElementById('form-comment-photo-id-delete').value;
                         const commentCount = Number(document.getElementById('comment-label-' + photoId).innerHTML) - 1;
                         document.getElementById('comment-label-' + photoId).innerHTML = commentCount;
@@ -270,7 +269,7 @@
                 $('#modal-delete-comment').modal('refresh');
             }
 
-            function openComments(count, id) {
+            function openComments(id) {
                 document.getElementById('comments-loader').style = '';
                 document.getElementById('modal-comments-data').innerHTML = '';
                 document.getElementById('form-comment-photo-id').value = id;
@@ -278,8 +277,6 @@
                 document.getElementById('form-comment-username').value = `[[${user.username()}]]`;
                 $('#comments-modal').modal({'duration': 0, 'autofocus': false}).modal('show');
 
-                // TODO Consider count optimization after auto-count update.
-                // if (count > 0) {
                 $.ajax({
                     url: "/logged-in/photo/comment/" + id,
                     type: 'get',
@@ -301,9 +298,6 @@
                         $('#comments-modal').modal('refresh');
                     }
                 });
-                // } else {
-                //     document.getElementById('comments-loader').style = 'display: none';
-                // }
             }
 
             function toggleLike(id) {
@@ -313,7 +307,6 @@
                     type: 'post',
                     data: $('#form-like').serialize(),
                     success: function (response) {
-                        console.log(response);
 
                         // If ID is null, meaning we have un-liked the photo.
                         // So, remove the red class.
@@ -353,7 +346,7 @@
                                 // Diplay on label.
                                 const commentColor = photo.commentCount === 0 ? '' : 'blue';
                                 const commentDisplay = photo.commentCount;
-                                const commentHtml = "<div onclick=\"openComments(" + photo.commentCount + ", " + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div id=\"comment-button-" + photo.id + "\" class=\"ui mini " + commentColor + " button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div id=\"comment-label-" + photo.id + "\" class=\"ui basic left pointing " + commentColor + " label\">" + commentDisplay + "</div></div>";
+                                const commentHtml = "<div onclick=\"openComments(" + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div id=\"comment-button-" + photo.id + "\" class=\"ui mini " + commentColor + " button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div id=\"comment-label-" + photo.id + "\" class=\"ui basic left pointing " + commentColor + " label\">" + commentDisplay + "</div></div>";
 
                                 // Like display.
                                 const likeCss = photo.liked ? "red" : "";

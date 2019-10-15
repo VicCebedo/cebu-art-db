@@ -9,7 +9,6 @@ import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.dto.LikeDto;
-import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.model.impl.MutableUser;
@@ -59,14 +58,14 @@ public class PhotoDaoImpl implements PhotoDao {
     }
 
     @Override
-    public void updateCaption(PhotoDto photo) {
+    public void updateCaption(Photo photo) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "UPDATE photos "
                     + "SET caption = ? "
                     + "WHERE id = ? AND user_id = ?";
             PreparedStatement stmt = connection.prepareStatement(sql);
-            stmt.setString(1, photo.getCaption());
-            stmt.setLong(2, photo.getId());
+            stmt.setString(1, photo.caption());
+            stmt.setLong(2, photo.id());
             stmt.setLong(3, AuthUtils.getAuth().user().id());
             stmt.executeUpdate();
         } catch (Exception e) {

@@ -17,17 +17,17 @@ import java.util.List;
  */
 public interface UserService {
 
-    ResponseDto changePassword(UserDto user);
+    ResponseDto changePassword(final UserDto user);
 
-    ResponseDto create(UserDto user);
+    ResponseDto create(final UserDto user);
 
-    User get(String username);
+    User get(final String username);
 
-    List<User> getUsers(int offset);
+    List<User> getUsers(final int offset);
 
-    ResponseDto updateProfileCurrentUser(ProfileDto user);
+    ResponseDto updateProfileCurrentUser(final ProfileDto user);
 
-    ResponseDto updateProfilePic(String profilePic);
+    ResponseDto updateProfilePic(final String profilePic);
 
     void deleteProfilePic();
 

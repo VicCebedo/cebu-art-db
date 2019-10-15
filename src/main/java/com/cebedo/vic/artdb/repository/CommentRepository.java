@@ -15,8 +15,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface CommentRepository extends MongoRepository<CommentDto, String> {
 
-    List<CommentDto> findByPhotoId(long photoId);
+    List<CommentDto> findByPhotoId(final long photoId);
 
-    long countByPhotoId(long photoId);
+    long countByPhotoId(final long photoId);
 
 }
