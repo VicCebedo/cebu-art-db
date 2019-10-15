@@ -5,22 +5,18 @@
  */
 package com.cebedo.vic.artdb.dto;
 
-import java.util.Date;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-@Document(collection = "comment")
-public class CommentDto {
+@Document(collection = "like")
+public class LikeDto {
 
     private String id;
     private long photoId;
     private long userId;
-    private String username;
-    private String content;
-    private Date datetime;
 
     public String getId() {
         return id;
@@ -28,22 +24,6 @@ public class CommentDto {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public Date getDatetime() {
-        return datetime;
-    }
-
-    public void setDatetime(Date datetime) {
-        this.datetime = datetime;
     }
 
     public long getPhotoId() {
@@ -60,14 +40,6 @@ public class CommentDto {
 
     public void setUserId(long userId) {
         this.userId = userId;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 
 }

@@ -8,11 +8,13 @@ package com.cebedo.vic.artdb.dao.impl;
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.dao.UserDao;
+import com.cebedo.vic.artdb.dto.LikeDto;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.model.impl.MutableUser;
 import com.cebedo.vic.artdb.repository.CommentRepository;
+import com.cebedo.vic.artdb.repository.LikeRepository;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -38,6 +40,9 @@ public class PhotoDaoImpl implements PhotoDao {
 
     @Autowired
     private CommentRepository commentRepository;
+
+    @Autowired
+    private LikeRepository likeRepository;
 
     @Override
     public void create(Photo photo) {
@@ -97,6 +102,8 @@ public class PhotoDaoImpl implements PhotoDao {
             while (rs.next()) {
                 long photoId = rs.getLong("id");
                 long commentCount = this.commentRepository.countByPhotoId(photoId);
+                LikeDto like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
+                long likeCount = this.likeRepository.countByPhotoId(photoId);
 
                 photos.add(new PhotoBuilder(
                         photoId,
@@ -104,7 +111,9 @@ public class PhotoDaoImpl implements PhotoDao {
                         rs.getString("caption"),
                         rs.getTimestamp("timestamp"),
                         new MutableUser(user),
-                        commentCount)
+                        commentCount,
+                        likeCount,
+                        like != null)
                         .build());
             }
 
@@ -126,6 +135,7 @@ public class PhotoDaoImpl implements PhotoDao {
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
             List<Photo> photos = new ArrayList<>();
+            long userId = AuthUtils.getAuth().user().id();
 
             while (rs.next()) {
 
@@ -133,9 +143,11 @@ public class PhotoDaoImpl implements PhotoDao {
                 usr.setUsername(rs.getString("username"));
                 usr.setName(rs.getString("name"));
 
-                // Get number of comments.
+                // Comments and likes data.
                 long photoId = rs.getLong("id");
                 long commentCount = this.commentRepository.countByPhotoId(photoId);
+                LikeDto like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
+                long likeCount = this.likeRepository.countByPhotoId(photoId);
 
                 photos.add(new PhotoBuilder(
                         photoId,
@@ -143,7 +155,9 @@ public class PhotoDaoImpl implements PhotoDao {
                         rs.getString("caption"),
                         rs.getTimestamp("timestamp"),
                         usr,
-                        commentCount)
+                        commentCount,
+                        likeCount,
+                        like != null)
                         .build());
             }
 

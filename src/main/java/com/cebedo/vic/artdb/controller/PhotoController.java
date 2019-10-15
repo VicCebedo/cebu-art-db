@@ -6,9 +6,11 @@
 package com.cebedo.vic.artdb.controller;
 
 import com.cebedo.vic.artdb.dto.CommentDto;
+import com.cebedo.vic.artdb.dto.LikeDto;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.service.PhotoService;
+import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -62,6 +64,13 @@ public class PhotoController {
     @ResponseBody
     CommentDto createComment(final CommentDto comment) {
         return this.photoService.createComment(comment);
+    }
+
+    @PostMapping("/logged-in/photo/like/toggle")
+    @ResponseBody
+    LikeDto toggleLike(final LikeDto like) {
+        like.setUserId(AuthUtils.getAuth().user().id());
+        return this.photoService.toggleLike(like);
     }
 
     @PostMapping("/logged-in/photo/upload")

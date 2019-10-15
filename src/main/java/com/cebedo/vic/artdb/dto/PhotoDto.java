@@ -30,6 +30,8 @@ public class PhotoDto {
     private Timestamp timestamp;
     private User user;
     private long commentCount;
+    private long likeCount;
+    private boolean liked;
 
     public PhotoDto() {
         ;
@@ -45,6 +47,24 @@ public class PhotoDto {
         this.timestamp = p.timestamp();
         this.user = p.user();
         this.commentCount = p.commentCount();
+        this.likeCount = p.likeCount();
+        this.liked = p.liked();
+    }
+
+    public boolean isLiked() {
+        return liked;
+    }
+
+    public void setLiked(boolean liked) {
+        this.liked = liked;
+    }
+
+    public long getLikeCount() {
+        return likeCount;
+    }
+
+    public void setLikeCount(long likeCount) {
+        this.likeCount = likeCount;
     }
 
     public long getCommentCount() {

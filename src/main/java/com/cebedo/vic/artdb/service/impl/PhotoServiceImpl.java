@@ -8,10 +8,12 @@ package com.cebedo.vic.artdb.service.impl;
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.dto.CommentDto;
+import com.cebedo.vic.artdb.dto.LikeDto;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.repository.CommentRepository;
+import com.cebedo.vic.artdb.repository.LikeRepository;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import com.cloudinary.Cloudinary;
@@ -49,6 +51,9 @@ public class PhotoServiceImpl implements PhotoService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private LikeRepository likeRepository;
+
     @Override
     public ResponseDto create(PhotoDto photo) {
         // Artist only feature.
@@ -71,7 +76,9 @@ public class PhotoServiceImpl implements PhotoService {
                 photo.getCaption(),
                 new Timestamp(System.currentTimeMillis()),
                 AuthUtils.getAuth().user(),
-                0)
+                0,
+                0,
+                false)
                 .build());
         return ResponseDto.newInstanceWithMessage("You have uploaded a new photo.");
     }
@@ -156,5 +163,19 @@ public class PhotoServiceImpl implements PhotoService {
         // TODO Make sure I'm deleting my comment.
         this.commentRepository.deleteById(comment.getId());
         return true;
+    }
+
+    @Override
+    public LikeDto toggleLike(LikeDto like) {
+        LikeDto result = this.likeRepository.findByPhotoIdAndUserId(like.getPhotoId(), like.getUserId());
+
+        // If count is more than zero,
+        // the un-like. Else, do like.
+        if (result != null) {
+            this.likeRepository.deleteById(result.getId());
+            return new LikeDto();
+        }
+        like.setId(UUID.randomUUID().toString());
+        return this.likeRepository.save(like);
     }
 }

@@ -195,13 +195,18 @@
             </div>
         </div>
 
-        <!--COMMENTS MODAL-->
+        <!--COMMENTS AND LIKES MODAL-->
         <div class="ui mini modal" id="comments-modal">
             <form th:action="@{/logged-in/photo/comment/create}" th:object="${comment}" th:method="post" id="form-comment">
                 <input type="hidden" th:field="*{photoId}" id="form-comment-photo-id"/>
                 <input type="hidden" th:field="*{userId}" id="form-comment-user-id"/>
                 <input type="hidden" th:field="*{username}" id="form-comment-username"/>
                 <input type="hidden" th:field="*{content}" id="form-comment-content"/>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+            <form th:action="@{/logged-in/photo/like/toggle}" th:object="${like}" th:method="post" id="form-like">
+                <input type="hidden" th:field="*{id}" id="form-like-id"/>
+                <input type="hidden" th:field="*{photoId}" id="form-like-photo-id"/>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
             <div class="content">
@@ -334,6 +339,36 @@
                 // }
             }
 
+            function toggleLike(id) {
+                document.getElementById('form-like-photo-id').value = id;
+                $.ajax({
+                    url: "/logged-in/photo/like/toggle",
+                    type: 'post',
+                    data: $('#form-like').serialize(),
+                    success: function (response) {
+                        console.log(response);
+
+                        // If ID is null, meaning we have un-liked the photo.
+                        // So, remove the red class.
+                        const button = document.getElementById('like-button-' + id);
+                        const label = document.getElementById('like-label-' + id);
+                        var likeCount = Number(document.getElementById('like-label-' + id).innerHTML);
+
+                        if (response.id === null) {
+                            button.classList.remove('red');
+                            label.classList.remove('red');
+                            likeCount--;
+                        } else {
+                            // Else, add red class.
+                            button.classList.add('red');
+                            label.classList.add('red');
+                            likeCount++;
+                        }
+                        document.getElementById('like-label-' + id).innerHTML = likeCount;
+                    }
+                });
+            }
+
             $('#photostream').visibility({
                 once: false,
                 onBottomVisible: function () {
@@ -359,6 +394,10 @@
                                     commentColor = 'blue';
                                 }
 
+                                // Like display.
+                                const likeCss = photo.liked ? "red" : "";
+                                const likeHtml = "<div onclick=\"toggleLike(" + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div id=\"like-button-" + photo.id + "\" class=\"ui mini " + likeCss + " button\"><i style=\"margin: 0px\" class=\"heart icon\"></i></div><div id=\"like-label-" + photo.id + "\" class=\"ui basic left pointing " + likeCss + " label\">" + photo.likeCount + "</div></div>";
+
                                 const template
                                         = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 50px;\" id=\"" + id + "\">\n"
                                         + "        <div style=\"padding: 2%\" onclick=\"loading(); location.href='" + photo.user.username + "'\"><b>" + uploader + "</b></div>\n"
@@ -366,7 +405,7 @@
                                         + "        <img src=\"" + photo.url + "\" class=\"ui image\" style=\"border-radius: 0px !important\" />\n"
                                         + "    </div>\n"
                                         + "    <div style=\"padding-top: 3%\">\n"
-                                        + "        <div class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini button\"><i style=\"margin: 0px\" class=\"heart icon\"></i></div><div class=\"ui basic left pointing label\">0</div></div>"
+                                        + likeHtml
                                         + "        <div onclick=\"openComments(" + photo.commentCount + ", " + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div class=\"ui mini " + commentColor + " button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div class=\"ui basic left pointing " + commentColor + " label\">" + commentDisplay + "</div></div>"
                                         + "    </div>\n"
                                         + " </div>\n";

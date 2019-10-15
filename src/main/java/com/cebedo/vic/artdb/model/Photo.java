@@ -33,4 +33,8 @@ public interface Photo {
 
     long commentCount();
 
+    long likeCount();
+
+    boolean liked();
+
 }

@@ -6,6 +6,7 @@
 package com.cebedo.vic.artdb.service;
 
 import com.cebedo.vic.artdb.dto.CommentDto;
+import com.cebedo.vic.artdb.dto.LikeDto;
 import com.cebedo.vic.artdb.dto.PhotoDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
 import java.util.List;
@@ -33,5 +34,7 @@ public interface PhotoService {
     CommentDto createComment(CommentDto comment);
 
     boolean deleteComment(CommentDto comment);
+
+    LikeDto toggleLike(LikeDto like);
 
 }
