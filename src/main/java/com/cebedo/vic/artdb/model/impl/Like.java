@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.artdb.dto;
+package com.cebedo.vic.artdb.model.impl;
 
+import com.cebedo.vic.artdb.model.ILike;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -12,7 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
 @Document(collection = "like")
-public class LikeDto {
+public class Like implements ILike {
 
     private String id;
     private long photoId;
@@ -40,6 +41,21 @@ public class LikeDto {
 
     public void setUserId(long userId) {
         this.userId = userId;
+    }
+
+    @Override
+    public String id() {
+        return this.id;
+    }
+
+    @Override
+    public long photoId() {
+        return this.photoId;
+    }
+
+    @Override
+    public long userId() {
+        return this.userId;
     }
 
 }

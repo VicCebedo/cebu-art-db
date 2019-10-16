@@ -7,10 +7,9 @@ package com.cebedo.vic.artdb.service.impl;
 
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
-import com.cebedo.vic.artdb.dto.CommentDto;
-import com.cebedo.vic.artdb.dto.LikeDto;
+import com.cebedo.vic.artdb.model.impl.Comment;
+import com.cebedo.vic.artdb.model.impl.Like;
 import com.cebedo.vic.artdb.dto.ResponseDto;
-import com.cebedo.vic.artdb.model.Photo;
 import com.cebedo.vic.artdb.repository.CommentRepository;
 import com.cebedo.vic.artdb.repository.LikeRepository;
 import com.cebedo.vic.artdb.service.PhotoService;
@@ -29,6 +28,8 @@ import javax.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.cebedo.vic.artdb.model.IPhoto;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -54,13 +55,13 @@ public class PhotoServiceImpl implements PhotoService {
     private LikeRepository likeRepository;
 
     @Override
-    public ResponseDto create(final Photo photo) {
+    public ResponseDto create(final IPhoto photo) {
         // Artist only feature.
         if (!AuthUtils.isArtist()) {
             return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");
         }
 
-        Set<ConstraintViolation<Photo>> constraintViolations = validator.validate(photo);
+        Set<ConstraintViolation<IPhoto>> constraintViolations = validator.validate(photo);
         if (constraintViolations.size() > 0) {
             List<String> errors = new ArrayList<>();
             for (ConstraintViolation violation : constraintViolations) {
@@ -83,13 +84,13 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public ResponseDto updateCaption(final Photo photo) {
+    public ResponseDto updateCaption(final IPhoto photo) {
         // Artist only feature.
         if (!AuthUtils.isArtist()) {
             return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");
         }
 
-        Set<ConstraintViolation<Photo>> constraintViolations = validator.validate(photo);
+        Set<ConstraintViolation<IPhoto>> constraintViolations = validator.validate(photo);
         if (constraintViolations.size() > 0) {
             List<String> errors = new ArrayList<>();
             for (ConstraintViolation violation : constraintViolations) {
@@ -103,17 +104,17 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public List<Photo> getPhotosByCurrentUser(final int offset) {
+    public List<IPhoto> getPhotosByCurrentUser(final int offset) {
         return this.getPhotosByUserId(AuthUtils.getAuth().user().id(), offset);
     }
 
     @Override
-    public List<Photo> getPhotosByUserId(final long id, final int offset) {
+    public List<IPhoto> getPhotosByUserId(final long id, final int offset) {
         return this.photoDao.getPhotosByUserId(id, offset);
     }
 
     @Override
-    public List<Photo> getPhotos(final int offset) {
+    public List<IPhoto> getPhotos(final int offset) {
         return this.photoDao.getPhotos(offset);
     }
 
@@ -136,34 +137,39 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public List<CommentDto> getCommentsByPhotoId(final long id) {
+    public List<Comment> getCommentsByPhotoId(final long id) {
         return this.commentRepository.findByPhotoId(id);
     }
 
     @Override
-    public CommentDto createComment(final CommentDto comment) {
-        // TODO Comment validations(?). 
+    public Comment createComment(final Comment comment) {
+        IUser user = AuthUtils.getAuth().user();
         comment.setId(UUID.randomUUID().toString());
         comment.setDatetime(new Date());
+        comment.setUserId(user.id());
+        comment.setUsername(user.username());
         return this.commentRepository.save(comment);
     }
 
     @Override
-    public boolean deleteComment(final CommentDto comment) {
-        // TODO Make sure I'm deleting my comment.
-        this.commentRepository.deleteById(comment.getId());
+    public boolean deleteComment(final Comment comment) {
+        this.commentRepository.deleteByIdAndUserId(
+                comment.getId(),
+                AuthUtils.getAuth().user().id());
         return true;
     }
 
     @Override
-    public LikeDto toggleLike(final LikeDto like) {
-        LikeDto result = this.likeRepository.findByPhotoIdAndUserId(like.getPhotoId(), like.getUserId());
+    public Like toggleLike(final Like like) {
+        Like result = this.likeRepository.findByPhotoIdAndUserId(
+                like.getPhotoId(),
+                AuthUtils.getAuth().user().id());
 
         // If count is more than zero,
         // the un-like. Else, do like.
         if (result != null) {
             this.likeRepository.deleteById(result.getId());
-            return new LikeDto();
+            return new Like();
         }
         like.setId(UUID.randomUUID().toString());
         return this.likeRepository.save(like);

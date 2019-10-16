@@ -9,8 +9,7 @@ import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
-import com.cebedo.vic.artdb.dto.UserDto;
-import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.dto.CredentialsDto;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import com.cloudinary.Cloudinary;
@@ -25,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -46,12 +46,12 @@ public class UserServiceImpl implements UserService {
     private Cloudinary cloudinary;
 
     @Override
-    public User get(final String username) {
+    public IUser get(final String username) {
         return this.userDao.get(username);
     }
 
     @Override
-    public ResponseDto changePassword(final UserDto changePass) {
+    public ResponseDto changePassword(final CredentialsDto changePass) {
         // Validations.
         String newPassword = changePass.getNewPassword();
         boolean retypeMatch = newPassword.equals(changePass.getNewPasswordRetype());
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
         if (retypeMatch) {
 
             // General validation.
-            Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(changePass);
+            Set<ConstraintViolation<CredentialsDto>> constraintViolations = validator.validate(changePass);
             if (constraintViolations.size() > 0) {
                 List<String> errors = new ArrayList<>();
                 for (ConstraintViolation violation : constraintViolations) {
@@ -68,9 +68,9 @@ public class UserServiceImpl implements UserService {
                 return ResponseDto.newInstanceWithErrors(errors);
             }
 
-            User user = AuthUtils.getAuth().user();
+            IUser user = AuthUtils.getAuth().user();
             if (ENCODER.matches(changePass.getPassword(), user.password())) {
-                this.userDao.changePassword(user.username(), ENCODER.encode(newPassword));
+                this.userDao.changePassword(ENCODER.encode(newPassword));
                 return ResponseDto.newInstanceWithMessage("Your password is now updated.");
             }
             return ResponseDto.newInstanceWithError("Incorrect password. Please try again.");
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDto create(final UserDto userDto) {
+    public ResponseDto create(final CredentialsDto userDto) {
         // Check if passwords are not equal.
         String password = userDto.getPassword();
         String retype = userDto.getNewPasswordRetype();
@@ -89,13 +89,13 @@ public class UserServiceImpl implements UserService {
 
         // Check if user exists.
         String username = userDto.getUsername();
-        User userCheck = this.userDao.get(username);
+        IUser userCheck = this.userDao.get(username);
         if (userCheck.id() != 0) {
             return ResponseDto.newInstanceWithError("The username you selected already exists. Please try again.");
         }
 
         // General validation.
-        Set<ConstraintViolation<UserDto>> constraintViolations = validator.validate(userDto);
+        Set<ConstraintViolation<CredentialsDto>> constraintViolations = validator.validate(userDto);
         if (constraintViolations.size() > 0) {
             List<String> errors = new ArrayList<>();
             for (ConstraintViolation violation : constraintViolations) {
@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // Normal behaviour.
-        User user = new UserBuilder(0, username, ENCODER.encode(password), "", "", "", "", "", "", hasCode).build();
+        IUser user = new UserBuilder(0, username, ENCODER.encode(password), "", "", "", "", "", "", hasCode).build();
         this.userDao.create(user);
         return ResponseDto.newInstanceWithMessage("Your user registration was successful.");
     }
@@ -175,7 +175,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsers(final int offset) {
+    public List<IUser> getUsers(final int offset) {
         return this.userDao.getUsers(offset);
     }
 

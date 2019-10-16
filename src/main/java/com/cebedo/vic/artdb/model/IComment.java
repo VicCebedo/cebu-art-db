@@ -3,21 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.artdb.dto;
+package com.cebedo.vic.artdb.model;
 
-import com.cebedo.vic.artdb.constants.ActionEnum;
 import java.util.Date;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class NotificationDto {
+public interface IComment {
 
-    private long photoId;
-    private long userId;
-    private String username;
-    private ActionEnum action;
-    private Date datetime;
+    String id();
+
+    long photoId();
+
+    long userId();
+
+    String username();
+
+    String content();
+
+    Date datetime();
 
 }

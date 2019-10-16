@@ -5,12 +5,12 @@
  */
 package com.cebedo.vic.artdb.config;
 
-import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.impl.MutableUser;
+import com.cebedo.vic.artdb.model.impl.User;
 import java.util.Collection;
 import java.util.Objects;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -18,14 +18,14 @@ import org.springframework.security.core.GrantedAuthority;
  */
 public final class WebAuthenticationToken extends UsernamePasswordAuthenticationToken {
 
-    private final User user;
-    private final MutableUser profile;
+    private final IUser user;
+    private final User profile;
 
     public WebAuthenticationToken(
             final Object principal,
             final Object credentials,
             final Collection<? extends GrantedAuthority> authorities,
-            final User user) {
+            final IUser user) {
         super(principal, credentials, authorities);
 
         Objects.requireNonNull(principal);
@@ -33,14 +33,14 @@ public final class WebAuthenticationToken extends UsernamePasswordAuthentication
         Objects.requireNonNull(authorities);
         Objects.requireNonNull(user);
         this.user = user;
-        this.profile = new MutableUser(user);
+        this.profile = new User(user);
     }
 
-    public User user() {
+    public IUser user() {
         return this.user;
     }
 
-    public MutableUser profile() {
+    public User profile() {
         return this.profile;
     }
 

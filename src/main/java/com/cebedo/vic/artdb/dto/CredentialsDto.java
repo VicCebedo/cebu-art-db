@@ -11,7 +11,7 @@ import javax.validation.constraints.Size;
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class UserDto {
+public class CredentialsDto {
 
     @Size(min = 4, max = 30, message = "Username must be at least 4 characters long, but not more than 30.")
     private String username;

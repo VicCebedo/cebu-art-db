@@ -5,11 +5,11 @@
  */
 package com.cebedo.vic.artdb.dto;
 
-import com.cebedo.vic.artdb.model.User;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.URL;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -46,7 +46,7 @@ public class ProfileDto {
         ;
     }
 
-    public ProfileDto(User user) {
+    public ProfileDto(IUser user) {
         this.name = user.name();
         this.bio = user.bio();
         this.website = user.website();

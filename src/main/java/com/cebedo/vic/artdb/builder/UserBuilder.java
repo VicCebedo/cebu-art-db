@@ -5,9 +5,9 @@
  */
 package com.cebedo.vic.artdb.builder;
 
-import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.impl.ImmutableUser;
 import java.util.Objects;
+import com.cebedo.vic.artdb.model.IUser;
+import com.cebedo.vic.artdb.model.impl.User;
 
 /**
  *
@@ -61,11 +61,11 @@ public final class UserBuilder {
         this.artist = art;
     }
 
-    public User build() {
-        return new ImmutableUser(this);
+    public IUser build() {
+        return new User(this);
     }
 
-    public static User newInstance() {
+    public static IUser newInstance() {
         return new UserBuilder(0, "", "", "", "", "", "", "", "", false).build();
     }
 

@@ -5,14 +5,15 @@
  */
 package com.cebedo.vic.artdb.model.impl;
 
-import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.builder.UserBuilder;
 import java.util.Objects;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class MutableUser implements User {
+public class User implements IUser {
 
     private long id;
     private String username;
@@ -25,11 +26,11 @@ public class MutableUser implements User {
     private String profilePic;
     private boolean artist;
 
-    public MutableUser() {
+    public User() {
         ;
     }
 
-    public MutableUser(final User usr) {
+    public User(final IUser usr) {
         Objects.requireNonNull(usr);
         this.id = usr.id();
         this.username = usr.username();
@@ -41,6 +42,20 @@ public class MutableUser implements User {
         this.phone = usr.phone();
         this.profilePic = usr.profilePic();
         this.artist = usr.artist();
+    }
+
+    public User(final UserBuilder b) {
+        Objects.requireNonNull(b);
+        this.id = b.id();
+        this.username = b.username();
+        this.password = b.password();
+        this.name = b.name();
+        this.bio = b.bio();
+        this.website = b.website();
+        this.email = b.email();
+        this.phone = b.phone();
+        this.profilePic = b.profilePic();
+        this.artist = b.artist();
     }
 
     public boolean isArtist() {

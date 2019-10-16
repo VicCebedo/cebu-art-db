@@ -5,14 +5,13 @@
  */
 package com.cebedo.vic.artdb.controller;
 
-import com.cebedo.vic.artdb.dto.CommentDto;
-import com.cebedo.vic.artdb.dto.LikeDto;
-import com.cebedo.vic.artdb.dto.PhotoDto;
+import com.cebedo.vic.artdb.model.impl.Comment;
+import com.cebedo.vic.artdb.model.impl.Like;
+import com.cebedo.vic.artdb.model.impl.Photo;
 import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
-import com.cebedo.vic.artdb.dto.UserDto;
-import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.impl.MutableUser;
+import com.cebedo.vic.artdb.dto.CredentialsDto;
+import com.cebedo.vic.artdb.model.impl.User;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
@@ -26,6 +25,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -50,9 +50,9 @@ public class NavigationController {
         model.addAttribute("user", AuthUtils.getAuth().user());
         model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("photos", this.photoService.getPhotos(0));
-        model.addAttribute("changePass", new UserDto());
-        model.addAttribute("comment", new CommentDto());
-        model.addAttribute("like", new LikeDto());
+        model.addAttribute("changePass", new CredentialsDto());
+        model.addAttribute("comment", new Comment());
+        model.addAttribute("like", new Like());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);
@@ -63,7 +63,7 @@ public class NavigationController {
     String pageArtists(final Model model, final HttpServletRequest request) {
         model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("artists", this.userService.getUsers(0));
-        model.addAttribute("changePass", new UserDto());
+        model.addAttribute("changePass", new CredentialsDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);
@@ -80,9 +80,9 @@ public class NavigationController {
                 : (int) session.getAttribute("users-pagination-offset");
 
         // Get photos.
-        List<User> users = this.userService.getUsers(offset);
+        List<IUser> users = this.userService.getUsers(offset);
         StringBuilder returnString = new StringBuilder();
-        for (User user : users) {
+        for (IUser user : users) {
 
             String profPic = user.profilePic().isEmpty()
                     ? "https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569906610/static/ecmvsberhzwodn6roitt.png"
@@ -137,7 +137,7 @@ public class NavigationController {
 
     @GetMapping("/login")
     String pageLogin(final Model model, final HttpServletRequest request) {
-        model.addAttribute("user", new UserDto());
+        model.addAttribute("user", new CredentialsDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);
@@ -153,7 +153,7 @@ public class NavigationController {
 
     @GetMapping("/register")
     String pageRegister(final Model model, final HttpServletRequest request) {
-        model.addAttribute("user", new UserDto());
+        model.addAttribute("user", new CredentialsDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);
@@ -167,13 +167,13 @@ public class NavigationController {
             return "redirect:/";
         }
 
-        User user = AuthUtils.getAuth().user();
-        MutableUser profile = AuthUtils.getAuth().profile();
+        IUser user = AuthUtils.getAuth().user();
+        User profile = AuthUtils.getAuth().profile();
         model.addAttribute("user", user);
         model.addAttribute("profile", new ProfileDto(profile));
         model.addAttribute("photos", this.photoService.getPhotosByCurrentUser(0));
-        model.addAttribute("photo", new PhotoDto());
-        model.addAttribute("changePass", new UserDto());
+        model.addAttribute("photo", new Photo());
+        model.addAttribute("changePass", new CredentialsDto());
         model.addAttribute("missingBio", StringUtils.isBlank(profile.bio()));
         model.addAttribute("missingEmail", StringUtils.isBlank(profile.email()));
         model.addAttribute("missingName", StringUtils.isBlank(profile.name()));

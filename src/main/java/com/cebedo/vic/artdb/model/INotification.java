@@ -5,30 +5,27 @@
  */
 package com.cebedo.vic.artdb.model;
 
-import java.sql.Timestamp;
+import com.cebedo.vic.artdb.constants.ActionEnum;
+import java.util.Date;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public interface Photo {
+public interface INotification {
 
-    long id();
+    String id();
 
-    String url();
+    ActionEnum action();
 
-    String caption();
+    long userId();
 
-    String cloud();
+    String username();
 
-    Timestamp timestamp();
+    long photoId();
 
-    User user();
+    boolean unread();
 
-    long commentCount();
-
-    long likeCount();
-
-    boolean liked();
+    Date datetime();
 
 }

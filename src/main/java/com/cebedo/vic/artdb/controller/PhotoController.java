@@ -5,13 +5,11 @@
  */
 package com.cebedo.vic.artdb.controller;
 
-import com.cebedo.vic.artdb.dto.CommentDto;
-import com.cebedo.vic.artdb.dto.LikeDto;
-import com.cebedo.vic.artdb.dto.PhotoDto;
+import com.cebedo.vic.artdb.model.impl.Comment;
+import com.cebedo.vic.artdb.model.impl.Like;
 import com.cebedo.vic.artdb.dto.ResponseDto;
-import com.cebedo.vic.artdb.model.Photo;
+import com.cebedo.vic.artdb.model.impl.Photo;
 import com.cebedo.vic.artdb.service.PhotoService;
-import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.cebedo.vic.artdb.model.IPhoto;
 
 /**
  *
@@ -38,7 +37,7 @@ public class PhotoController {
 
     @GetMapping("/logged-in/photo/pagination/next")
     @ResponseBody
-    List<Photo> indexPaginationNext(final Model model, final HttpServletRequest request) {
+    List<IPhoto> indexPaginationNext(final Model model, final HttpServletRequest request) {
         // Get current offset value.
         HttpSession session = request.getSession();
         int offset = session.getAttribute("index-pagination-offset") == null
@@ -51,31 +50,30 @@ public class PhotoController {
 
     @GetMapping("/logged-in/photo/comment/{id}")
     @ResponseBody
-    List<CommentDto> getPhotoComments(@PathVariable("id") final long id) {
+    List<Comment> getPhotoComments(@PathVariable("id") final long id) {
         return this.photoService.getCommentsByPhotoId(id);
     }
 
     @DeleteMapping("/logged-in/photo/comment/delete")
     @ResponseBody
-    boolean deletePhotoComment(final CommentDto comment) {
+    boolean deletePhotoComment(final Comment comment) {
         return this.photoService.deleteComment(comment);
     }
 
     @PostMapping("/logged-in/photo/comment/create")
     @ResponseBody
-    CommentDto createComment(final CommentDto comment) {
+    Comment createComment(final Comment comment) {
         return this.photoService.createComment(comment);
     }
 
     @PostMapping("/logged-in/photo/like/toggle")
     @ResponseBody
-    LikeDto toggleLike(final LikeDto like) {
-        like.setUserId(AuthUtils.getAuth().user().id());
+    Like toggleLike(final Like like) {
         return this.photoService.toggleLike(like);
     }
 
     @PostMapping("/logged-in/photo/upload")
-    String upload(final PhotoDto photo, final RedirectAttributes attrs) {
+    String upload(final IPhoto photo, final RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.create(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -83,7 +81,7 @@ public class PhotoController {
     }
 
     @PutMapping("/logged-in/photo/caption/update")
-    String updateCaption(final PhotoDto photo, final RedirectAttributes attrs) {
+    String updateCaption(final IPhoto photo, final RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.updateCaption(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -91,7 +89,7 @@ public class PhotoController {
     }
 
     @DeleteMapping("/logged-in/photo/delete")
-    String delete(final PhotoDto photo, final RedirectAttributes attrs) {
+    String delete(final Photo photo, final RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.delete(photo.getId(), photo.getCloud());
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());

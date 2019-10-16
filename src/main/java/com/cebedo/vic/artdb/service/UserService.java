@@ -7,9 +7,9 @@ package com.cebedo.vic.artdb.service;
 
 import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
-import com.cebedo.vic.artdb.dto.UserDto;
-import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.dto.CredentialsDto;
 import java.util.List;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -17,13 +17,13 @@ import java.util.List;
  */
 public interface UserService {
 
-    ResponseDto changePassword(final UserDto user);
+    ResponseDto changePassword(final CredentialsDto user);
 
-    ResponseDto create(final UserDto user);
+    ResponseDto create(final CredentialsDto user);
 
-    User get(final String username);
+    IUser get(final String username);
 
-    List<User> getUsers(final int offset);
+    List<IUser> getUsers(final int offset);
 
     ResponseDto updateProfileCurrentUser(final ProfileDto user);
 

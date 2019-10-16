@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.artdb.dto;
+package com.cebedo.vic.artdb.model.impl;
 
+import com.cebedo.vic.artdb.model.IComment;
 import java.util.Date;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,7 +14,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
 @Document(collection = "comment")
-public class CommentDto {
+public class Comment implements IComment {
 
     private String id;
     private long photoId;
@@ -68,6 +69,36 @@ public class CommentDto {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    @Override
+    public String id() {
+        return this.id;
+    }
+
+    @Override
+    public long photoId() {
+        return this.photoId;
+    }
+
+    @Override
+    public long userId() {
+        return this.userId;
+    }
+
+    @Override
+    public String username() {
+        return this.username;
+    }
+
+    @Override
+    public String content() {
+        return this.content;
+    }
+
+    @Override
+    public Date datetime() {
+        return this.datetime;
     }
 
 }

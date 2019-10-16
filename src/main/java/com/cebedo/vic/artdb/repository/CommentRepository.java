@@ -1,6 +1,6 @@
 package com.cebedo.vic.artdb.repository;
 
-import com.cebedo.vic.artdb.dto.CommentDto;
+import com.cebedo.vic.artdb.model.impl.Comment;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -13,10 +13,12 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public interface CommentRepository extends MongoRepository<CommentDto, String> {
+public interface CommentRepository extends MongoRepository<Comment, String> {
 
-    List<CommentDto> findByPhotoId(final long photoId);
+    List<Comment> findByPhotoId(final long photoId);
 
     long countByPhotoId(final long photoId);
+
+    void deleteByIdAndUserId(final String id, final long userId);
 
 }

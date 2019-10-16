@@ -8,7 +8,6 @@ package com.cebedo.vic.artdb.dao.impl;
 import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.dto.ProfileDto;
-import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +18,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -31,11 +31,11 @@ public class UserDaoImpl implements UserDao {
     private DataSource dataSource;
 
     @Override
-    public void changePassword(final String username, final String newPassword) {
+    public void changePassword(final String newPassword) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("UPDATE users SET password = ? WHERE username = ?");
             stmt.setString(1, newPassword);
-            stmt.setString(2, username.toLowerCase());
+            stmt.setString(2, AuthUtils.getAuth().user().username().toLowerCase());
             stmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -83,7 +83,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public void create(final User user) {
+    public void create(final IUser user) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("INSERT INTO public.users(username, password, name, bio, website, email, phone, profile_pic, artist) "
                     + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
@@ -103,7 +103,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User get(final String username) {
+    public IUser get(final String username) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE username = ?");
             stmt.setString(1, username.toLowerCase());
@@ -144,7 +144,7 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User get(final long id) {
+    public IUser get(final long id) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM users WHERE id = ?");
             stmt.setLong(1, id);
@@ -170,14 +170,14 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> getUsers(final int offset) {
+    public List<IUser> getUsers(final int offset) {
         try (Connection connection = dataSource.getConnection()) {
             Statement stmt = connection.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM users WHERE artist = true LIMIT 5 OFFSET " + offset);
 
-            List<User> users = new ArrayList<>();
+            List<IUser> users = new ArrayList<>();
             while (rs.next()) {
-                User user = new UserBuilder(
+                IUser user = new UserBuilder(
                         rs.getLong("id"),
                         rs.getString("username").toLowerCase(),
                         "",

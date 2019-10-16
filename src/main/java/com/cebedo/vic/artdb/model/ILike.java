@@ -9,25 +9,12 @@ package com.cebedo.vic.artdb.model;
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public interface User {
+public interface ILike {
 
-    long id();
+    String id();
 
-    String username();
+    long photoId();
 
-    String password();
+    long userId();
 
-    String name();
-
-    String bio();
-
-    String website();
-
-    String email();
-
-    String phone();
-
-    String profilePic();
-    
-    boolean artist();
 }

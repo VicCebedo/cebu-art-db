@@ -5,7 +5,6 @@
  */
 package com.cebedo.vic.artdb.config;
 
-import com.cebedo.vic.artdb.model.User;
 import com.cebedo.vic.artdb.service.UserService;
 import java.util.ArrayList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -37,7 +37,7 @@ public class WebAuthenticationProvider implements AuthenticationProvider {
 
         // Get user object based on username,
         // then compare if true.
-        User user = this.userService.get(username);
+        IUser user = this.userService.get(username);
         if (ENCODER.matches(rawPassword, user.password())) {
             return new WebAuthenticationToken(username, "", new ArrayList<>(), user);
         }

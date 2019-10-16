@@ -5,11 +5,11 @@
  */
 package com.cebedo.vic.artdb.builder;
 
-import com.cebedo.vic.artdb.dto.PhotoDto;
-import com.cebedo.vic.artdb.model.Photo;
-import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.model.impl.Photo;
 import java.sql.Timestamp;
 import java.util.Objects;
+import com.cebedo.vic.artdb.model.IPhoto;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -21,7 +21,7 @@ public final class PhotoBuilder {
     private final String url;
     private final String caption;
     private final Timestamp timestamp;
-    private final User user;
+    private final IUser user;
     private final long commentCount;
     private final long likeCount;
     private final boolean liked;
@@ -31,7 +31,7 @@ public final class PhotoBuilder {
             final String u,
             final String c,
             final Timestamp t,
-            final User user,
+            final IUser user,
             final long cCount,
             final long lCount,
             final boolean isLiked) {
@@ -55,12 +55,12 @@ public final class PhotoBuilder {
         this.liked = isLiked;
     }
 
-    public Photo build() {
-        return new PhotoDto(this);
+    public IPhoto build() {
+        return new Photo(this);
     }
 
-    public static Photo newInstance() {
-        return new PhotoDto(new PhotoBuilder(
+    public static IPhoto newInstance() {
+        return new Photo(new PhotoBuilder(
                 0,
                 "",
                 "",
@@ -96,7 +96,7 @@ public final class PhotoBuilder {
         return this.timestamp;
     }
 
-    public User user() {
+    public IUser user() {
         return this.user;
     }
 

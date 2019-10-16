@@ -7,9 +7,7 @@ package com.cebedo.vic.artdb.controller;
 
 import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
-import com.cebedo.vic.artdb.dto.UserDto;
-import com.cebedo.vic.artdb.model.Photo;
-import com.cebedo.vic.artdb.model.User;
+import com.cebedo.vic.artdb.dto.CredentialsDto;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
@@ -27,6 +25,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import com.cebedo.vic.artdb.model.IPhoto;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -43,7 +43,7 @@ public class UserController {
     private PhotoService photoService;
 
     @PostMapping("/user/register")
-    String create(final UserDto user, final RedirectAttributes attrs) {
+    String create(final CredentialsDto user, final RedirectAttributes attrs) {
         ResponseDto rsp = this.userService.create(user);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -53,10 +53,7 @@ public class UserController {
     }
 
     @PutMapping("/logged-in/user/password/update")
-    String updatePassword(final UserDto changePass, final RedirectAttributes attrs) {
-        // TODO (Beta) Implement non-artist accounts.
-        // TODO (Beta) Implement forget password.
-        // TODO (Beta) Captcha for registration.
+    String updatePassword(final CredentialsDto changePass, final RedirectAttributes attrs) {
         ResponseDto rsp = this.userService.changePassword(changePass);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -92,7 +89,7 @@ public class UserController {
 
     @GetMapping("/logged-in/user/{id}/photo/pagination/next")
     @ResponseBody
-    List<Photo> homePaginationNext(
+    List<IPhoto> homePaginationNext(
             @PathVariable("id") final long id,
             final Model model,
             final HttpServletRequest request) {
@@ -132,12 +129,12 @@ public class UserController {
         }
 
         // If we are visiting another person's profile.
-        User user = this.userService.get(username);
+        IUser user = this.userService.get(username);
         model.addAttribute("user", user);
         model.addAttribute("profile", new ProfileDto(user));
         model.addAttribute("isGuest", true);
         model.addAttribute("isArtist", isArtist);
-        model.addAttribute("changePass", new UserDto());
+        model.addAttribute("changePass", new CredentialsDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);

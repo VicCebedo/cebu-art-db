@@ -5,16 +5,16 @@
  */
 package com.cebedo.vic.artdb.repository;
 
-import com.cebedo.vic.artdb.dto.LikeDto;
+import com.cebedo.vic.artdb.model.impl.Like;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public interface LikeRepository extends MongoRepository<LikeDto, String> {
+public interface LikeRepository extends MongoRepository<Like, String> {
 
-    LikeDto findByPhotoIdAndUserId(final long photoId, final long userId);
+    Like findByPhotoIdAndUserId(final long photoId, final long userId);
 
     long countByPhotoId(final long photoId);
 

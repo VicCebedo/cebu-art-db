@@ -8,10 +8,8 @@ package com.cebedo.vic.artdb.dao.impl;
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.dao.UserDao;
-import com.cebedo.vic.artdb.dto.LikeDto;
-import com.cebedo.vic.artdb.model.Photo;
-import com.cebedo.vic.artdb.model.User;
-import com.cebedo.vic.artdb.model.impl.MutableUser;
+import com.cebedo.vic.artdb.model.impl.Like;
+import com.cebedo.vic.artdb.model.impl.User;
 import com.cebedo.vic.artdb.repository.CommentRepository;
 import com.cebedo.vic.artdb.repository.LikeRepository;
 import com.cebedo.vic.artdb.utils.AuthUtils;
@@ -23,6 +21,8 @@ import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import com.cebedo.vic.artdb.model.IPhoto;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
@@ -44,7 +44,7 @@ public class PhotoDaoImpl implements PhotoDao {
     private LikeRepository likeRepository;
 
     @Override
-    public void create(Photo photo) {
+    public void create(IPhoto photo) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("INSERT INTO photos(user_id, url, caption, timestamp) VALUES (?, ?, ?, ?)");
             stmt.setLong(1, AuthUtils.getAuth().user().id());
@@ -58,7 +58,7 @@ public class PhotoDaoImpl implements PhotoDao {
     }
 
     @Override
-    public void updateCaption(Photo photo) {
+    public void updateCaption(IPhoto photo) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "UPDATE photos "
                     + "SET caption = ? "
@@ -86,7 +86,7 @@ public class PhotoDaoImpl implements PhotoDao {
     }
 
     @Override
-    public List<Photo> getPhotosByUserId(long userId, int offset) {
+    public List<IPhoto> getPhotosByUserId(long userId, int offset) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos "
                     + "WHERE user_id = ? "
@@ -95,13 +95,13 @@ public class PhotoDaoImpl implements PhotoDao {
             stmt.setLong(1, userId);
 
             ResultSet rs = stmt.executeQuery();
-            List<Photo> photos = new ArrayList<>();
-            User user = this.userDao.get(userId);
+            List<IPhoto> photos = new ArrayList<>();
+            IUser user = this.userDao.get(userId);
 
             while (rs.next()) {
                 long photoId = rs.getLong("id");
                 long commentCount = this.commentRepository.countByPhotoId(photoId);
-                LikeDto like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
+                Like like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
                 long likeCount = this.likeRepository.countByPhotoId(photoId);
 
                 photos.add(new PhotoBuilder(
@@ -109,7 +109,7 @@ public class PhotoDaoImpl implements PhotoDao {
                         rs.getString("url"),
                         rs.getString("caption"),
                         rs.getTimestamp("timestamp"),
-                        new MutableUser(user),
+                        new User(user),
                         commentCount,
                         likeCount,
                         like != null)
@@ -124,7 +124,7 @@ public class PhotoDaoImpl implements PhotoDao {
     }
 
     @Override
-    public List<Photo> getPhotos(int offset) {
+    public List<IPhoto> getPhotos(int offset) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "SELECT photos.id, photos.url, photos.caption, photos.timestamp, users.username, users.name\n"
                     + "FROM photos\n"
@@ -133,19 +133,20 @@ public class PhotoDaoImpl implements PhotoDao {
                     + "LIMIT 5 OFFSET " + offset;
             PreparedStatement stmt = connection.prepareStatement(sql);
             ResultSet rs = stmt.executeQuery();
-            List<Photo> photos = new ArrayList<>();
+            List<IPhoto> photos = new ArrayList<>();
             long userId = AuthUtils.getAuth().user().id();
 
             while (rs.next()) {
 
-                MutableUser usr = new MutableUser();
+                User usr = new User();
                 usr.setUsername(rs.getString("username"));
                 usr.setName(rs.getString("name"));
 
+                // TODO Optimize so that we don't do multiple mongo requests.
                 // Comments and likes data.
                 long photoId = rs.getLong("id");
                 long commentCount = this.commentRepository.countByPhotoId(photoId);
-                LikeDto like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
+                Like like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
                 long likeCount = this.likeRepository.countByPhotoId(photoId);
 
                 photos.add(new PhotoBuilder(

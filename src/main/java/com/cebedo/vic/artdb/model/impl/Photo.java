@@ -3,21 +3,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.cebedo.vic.artdb.dto;
+package com.cebedo.vic.artdb.model.impl;
 
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
-import com.cebedo.vic.artdb.model.Photo;
-import com.cebedo.vic.artdb.model.User;
 import java.sql.Timestamp;
 import java.util.Objects;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import com.cebedo.vic.artdb.model.IPhoto;
+import com.cebedo.vic.artdb.model.IUser;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public class PhotoDto implements Photo {
+public class Photo implements IPhoto {
 
     private long id;
     private String url;
@@ -28,16 +28,16 @@ public class PhotoDto implements Photo {
 
     private String cloud;
     private Timestamp timestamp;
-    private User user;
+    private IUser user;
     private long commentCount;
     private long likeCount;
     private boolean liked;
 
-    public PhotoDto() {
+    public Photo() {
         ;
     }
 
-    public PhotoDto(PhotoBuilder b) {
+    public Photo(PhotoBuilder b) {
         Objects.requireNonNull(b);
         this.id = b.id();
         this.url = b.url();
@@ -82,11 +82,11 @@ public class PhotoDto implements Photo {
         this.timestamp = timestamp;
     }
 
-    public User getUser() {
+    public IUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(IUser user) {
         this.user = user;
     }
 
@@ -148,7 +148,7 @@ public class PhotoDto implements Photo {
     }
 
     @Override
-    public User user() {
+    public IUser user() {
         return this.user;
     }
 
