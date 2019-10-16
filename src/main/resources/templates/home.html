@@ -38,6 +38,25 @@
             <div class="ui small text loader"></div>
         </div>
 
+        <div class="ui top fixed two item menu" style="border: 0;" th:if="${!isGuest}">
+            <div class="ui dropdown item">
+                <i class="cog icon"></i>
+                <div class="menu">
+                    <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
+                    <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
+                    <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
+                    <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
+                </div>
+            </div>
+            <a class="item icon" onclick="$('#modal-upload').modal('show')">
+                <i class="plus square outline icon"></i>
+            </a>
+        </div>
+        <div th:if="${!isGuest}">
+            <div class="ui hidden divider"></div>
+            <div class="ui hidden divider"></div>
+        </div>
+
         <!--MESSAGES-->
         <div class="ui container">
             <div th:if="${!isGuest && (missingBio || missingEmail || missingName || missingPhone || missingWebsite)}">
@@ -106,25 +125,6 @@
                     </ul>
                 </div>
             </div>
-        </div>
-
-        <div class="ui top fixed two item menu" style="border: 0;" th:if="${!isGuest}">
-            <div class="ui simple dropdown item">
-                <i class="cog icon"></i>
-                <div class="menu">
-                    <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
-                    <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
-                    <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
-                    <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
-                </div>
-            </div>
-            <a class="item icon" onclick="$('#modal-upload').modal('show')">
-                <i class="plus square outline icon"></i>
-            </a>
-        </div>
-        <div th:if="${!isGuest}">
-            <div class="ui hidden divider"></div>
-            <div class="ui hidden divider"></div>
         </div>
 
         <!--HEADER PROFILE DISPLAY-->
