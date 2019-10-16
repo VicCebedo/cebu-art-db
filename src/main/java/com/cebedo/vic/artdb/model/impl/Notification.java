@@ -24,6 +24,16 @@ public class Notification implements INotification {
     private long photoId;
     private boolean unread;
     private Date datetime;
+    private long ownerId;
+    private String dateDisplay;
+
+    public long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(long ownerId) {
+        this.ownerId = ownerId;
+    }
 
     public String getId() {
         return id;
@@ -81,6 +91,14 @@ public class Notification implements INotification {
         this.datetime = datetime;
     }
 
+    public String getDateDisplay() {
+        return dateDisplay;
+    }
+
+    public void setDateDisplay(String dateDisplay) {
+        this.dateDisplay = dateDisplay;
+    }
+
     @Override
     public String id() {
         return this.id;
@@ -114,6 +132,16 @@ public class Notification implements INotification {
     @Override
     public Date datetime() {
         return this.datetime;
+    }
+
+    @Override
+    public long ownerId() {
+        return this.ownerId;
+    }
+
+    @Override
+    public String dateDisplay() {
+        return this.dateDisplay;
     }
 
 }

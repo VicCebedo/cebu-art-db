@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.cebedo.vic.artdb.model.IPhoto;
 import com.cebedo.vic.artdb.model.IUser;
+import com.cebedo.vic.artdb.model.impl.Photo;
 
 /**
  *
@@ -166,6 +167,26 @@ public class PhotoDaoImpl implements PhotoDao {
             e.printStackTrace();
         }
         return new ArrayList<>();
+    }
+
+    @Override
+    public IPhoto get(final long id) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos WHERE id = ?");
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                User usr = new User();
+                usr.setId(rs.getLong("user_id"));
+                Photo photo = (Photo) PhotoBuilder.newInstance();
+                photo.setUser(usr);
+                return photo;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Photo();
     }
 
 }

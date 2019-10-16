@@ -42,7 +42,9 @@ public class Photo implements IPhoto {
         this.id = b.id();
         this.url = b.url();
         this.caption = b.caption();
-        this.cloud = this.url.substring(this.url.lastIndexOf('/') + 1, this.url.lastIndexOf('.'));
+        this.cloud = this.url.isEmpty()
+                ? ""
+                : this.url.substring(this.url.lastIndexOf('/') + 1, this.url.lastIndexOf('.'));
         this.timestamp = b.timestamp();
         this.user = b.user();
         this.commentCount = b.commentCount();

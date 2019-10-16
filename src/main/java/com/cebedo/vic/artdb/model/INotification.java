@@ -28,4 +28,7 @@ public interface INotification {
 
     Date datetime();
 
+    long ownerId();
+
+    String dateDisplay();
 }

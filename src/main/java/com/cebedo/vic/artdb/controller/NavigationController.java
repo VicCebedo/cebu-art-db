@@ -26,6 +26,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.vic.artdb.model.IUser;
+import com.cebedo.vic.artdb.model.impl.Notification;
+import com.cebedo.vic.artdb.service.NotificationService;
 
 /**
  *
@@ -40,6 +42,15 @@ public class NavigationController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private NotificationService notificationService;
+
+    private void resetPaginationOffsets(final HttpServletRequest request) {
+        request.getSession().setAttribute("index-pagination-offset", 0);
+        request.getSession().setAttribute("home-pagination-offset", 0);
+        request.getSession().setAttribute("users-pagination-offset", 0);
+    }
+
     @GetMapping("/")
     String pageIndex(final Model model, final HttpServletRequest request) {
         // If not yet authenticated, redirect to login.
@@ -53,9 +64,7 @@ public class NavigationController {
         model.addAttribute("changePass", new CredentialsDto());
         model.addAttribute("comment", new Comment());
         model.addAttribute("like", new Like());
-        request.getSession().setAttribute("index-pagination-offset", 0);
-        request.getSession().setAttribute("home-pagination-offset", 0);
-        request.getSession().setAttribute("users-pagination-offset", 0);
+        resetPaginationOffsets(request);
         return "index";
     }
 
@@ -64,10 +73,23 @@ public class NavigationController {
         model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("artists", this.userService.getUsers(0));
         model.addAttribute("changePass", new CredentialsDto());
-        request.getSession().setAttribute("index-pagination-offset", 0);
-        request.getSession().setAttribute("home-pagination-offset", 0);
-        request.getSession().setAttribute("users-pagination-offset", 0);
+        resetPaginationOffsets(request);
         return "artists";
+    }
+
+    @GetMapping("/logged-in/notifications")
+    String pageNotifications(final Model model, final HttpServletRequest request) {
+        model.addAttribute("isArtist", AuthUtils.isArtist());
+        resetPaginationOffsets(request);
+        return "notifications";
+    }
+
+    @GetMapping("/logged-in/notifications/pagination/next")
+    @ResponseBody
+    List<Notification> notificationPaginationNext() {
+        // TODO Implement offset.
+        long currentUserId = AuthUtils.getAuth().user().id();
+        return this.notificationService.getByOwnerId(currentUserId);
     }
 
     @GetMapping("/logged-in/artists/pagination/next")
@@ -138,9 +160,7 @@ public class NavigationController {
     @GetMapping("/login")
     String pageLogin(final Model model, final HttpServletRequest request) {
         model.addAttribute("user", new CredentialsDto());
-        request.getSession().setAttribute("index-pagination-offset", 0);
-        request.getSession().setAttribute("home-pagination-offset", 0);
-        request.getSession().setAttribute("users-pagination-offset", 0);
+        resetPaginationOffsets(request);
         return "login";
     }
 
@@ -154,9 +174,7 @@ public class NavigationController {
     @GetMapping("/register")
     String pageRegister(final Model model, final HttpServletRequest request) {
         model.addAttribute("user", new CredentialsDto());
-        request.getSession().setAttribute("index-pagination-offset", 0);
-        request.getSession().setAttribute("home-pagination-offset", 0);
-        request.getSession().setAttribute("users-pagination-offset", 0);
+        resetPaginationOffsets(request);
         return "register";
     }
 
@@ -181,9 +199,7 @@ public class NavigationController {
         model.addAttribute("missingWebsite", StringUtils.isBlank(profile.website()));
         model.addAttribute("missingProfilePic", StringUtils.isBlank(profile.profilePic()));
         model.addAttribute("isGuest", false);
-        request.getSession().setAttribute("index-pagination-offset", 0);
-        request.getSession().setAttribute("home-pagination-offset", 0);
-        request.getSession().setAttribute("users-pagination-offset", 0);
+        resetPaginationOffsets(request);
         return "home";
     }
 }

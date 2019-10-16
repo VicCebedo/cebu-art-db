@@ -38,7 +38,7 @@
 
         <!--NAVIGATION BAR-->
         <div class="ui container">
-            <div class="ui bottom fixed huge menu">
+            <div class="ui bottom fixed huge five item menu">
                 <div class="item">
                     <img src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1570074412/static/ybakvuon4wtyyiftrqno.png">
                 </div>
@@ -47,6 +47,9 @@
                 </a>
                 <a class="item icon" href="/logged-in/artists" onclick="loading()">
                     <i class="users icon"></i>
+                </a>
+                <a class="item icon" href="/logged-in/notifications" onclick="loading()">
+                    <i class="bell icon"></i>
                 </a>
                 <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isArtist}">
                     <i class="user icon"></i>
@@ -83,14 +86,14 @@
         </div>
 
         <!--INTRODUCTION-->
-        <div class="ui container">
-            <div class="ui basic segment" style="padding-top: 9%">
-                <img class="ui tiny image" 
-                     src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1570074412/static/ybakvuon4wtyyiftrqno.png"
-                     style="padding-bottom: 4%">
-                <p>Catch is an art-focused, curated, online gallery. <i>Made by artists, for artists</i>.</p>
-            </div>
-        </div>
+        <!--        <div class="ui container">
+                    <div class="ui basic segment" style="padding-top: 9%">
+                        <img class="ui tiny image" 
+                             src="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1570074412/static/ybakvuon4wtyyiftrqno.png"
+                             style="padding-bottom: 4%">
+                        <p>Catch is an art-focused, curated, online gallery. <i>Made by artists, for artists</i>.</p>
+                    </div>
+                </div>-->
 
         <!--CURRENT USER PHOTO GRID-->
         <div class="ui hidden divider"></div>
