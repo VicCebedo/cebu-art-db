@@ -75,7 +75,7 @@ public class PhotoController {
     }
 
     @PostMapping("/logged-in/photo/upload")
-    String upload(final IPhoto photo, final RedirectAttributes attrs) {
+    String upload(final Photo photo, final RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.create(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
@@ -83,7 +83,7 @@ public class PhotoController {
     }
 
     @PutMapping("/logged-in/photo/caption/update")
-    String updateCaption(final IPhoto photo, final RedirectAttributes attrs) {
+    String updateCaption(final Photo photo, final RedirectAttributes attrs) {
         ResponseDto rsp = this.photoService.updateCaption(photo);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());

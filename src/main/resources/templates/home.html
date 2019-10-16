@@ -108,29 +108,27 @@
             </div>
         </div>
 
-        <!--SETTINGS-->
-        <div class="ui container">
-            <div class="ui right aligned basic segment">
-                <h2 class="ui header">
-                    <div class="content">
-                        <div class="ui inline dropdown" th:if="${!isGuest}">
-                            <span class="icon">
-                                <i class="cog icon"></i>
-                            </span>
-                            <div class="menu">
-                                <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
-                                <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
-                                <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
-                                <div class="item" onclick="loading();
-                                        document.getElementById('form-logout').submit()">Logout</div>
-                            </div>
-                        </div>
-                    </div>
-                </h2>
+        <div class="ui top fixed two item menu" style="border: 0;" th:if="${!isGuest}">
+            <div class="ui simple dropdown item">
+                <i class="cog icon"></i>
+                <div class="menu">
+                    <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
+                    <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
+                    <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
+                    <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
+                </div>
             </div>
+            <a class="item icon" onclick="$('#modal-upload').modal('show')">
+                <i class="plus square outline icon"></i>
+            </a>
+        </div>
+        <div th:if="${!isGuest}">
+            <div class="ui hidden divider"></div>
+            <div class="ui hidden divider"></div>
         </div>
 
         <!--HEADER PROFILE DISPLAY-->
+        <div class="ui hidden divider"></div>
         <div class="ui container">
             <div class="ui segment left aligned">
                 <div class="ui items">
@@ -298,7 +296,7 @@
                 <form th:action="@{/logged-in/photo/caption/update}" th:object="${photo}" th:method="put" class="ui form" id="form-edit-caption">
                     <div class="field">
                         <label>Caption</label>
-                        <textarea placeholder="Caption" id="edit-caption-value" th:field="*{caption}" rows="5"></textarea>
+                        <textarea placeholder="Caption" id="edit-caption-value" th:field="*{caption}" rows="3"></textarea>
                     </div>
                     <input type="hidden" th:field="*{id}" id="edit-caption-id"/>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -333,7 +331,7 @@
                     </div>
                     <div class="field">
                         <label>Caption</label>
-                        <textarea placeholder="Caption" th:field="*{caption}" rows="5"></textarea>
+                        <textarea placeholder="Caption" th:field="*{caption}" rows="3"></textarea>
                     </div>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
@@ -396,21 +394,24 @@
                 </a>
 
                 <!--Artists-->
-                <a class="item icon" href="/logged-in/artists" onclick="loading()">
+                <a class="item icon active" href="/logged-in/artists" onclick="loading()" th:if="${isGuest}">
+                    <i class="users icon"></i>
+                </a>
+                <a class="item icon" href="/logged-in/artists" onclick="loading()" th:if="${!isGuest}">
                     <i class="users icon"></i>
                 </a>
 
-                <!--Upload or Profile-->
+                <!--Notifications-->
                 <a class="item icon" href="/logged-in/notifications" onclick="loading()">
                     <i class="bell icon"></i>
                 </a>
-                <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isGuest && isArtist}">
+
+                <!--Profile-->
+                <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isGuest}">
                     <i class="user icon"></i>
                 </a>
-                <a class="item icon"
-                   onclick="$('#modal-upload').modal('show'); event.preventDefault();"
-                   th:if="${!isGuest}">
-                    <i class="plus square outline icon"></i>
+                <a class="item icon active" href="/logged-in/home" onclick="loading()" th:if="${!isGuest}">
+                    <i class="user icon"></i>
                 </a>
             </div>
         </div>

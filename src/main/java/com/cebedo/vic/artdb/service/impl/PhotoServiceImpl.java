@@ -147,6 +147,9 @@ public class PhotoServiceImpl implements PhotoService {
             // Delete all comments.
             this.commentRepository.deleteByPhotoId(photoId);
 
+            // Delete all notifications.
+            this.notificationRepository.deleteByPhotoId(photoId);
+
             return ResponseDto.newInstanceWithMessage("Your photo is now deleted.");
         } catch (IOException ex) {
             ex.printStackTrace();

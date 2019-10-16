@@ -17,4 +17,6 @@ public interface NotificationRepository extends MongoRepository<Notification, St
 
     List<Notification> findByOwnerId(final long ownerId);
 
+    void deleteByPhotoId(final long photoId);
+
 }
