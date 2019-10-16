@@ -8,7 +8,7 @@ package com.cebedo.vic.artdb.dao.impl;
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.dao.UserDao;
-import com.cebedo.vic.artdb.model.impl.Like;
+import com.cebedo.vic.artdb.model.ILike;
 import com.cebedo.vic.artdb.model.impl.User;
 import com.cebedo.vic.artdb.repository.CommentRepository;
 import com.cebedo.vic.artdb.repository.LikeRepository;
@@ -101,7 +101,7 @@ public class PhotoDaoImpl implements PhotoDao {
             while (rs.next()) {
                 long photoId = rs.getLong("id");
                 long commentCount = this.commentRepository.countByPhotoId(photoId);
-                Like like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
+                ILike like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
                 long likeCount = this.likeRepository.countByPhotoId(photoId);
 
                 photos.add(new PhotoBuilder(
@@ -146,7 +146,7 @@ public class PhotoDaoImpl implements PhotoDao {
                 // Comments and likes data.
                 long photoId = rs.getLong("id");
                 long commentCount = this.commentRepository.countByPhotoId(photoId);
-                Like like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
+                ILike like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
                 long likeCount = this.likeRepository.countByPhotoId(photoId);
 
                 photos.add(new PhotoBuilder(

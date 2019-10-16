@@ -5,9 +5,9 @@
  */
 package com.cebedo.vic.artdb.controller;
 
-import com.cebedo.vic.artdb.model.impl.Comment;
-import com.cebedo.vic.artdb.model.impl.Like;
 import com.cebedo.vic.artdb.dto.ResponseDto;
+import com.cebedo.vic.artdb.model.IComment;
+import com.cebedo.vic.artdb.model.ILike;
 import com.cebedo.vic.artdb.model.impl.Photo;
 import com.cebedo.vic.artdb.service.PhotoService;
 import java.util.List;
@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.vic.artdb.model.IPhoto;
+import com.cebedo.vic.artdb.model.impl.Comment;
+import com.cebedo.vic.artdb.model.impl.Like;
 
 /**
  *
@@ -62,13 +64,13 @@ public class PhotoController {
 
     @PostMapping("/logged-in/photo/comment/create")
     @ResponseBody
-    Comment createComment(final Comment comment) {
+    IComment createComment(final Comment comment) {
         return this.photoService.createComment(comment);
     }
 
     @PostMapping("/logged-in/photo/like/toggle")
     @ResponseBody
-    Like toggleLike(final Like like) {
+    ILike toggleLike(final Like like) {
         return this.photoService.toggleLike(like);
     }
 

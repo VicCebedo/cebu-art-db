@@ -18,4 +18,5 @@ public interface LikeRepository extends MongoRepository<Like, String> {
 
     long countByPhotoId(final long photoId);
 
+    void deleteByPhotoId(final long photoId);
 }

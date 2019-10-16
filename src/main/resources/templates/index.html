@@ -194,6 +194,27 @@
         </div>
 
         <script type="text/javascript">
+            function updateCommentDisplay(photoId, add) {
+                // Update comment count.
+                const commentCount = add
+                        ? Number(document.getElementById('comment-label-' + photoId).innerHTML) + 1
+                        : Number(document.getElementById('comment-label-' + photoId).innerHTML) - 1;
+
+                document.getElementById('comment-label-' + photoId).innerHTML = commentCount;
+
+                // If comment is greater than zero, change to blue.
+                // Else, gray.
+                const button = document.getElementById('comment-button-' + photoId);
+                const label = document.getElementById('comment-label-' + photoId);
+                if (commentCount > 0) {
+                    button.classList.add('blue');
+                    label.classList.add('blue');
+                } else {
+                    button.classList.remove('blue');
+                    label.classList.remove('blue');
+                }
+            }
+
             function doDeleteComment() {
                 $('#modal-delete-comment').modal({'duration': 300}).modal('hide');
                 $.ajax({
@@ -202,11 +223,8 @@
                     data: $('#form-delete-comment').serialize(),
                     success: function (response) {
                         $('#modal-delete-success').modal('show');
-
-                        // Update comment count.
                         const photoId = document.getElementById('form-comment-photo-id-delete').value;
-                        const commentCount = Number(document.getElementById('comment-label-' + photoId).innerHTML) - 1;
-                        document.getElementById('comment-label-' + photoId).innerHTML = commentCount;
+                        updateCommentDisplay(photoId, false);
 
                         setTimeout(function () {
                             $('#modal-delete-success').modal('hide');
@@ -243,9 +261,7 @@
                             $('#modal-comments-data').scrollTop($('#modal-comments-data')[0].scrollHeight);
                             $('#comments-modal').modal('refresh');
 
-                            // Update comment count.
-                            const commentCount = Number(document.getElementById('comment-label-' + response.photoId).innerHTML) + 1;
-                            document.getElementById('comment-label-' + response.photoId).innerHTML = commentCount;
+                            updateCommentDisplay(response.photoId, true);
                         }
                     });
                 }

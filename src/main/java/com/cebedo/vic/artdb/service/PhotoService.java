@@ -5,11 +5,12 @@
  */
 package com.cebedo.vic.artdb.service;
 
-import com.cebedo.vic.artdb.model.impl.Comment;
-import com.cebedo.vic.artdb.model.impl.Like;
 import com.cebedo.vic.artdb.dto.ResponseDto;
+import com.cebedo.vic.artdb.model.IComment;
+import com.cebedo.vic.artdb.model.ILike;
 import java.util.List;
 import com.cebedo.vic.artdb.model.IPhoto;
+import com.cebedo.vic.artdb.model.impl.Comment;
 
 /**
  *
@@ -31,10 +32,10 @@ public interface PhotoService {
 
     List<Comment> getCommentsByPhotoId(final long id);
 
-    Comment createComment(final Comment comment);
+    IComment createComment(final IComment comment);
 
-    boolean deleteComment(final Comment comment);
+    boolean deleteComment(final IComment comment);
 
-    Like toggleLike(final Like like);
+    ILike toggleLike(final ILike like);
 
 }

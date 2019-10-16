@@ -7,9 +7,9 @@ package com.cebedo.vic.artdb.service.impl;
 
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
-import com.cebedo.vic.artdb.model.impl.Comment;
-import com.cebedo.vic.artdb.model.impl.Like;
 import com.cebedo.vic.artdb.dto.ResponseDto;
+import com.cebedo.vic.artdb.model.IComment;
+import com.cebedo.vic.artdb.model.ILike;
 import com.cebedo.vic.artdb.repository.CommentRepository;
 import com.cebedo.vic.artdb.repository.LikeRepository;
 import com.cebedo.vic.artdb.service.PhotoService;
@@ -30,6 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.vic.artdb.model.IPhoto;
 import com.cebedo.vic.artdb.model.IUser;
+import com.cebedo.vic.artdb.model.impl.Comment;
+import com.cebedo.vic.artdb.model.impl.Like;
 
 /**
  *
@@ -119,20 +121,30 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public ResponseDto delete(final long id, final String cloudName) {
+    public ResponseDto delete(final long photoId, final String cloudName) {
         // Artist only feature.
         if (!AuthUtils.isArtist()) {
             return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");
         }
 
-        this.photoDao.delete(id);
+        // Delete from postgresql.
+        this.photoDao.delete(photoId);
         try {
+            // Delete physical photo.
             String uname = AuthUtils.getAuth().user().username();
             cloudinary.uploader().destroy("user-uploads/" + uname + "/" + cloudName, ObjectUtils.emptyMap());
+
+            // Delete all likes.
+            this.likeRepository.deleteByPhotoId(photoId);
+
+            // Delete all comments.
+            this.commentRepository.deleteByPhotoId(photoId);
+
             return ResponseDto.newInstanceWithMessage("Your photo is now deleted.");
         } catch (IOException ex) {
             ex.printStackTrace();
         }
+
         return ResponseDto.newInstanceWithError("Something wrong happened when we tried to delete your photo. Please try again.");
     }
 
@@ -142,36 +154,40 @@ public class PhotoServiceImpl implements PhotoService {
     }
 
     @Override
-    public Comment createComment(final Comment comment) {
+    public IComment createComment(final IComment comment) {
         IUser user = AuthUtils.getAuth().user();
-        comment.setId(UUID.randomUUID().toString());
-        comment.setDatetime(new Date());
-        comment.setUserId(user.id());
-        comment.setUsername(user.username());
-        return this.commentRepository.save(comment);
+        Comment mutable = (Comment) comment;
+        mutable.setId(UUID.randomUUID().toString());
+        mutable.setDatetime(new Date());
+        mutable.setUserId(user.id());
+        mutable.setUsername(user.username());
+        return this.commentRepository.save(mutable);
     }
 
     @Override
-    public boolean deleteComment(final Comment comment) {
+    public boolean deleteComment(final IComment comment) {
         this.commentRepository.deleteByIdAndUserId(
-                comment.getId(),
+                comment.id(),
                 AuthUtils.getAuth().user().id());
         return true;
     }
 
     @Override
-    public Like toggleLike(final Like like) {
-        Like result = this.likeRepository.findByPhotoIdAndUserId(
-                like.getPhotoId(),
-                AuthUtils.getAuth().user().id());
+    public ILike toggleLike(final ILike like) {
+        long userId = AuthUtils.getAuth().user().id();
+        ILike result = this.likeRepository.findByPhotoIdAndUserId(
+                like.photoId(),
+                userId);
 
         // If count is more than zero,
         // the un-like. Else, do like.
         if (result != null) {
-            this.likeRepository.deleteById(result.getId());
+            this.likeRepository.deleteById(result.id());
             return new Like();
         }
-        like.setId(UUID.randomUUID().toString());
-        return this.likeRepository.save(like);
+        Like mutable = (Like) like;
+        mutable.setUserId(userId);
+        mutable.setId(UUID.randomUUID().toString());
+        return this.likeRepository.save(mutable);
     }
 }
