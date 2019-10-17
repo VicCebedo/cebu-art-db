@@ -212,14 +212,16 @@
                 </form>
             </div>
             <div class="actions">
-                <div class="ui black deny button">
-                    Cancel
-                </div>
-                <a href="#" onclick="loading(); document.getElementById('form-edit-profile').submit()">
-                    <div class="ui positive button">
-                        Update
+                <div class="ui reply form">
+                    <div class="ui left floated basic tertiary mini circular deny button" style="margin-bottom: 5%;">
+                        Cancel
                     </div>
-                </a>
+                    <div class="ui right floated basic secondary mini circular positive button" 
+                         style="margin-bottom: 5%;" 
+                         onclick="loading(); document.getElementById('form-edit-profile').submit()">
+                        Save
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -246,14 +248,16 @@
                 </form>
             </div>
             <div class="actions">
-                <div class="ui black deny button">
-                    Cancel
-                </div>
-                <a href="#" onclick="loading(); document.getElementById('form-change-password').submit()">
-                    <div class="ui positive button">
-                        Update
+                <div class="ui reply form">
+                    <div class="ui left floated basic tertiary mini circular deny button" style="margin-bottom: 5%;">
+                        Cancel
                     </div>
-                </a>
+                    <div class="ui right floated basic secondary mini circular positive button" 
+                         style="margin-bottom: 5%;" 
+                         onclick="loading(); document.getElementById('form-change-password').submit()">
+                        Save
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -263,27 +267,25 @@
                 Change Profile Photo
             </div>
             <div class="content">
-                <div class="ui active dimmer" id="loader-prof-pic" style="display: none">
-                    <div class="ui indeterminate text loader">Uploading</div>
-                </div>
                 <form th:action="@{/logged-in/user/profile-pic/update}" th:object="${profile}" th:method="PUT" class="ui form" id="form-profile-pic">
                     <input type="hidden" th:field="*{profilePic}" id="profile-pic-url"/>
                     <div class="field">
-                        <label>Photo</label>
                         <input type="file" accept="image/*" onchange="setFiles(this.files)"/>
                     </div>
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                 </form>
             </div>
             <div class="actions">
-                <div class="ui black deny button">
-                    Cancel
-                </div>
-                <a href="#" onclick="uploadProfilePhoto();">
-                    <div class="ui green button">
-                        Upload
+                <div class="ui reply form">
+                    <div class="ui left floated basic tertiary mini circular deny button" style="margin-bottom: 5%;">
+                        Cancel
                     </div>
-                </a>
+                    <div class="ui right floated basic mini circular positive button" 
+                         style="margin-bottom: 5%;" 
+                         onclick="loading(); uploadProfilePhoto();">
+                        Save
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -320,9 +322,6 @@
                 Upload
             </div>
             <div class="content">
-                <div class="ui active dimmer" id="loader-upload" style="display: none">
-                    <div class="ui indeterminate text loader">Uploading</div>
-                </div>
                 <form th:action="@{/logged-in/photo/upload}" th:object="${photo}" method="post" class="ui form" id="form-upload">
                     <input type="hidden" th:field="*{url}" id="photo-url"/>
                     <div class="field">
@@ -337,14 +336,16 @@
                 </form>
             </div>
             <div class="actions">
-                <div class="ui black deny button">
-                    Cancel
-                </div>
-                <a href="#" onclick="uploadFile()">
-                    <div class="ui green button">
-                        Upload
+                <div class="ui reply form">
+                    <div class="ui left floated basic tertiary mini circular deny button" style="margin-bottom: 5%;">
+                        Cancel
                     </div>
-                </a>
+                    <div class="ui right floated basic mini circular positive button" 
+                         style="margin-bottom: 5%;" 
+                         onclick="loading(); uploadFile()">
+                        Save
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -445,7 +446,6 @@
             // Do upload to Cloudinary.
             var uploadFile = function () {
                 const unsignedUploadPreset = 'nihp5svy';
-                document.getElementById('loader-upload').style = '';
 
                 for (var i = 0; i < files.length; i++) {
                     var file = files[i];
@@ -476,7 +476,6 @@
 
             // Upload profile pic.
             var uploadProfilePhoto = function () {
-                document.getElementById('loader-prof-pic').style = '';
                 $.ajax({
                     url: '/logged-in/user/profile-pic/delete',
                     type: 'delete',

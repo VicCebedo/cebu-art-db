@@ -48,6 +48,7 @@
         <div class="ui top fixed one item menu" style="border: 0;">
             <a class="item">
                 <h3 class="ui header">Notifications</h3>
+                <i class="home icon"></i>
             </a>
         </div>
 
@@ -259,12 +260,11 @@
 
             function viewPhoto(uuid, photoId) {
                 loading();
+                $('#notification-modal').modal({'autofocus': false, 'duration': 300});
                 document.getElementById('form-comment-photo-id').value = photoId;
                 document.getElementById('form-comment-user-id').value = `[[${user.id()}]]`;
                 document.getElementById('form-comment-username').value = `[[${user.username()}]]`;
 
-                // TODO (uuid) Remove background color.
-                // TODO (uuid) Set this notification as read.
                 $.ajax({
                     url: "/logged-in/notification/" + uuid + "/photo/" + photoId,
                     type: 'get',
@@ -305,9 +305,12 @@
                             document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
                         }
 
-                        doneLoading();
-                        $('#notification-modal').modal({'autofocus': false}).modal('show');
                         $('#modal-comments-data').scrollTop($('#modal-comments-data')[0].scrollHeight);
+                        $('#notification-modal').modal('refresh');
+                        setTimeout(function () {
+                            doneLoading();
+                            $('#notification-modal').modal('show');
+                        }, 200);
                     }
                 });
             }

@@ -145,8 +145,6 @@ public class PhotoDaoImpl implements PhotoDao {
                 usr.setUsername(rs.getString("username"));
                 usr.setName(rs.getString("name"));
 
-                // TODO Optimize so that we don't do multiple mongo requests.
-                // Comments and likes data.
                 long photoId = rs.getLong("id");
                 long commentCount = this.commentRepository.countByPhotoId(photoId);
                 long likeCount = this.likeRepository.countByPhotoId(photoId);
