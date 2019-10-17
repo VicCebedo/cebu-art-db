@@ -12,6 +12,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import com.cebedo.vic.artdb.model.IPhoto;
 import com.cebedo.vic.artdb.model.IUser;
+import java.util.List;
 
 /**
  *
@@ -32,6 +33,7 @@ public class Photo implements IPhoto {
     private long commentCount;
     private long likeCount;
     private boolean liked;
+    private List<Comment> comments;
 
     public Photo() {
         ;
@@ -50,6 +52,7 @@ public class Photo implements IPhoto {
         this.commentCount = b.commentCount();
         this.likeCount = b.likeCount();
         this.liked = b.liked();
+        this.comments = b.comments();
     }
 
     public boolean isLiked() {
@@ -167,6 +170,19 @@ public class Photo implements IPhoto {
     @Override
     public boolean liked() {
         return this.liked;
+    }
+
+    @Override
+    public List<Comment> comments() {
+        return this.comments;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
     }
 
 }

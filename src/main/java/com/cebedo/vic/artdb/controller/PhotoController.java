@@ -56,6 +56,14 @@ public class PhotoController {
         return this.photoService.getCommentsByPhotoId(id);
     }
 
+    @GetMapping("/logged-in/notification/{uuid}/photo/{id}")
+    @ResponseBody
+    IPhoto readNotification(
+            @PathVariable("uuid") final String uuid,
+            @PathVariable("id") final long id) {
+        return this.photoService.readNotification(uuid, id);
+    }
+
     @DeleteMapping("/logged-in/photo/comment/delete")
     @ResponseBody
     boolean deletePhotoComment(final Comment comment) {

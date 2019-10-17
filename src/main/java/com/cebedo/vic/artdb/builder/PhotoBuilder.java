@@ -10,6 +10,8 @@ import java.sql.Timestamp;
 import java.util.Objects;
 import com.cebedo.vic.artdb.model.IPhoto;
 import com.cebedo.vic.artdb.model.IUser;
+import com.cebedo.vic.artdb.model.impl.Comment;
+import java.util.List;
 
 /**
  *
@@ -25,6 +27,7 @@ public final class PhotoBuilder {
     private final long commentCount;
     private final long likeCount;
     private final boolean liked;
+    private List<Comment> comments;
 
     public PhotoBuilder(
             final long i,
@@ -102,6 +105,15 @@ public final class PhotoBuilder {
 
     public boolean liked() {
         return this.liked;
+    }
+
+    public List<Comment> comments() {
+        return this.comments;
+    }
+
+    public PhotoBuilder withComments(List<Comment> c) {
+        this.comments = c;
+        return this;
     }
 
 }

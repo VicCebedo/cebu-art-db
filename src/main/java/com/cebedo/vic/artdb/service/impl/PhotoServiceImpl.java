@@ -165,29 +165,29 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public IComment createComment(final IComment comment) {
+        String uuid = UUID.randomUUID().toString();
         IUser user = AuthUtils.getAuth().user();
         Comment mutable = (Comment) comment;
-        mutable.setId(UUID.randomUUID().toString());
+        mutable.setId(uuid);
         mutable.setDatetime(new Date());
         mutable.setUserId(user.id());
         mutable.setUsername(user.username());
 
         // Save notification and comment.
-        saveNotification(user, comment.photoId(), ActionEnum.COMMENT);
-
+        saveNotification(user, comment.photoId(), ActionEnum.COMMENT, uuid, comment.content());
         return this.commentRepository.save(mutable);
     }
 
-    private void saveNotification(IUser currentUser, long photoId, ActionEnum action) {
-        IPhoto photo = this.photoDao.get(photoId);
+    private void saveNotification(IUser currentUser, long photoId, ActionEnum action, String refId, String content) {
+        IPhoto photo = this.photoDao.getPartial(photoId);
         long userId = currentUser.id();
         long ownerId = photo.user().id();
 
         // Create notification only if initiator of action
         // and owner of photo is not the same.
         if (ownerId != userId) {
-            Notification notif = new Notification();
             Date currentDate = new Date();
+            Notification notif = new Notification();
             notif.setId(UUID.randomUUID().toString());
             notif.setAction(action);
             notif.setUserId(userId);
@@ -195,6 +195,12 @@ public class PhotoServiceImpl implements PhotoService {
             notif.setPhotoId(photoId);
             notif.setUnread(true);
             notif.setDatetime(currentDate);
+            notif.setContent(content);
+            notif.setReferenceId(refId);
+
+            // Thumbnail url.
+            String[] urlSplit = photo.url().split("/upload/");
+            notif.setThumbnail(urlSplit[0] + "/upload/c_limit,h_100,w_100/" + urlSplit[1]);
 
             // Owner is the uploader of the photo.
             String dateString = new SimpleDateFormat("MMM dd, h:mm aaa").format(currentDate);
@@ -207,9 +213,9 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public boolean deleteComment(final IComment comment) {
-        this.commentRepository.deleteByIdAndUserId(
-                comment.id(),
-                AuthUtils.getAuth().user().id());
+        String commentId = comment.id();
+        this.commentRepository.deleteByIdAndUserId(commentId, AuthUtils.getAuth().user().id());
+        this.notificationRepository.deleteByReferenceId(commentId);
         return true;
     }
 
@@ -223,16 +229,27 @@ public class PhotoServiceImpl implements PhotoService {
         // If count is more than zero,
         // then un-like. Else, do like.
         if (result != null) {
-            this.likeRepository.deleteById(result.id());
+            String likeId = result.id();
+            this.likeRepository.deleteById(likeId);
+            this.notificationRepository.deleteByReferenceId(likeId);
             return new Like();
         }
 
         // Save notification.
-        saveNotification(user, photoId, ActionEnum.LIKE);
+        String uuid = UUID.randomUUID().toString();
+        saveNotification(user, photoId, ActionEnum.LIKE, uuid, "");
 
         Like mutable = (Like) like;
         mutable.setUserId(userId);
-        mutable.setId(UUID.randomUUID().toString());
+        mutable.setId(uuid);
         return this.likeRepository.save(mutable);
+    }
+
+    @Override
+    public IPhoto readNotification(final String uuid, final long id) {
+        Notification notif = this.notificationRepository.findById(uuid).get();
+        notif.setUnread(false);
+        this.notificationRepository.save(notif);
+        return this.photoDao.get(id);
     }
 }

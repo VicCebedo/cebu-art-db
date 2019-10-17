@@ -24,6 +24,8 @@ public interface PhotoDao {
 
     void updateCaption(final IPhoto photo);
 
+    IPhoto getPartial(final long id);
+
     IPhoto get(final long id);
 
 }

@@ -18,14 +18,25 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Notification implements INotification {
 
     private String id;
+    private String referenceId;
     private ActionEnum action;
     private long userId;
     private String username;
     private long photoId;
+    private String thumbnail;
+    private String content;
     private boolean unread;
     private Date datetime;
     private long ownerId;
     private String dateDisplay;
+
+    public String getReferenceId() {
+        return referenceId;
+    }
+
+    public void setReferenceId(String referenceId) {
+        this.referenceId = referenceId;
+    }
 
     public long getOwnerId() {
         return ownerId;
@@ -99,6 +110,14 @@ public class Notification implements INotification {
         this.dateDisplay = dateDisplay;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     @Override
     public String id() {
         return this.id;
@@ -142,6 +161,29 @@ public class Notification implements INotification {
     @Override
     public String dateDisplay() {
         return this.dateDisplay;
+    }
+
+    @Override
+    public String content() {
+        return this.content;
+    }
+
+    @Override
+    public String referenceId() {
+        return this.referenceId;
+    }
+
+    @Override
+    public String thumbnail() {
+        return this.thumbnail;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
 }

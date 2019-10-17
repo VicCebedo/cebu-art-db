@@ -16,6 +16,8 @@ public interface INotification {
 
     String id();
 
+    String referenceId();
+
     ActionEnum action();
 
     long userId();
@@ -24,6 +26,8 @@ public interface INotification {
 
     long photoId();
 
+    String thumbnail();
+
     boolean unread();
 
     Date datetime();
@@ -31,4 +35,6 @@ public interface INotification {
     long ownerId();
 
     String dateDisplay();
+
+    String content();
 }

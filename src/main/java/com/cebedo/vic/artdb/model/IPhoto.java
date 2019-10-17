@@ -5,7 +5,9 @@
  */
 package com.cebedo.vic.artdb.model;
 
+import com.cebedo.vic.artdb.model.impl.Comment;
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  *
@@ -30,5 +32,7 @@ public interface IPhoto {
     long likeCount();
 
     boolean liked();
+
+    List<Comment> comments();
 
 }

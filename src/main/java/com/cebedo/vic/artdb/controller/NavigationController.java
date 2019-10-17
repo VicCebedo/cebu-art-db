@@ -80,6 +80,9 @@ public class NavigationController {
     @GetMapping("/logged-in/notifications")
     String pageNotifications(final Model model, final HttpServletRequest request) {
         model.addAttribute("isArtist", AuthUtils.isArtist());
+        model.addAttribute("user", AuthUtils.getAuth().user());
+        model.addAttribute("like", new Like());
+        model.addAttribute("comment", new Comment());
         resetPaginationOffsets(request);
         return "notifications";
     }

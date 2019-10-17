@@ -6,6 +6,7 @@
 package com.cebedo.vic.artdb.dao.impl;
 
 import com.cebedo.vic.artdb.builder.PhotoBuilder;
+import com.cebedo.vic.artdb.builder.UserBuilder;
 import com.cebedo.vic.artdb.dao.PhotoDao;
 import com.cebedo.vic.artdb.dao.UserDao;
 import com.cebedo.vic.artdb.model.ILike;
@@ -23,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import com.cebedo.vic.artdb.model.IPhoto;
 import com.cebedo.vic.artdb.model.IUser;
+import com.cebedo.vic.artdb.model.impl.Comment;
 import com.cebedo.vic.artdb.model.impl.Photo;
 
 /**
@@ -147,8 +149,8 @@ public class PhotoDaoImpl implements PhotoDao {
                 // Comments and likes data.
                 long photoId = rs.getLong("id");
                 long commentCount = this.commentRepository.countByPhotoId(photoId);
-                ILike like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
                 long likeCount = this.likeRepository.countByPhotoId(photoId);
+                ILike like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
 
                 photos.add(new PhotoBuilder(
                         photoId,
@@ -170,7 +172,7 @@ public class PhotoDaoImpl implements PhotoDao {
     }
 
     @Override
-    public IPhoto get(final long id) {
+    public IPhoto getPartial(final long id) {
         try (Connection connection = dataSource.getConnection()) {
             PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos WHERE id = ?");
             stmt.setLong(1, id);
@@ -181,7 +183,42 @@ public class PhotoDaoImpl implements PhotoDao {
                 usr.setId(rs.getLong("user_id"));
                 Photo photo = (Photo) PhotoBuilder.newInstance();
                 photo.setUser(usr);
+                photo.setUrl(rs.getString("url"));
                 return photo;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Photo();
+    }
+
+    @Override
+    public IPhoto get(final long id) {
+        try (Connection connection = dataSource.getConnection()) {
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM photos WHERE id = ?");
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                long photoId = rs.getLong("id");
+                long commentCount = this.commentRepository.countByPhotoId(photoId);
+                long likeCount = this.likeRepository.countByPhotoId(photoId);
+                long userId = AuthUtils.getAuth().user().id();
+                ILike like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
+                List<Comment> comments = this.commentRepository.findByPhotoId(id);
+
+                return new PhotoBuilder(
+                        photoId,
+                        rs.getString("url"),
+                        rs.getString("caption"),
+                        rs.getTimestamp("timestamp"),
+                        UserBuilder.newInstance(),
+                        commentCount,
+                        likeCount,
+                        like != null)
+                        .withComments(comments)
+                        .build();
             }
         } catch (Exception e) {
             e.printStackTrace();

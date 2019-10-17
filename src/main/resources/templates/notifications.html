@@ -52,7 +52,15 @@
         </div>
 
         <div id="datastream" class="ui container" style="padding-top: 20%">
-            <div class="ui relaxed list" id="datastream-rows">
+            <div class="ui relaxed divided list" id="datastream-rows">
+            </div>
+            <div id="datastream-loader" style="display: none">
+                <br/>
+                <div class="ui active centered inline loader"></div>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
             </div>
         </div>
 
@@ -77,17 +85,267 @@
             </div>
         </div>
 
+        <!--DELETE COMMENT CONFIRMATION-->
+        <div class="ui basic fullscreen modal" id="modal-delete-comment">
+            <form th:action="@{/logged-in/photo/comment/delete}" th:object="${comment}" th:method="delete" id="form-delete-comment">
+                <input type="hidden" th:field="*{id}" id="form-comment-id"/>
+                <input type="hidden" th:field="*{photoId}" id="form-comment-photo-id-delete"/>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+            <div class="ui icon header">
+                <i class="trash icon"></i>
+                Delete Comment
+            </div>
+            <div class="content">
+                <p>You sure you want to delete this comment?</p>
+            </div>
+            <div class="actions">
+                <div class="ui red basic cancel inverted button" onclick="$('#modal-delete-comment').modal('hide')">
+                    <i class="remove icon"></i>
+                    Cancel
+                </div>
+                <div class="ui green ok inverted button" onclick="doDeleteComment()">
+                    <i class="checkmark icon"></i>
+                    Delete
+                </div>
+            </div>
+        </div>
+
+        <!--IMAGE CLICK MODAL-->
+        <div class="ui modal" id="notification-modal">
+            <form th:action="@{/logged-in/photo/comment/create}" th:object="${comment}" th:method="post" id="form-comment">
+                <input type="hidden" th:field="*{photoId}" id="form-comment-photo-id"/>
+                <input type="hidden" th:field="*{userId}" id="form-comment-user-id"/>
+                <input type="hidden" th:field="*{username}" id="form-comment-username"/>
+                <input type="hidden" th:field="*{content}" id="form-comment-content"/>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+            <form th:action="@{/logged-in/photo/like/toggle}" th:object="${like}" th:method="post" id="form-like">
+                <input type="hidden" th:field="*{id}" id="form-like-id"/>
+                <input type="hidden" th:field="*{photoId}" id="form-like-photo-id"/>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
+            <i class="close icon"></i>
+            <div class="header">&nbsp;</div>
+            <div class="image content">
+                <div class="ui medium image">
+                    <img src="" id="notification-modal-img">
+                </div>
+                <div id="notification-modal-actions">
+                </div>
+                <div class="description">
+                    <p id="notification-modal-caption" style="white-space: pre-line"></p>
+                </div>
+                <div class="ui comments">
+                    <div class="ui" id="comments-loader" style="display: none;">
+                        <div class="ui active inverted dimmer">
+                            <div class="ui text loader"></div>
+                        </div>
+                        <p></p>
+                    </div>
+                    <div id="modal-comments-data" style="overflow-y: auto; max-height: 300px;">
+                    </div>
+                </div>
+            </div>
+            <div class="actions">
+                <div class="ui reply form">
+                    <div class="field">
+                        <input type="text" placeholder="Add reply.." id="comment-field">
+                    </div>
+                    <div class="ui left floated basic tertiary mini circular button" style="margin-bottom: 5%;" onclick="$('#notification-modal').modal('hide')">
+                        Cancel
+                    </div>
+                    <div class="ui right floated basic secondary mini circular button" style="margin-bottom: 5%;" onclick="document.getElementById('form-comment-content').value = document.getElementById('comment-field').value; submitComment()">
+                        Post
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui basic mini modal" id="modal-delete-success">
+            <div class="ui icon green header">
+                <i class="check icon"></i>
+                Done!
+            </div>
+        </div>
+
         <script type="text/javascript">
+            function submitComment() {
+                document.getElementById('comments-loader').style = '';
+                const hasContent = document.getElementById('form-comment-content').value !== '';
+
+                if (hasContent) {
+                    $.ajax({
+                        url: '/logged-in/photo/comment/create',
+                        type: 'post',
+                        data: $('#form-comment').serialize(),
+                        success: function (response) {
+                            const canDelete = `[[${user.id()}]]` === `` + response.userId + ``;
+
+                            var deleteIcon = '';
+                            if (canDelete) {
+                                deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + response.id + '\', ' + response.photoId + ')"><i class="trash alternate icon"></i></a>';
+                            }
+                            const row = '<div class="comment"><div class="content"><a class="author">' + response.username + '</a>&nbsp;&nbsp;' + response.content + deleteIcon + '</div></div>';
+                            document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
+                            document.getElementById('comment-field').value = '';
+                            document.getElementById('comments-loader').style = 'display: none';
+                            $('#modal-comments-data').scrollTop($('#modal-comments-data')[0].scrollHeight);
+                            $('#comments-modal').modal('refresh');
+
+                            updateCommentDisplay(response.photoId, true);
+                        }
+                    });
+                }
+            }
+
             function loading() {
                 document.getElementById('global-loader').style = '';
             }
 
+            function doneLoading() {
+                document.getElementById('global-loader').style = 'display: none';
+            }
+
+            function updateCommentDisplay(photoId, add) {
+                // Update comment count.
+                const commentCount = add
+                        ? Number(document.getElementById('comment-label-' + photoId).innerHTML) + 1
+                        : Number(document.getElementById('comment-label-' + photoId).innerHTML) - 1;
+
+                document.getElementById('comment-label-' + photoId).innerHTML = commentCount;
+
+                // If comment is greater than zero, change to blue.
+                // Else, gray.
+                const button = document.getElementById('comment-button-' + photoId);
+                const label = document.getElementById('comment-label-' + photoId);
+                if (commentCount > 0) {
+                    button.classList.add('blue');
+                    label.classList.add('blue');
+                } else {
+                    button.classList.remove('blue');
+                    label.classList.remove('blue');
+                }
+            }
+
+            function toggleLike(id) {
+                document.getElementById('form-like-photo-id').value = id;
+                $.ajax({
+                    url: "/logged-in/photo/like/toggle",
+                    type: 'post',
+                    data: $('#form-like').serialize(),
+                    success: function (response) {
+
+                        // If ID is null, meaning we have un-liked the photo.
+                        // So, remove the red class.
+                        const button = document.getElementById('like-button-' + id);
+                        const label = document.getElementById('like-label-' + id);
+                        var likeCount = Number(document.getElementById('like-label-' + id).innerHTML);
+
+                        if (response.id === null) {
+                            button.classList.remove('red');
+                            label.classList.remove('red');
+                            likeCount--;
+                        } else {
+                            // Else, add red class.
+                            button.classList.add('red');
+                            label.classList.add('red');
+                            likeCount++;
+                        }
+                        document.getElementById('like-label-' + id).innerHTML = likeCount;
+                    }
+                });
+            }
+
+            function viewPhoto(uuid, photoId) {
+                loading();
+                document.getElementById('form-comment-photo-id').value = photoId;
+                document.getElementById('form-comment-user-id').value = `[[${user.id()}]]`;
+                document.getElementById('form-comment-username').value = `[[${user.username()}]]`;
+
+                // TODO (uuid) Remove background color.
+                // TODO (uuid) Set this notification as read.
+                $.ajax({
+                    url: "/logged-in/notification/" + uuid + "/photo/" + photoId,
+                    type: 'get',
+                    success: function (photo) {
+                        $('#notification-modal').modal({'autofocus': false}).modal('show');
+
+                        // Update unread color.
+                        document.getElementById('row-' + uuid).classList.remove('unread');
+
+                        // Photo data.
+                        document.getElementById('notification-modal-img').src = photo.url;
+                        document.getElementById('notification-modal-caption').innerHTML = photo.caption;
+
+                        // Action: Like.
+                        document.getElementById('notification-modal-actions').innerHTML = "";
+                        const likeCss = photo.liked ? "red" : "";
+                        const likeHtml = "<div onclick=\"toggleLike(" + photo.id + ")\" class=\"ui labeled mini button\" tabindex=\"0\"><div id=\"like-button-" + photo.id + "\" class=\"ui mini " + likeCss + " button\"><i style=\"margin: 0px\" class=\"heart icon\"></i></div><div id=\"like-label-" + photo.id + "\" class=\"ui basic left pointing " + likeCss + " label\">" + photo.likeCount + "</div></div>";
+                        document.getElementById('notification-modal-actions').insertAdjacentHTML('beforeend', likeHtml);
+
+                        // Action: Comment.
+                        const commentColor = photo.commentCount === 0 ? '' : 'blue';
+                        const commentDisplay = photo.commentCount;
+                        const commentHtml = "<div class=\"ui labeled mini button\" tabindex=\"0\"><div id=\"comment-button-" + photo.id + "\" class=\"ui mini " + commentColor + " button\"><i style=\"margin: 0px\" class=\"comment icon\"></i></div><div id=\"comment-label-" + photo.id + "\" class=\"ui basic left pointing " + commentColor + " label\">" + commentDisplay + "</div></div>";
+                        document.getElementById('notification-modal-actions').insertAdjacentHTML('beforeend', commentHtml);
+
+                        // Data: Comments.
+                        document.getElementById('modal-comments-data').innerHTML = "";
+                        const comments = photo.comments;
+                        for (var i = 0; i < comments.length; i++) {
+                            const comment = comments[i];
+                            const canDelete = `[[${user.id()}]]` === `` + comment.userId + ``;
+
+                            var deleteIcon = '';
+                            if (canDelete) {
+                                deleteIcon = '<a style="padding: 0; padding-left: 5%; -webkit-box-shadow: none !important" class="ui red icon basic button" onclick="deleteCommentConfirm(\'' + comment.id + '\', ' + comment.photoId + ')"><i class="trash alternate icon"></i></a>';
+                            }
+
+                            const row = '<div class="comment"><div class="content"><a class="author">' + comment.username + '</a>&nbsp;&nbsp;' + comment.content + deleteIcon + '</div></div>';
+                            document.getElementById('modal-comments-data').insertAdjacentHTML('beforeend', row);
+                        }
+
+                        setTimeout(function () {
+                            doneLoading();
+                            $('#notification-modal').modal('refresh');
+                        }, 200);
+                    }
+                });
+            }
+
+            function doDeleteComment() {
+                $('#modal-delete-comment').modal({'duration': 300}).modal('hide');
+                $.ajax({
+                    url: "/logged-in/photo/comment/delete",
+                    type: 'delete',
+                    data: $('#form-delete-comment').serialize(),
+                    success: function (response) {
+                        $('#modal-delete-success').modal('show');
+                        const photoId = document.getElementById('form-comment-photo-id-delete').value;
+                        updateCommentDisplay(photoId, false);
+
+                        setTimeout(function () {
+                            $('#modal-delete-success').modal('hide');
+                        }, 1000);
+                    }
+                });
+            }
+
+            function deleteCommentConfirm(uuid, photoId) {
+                $('#comments-modal').modal({'duration': 0}).modal('hide');
+                document.getElementById('form-comment-id').value = uuid;
+                document.getElementById('form-comment-photo-id-delete').value = photoId;
+                $('#modal-delete-comment').modal('show');
+                $('#modal-delete-comment').modal('refresh');
+            }
+
             function getNotifications() {
+                document.getElementById('datastream-loader').style = '';
                 $.ajax({
                     url: "/logged-in/notifications/pagination/next",
                     type: 'get',
                     success: function (notifications) {
-                        console.log(notifications);
                         for (var i = 0; i < notifications.length; i++) {
                             const notif = notifications[i];
                             const unread = notif.unread
@@ -95,10 +353,11 @@
                                     : '';
                             const phrase = notif.action === 'LIKE'
                                     ? 'liked your photo.'
-                                    : 'commented on your photo';
-                            const template = '<div class="item notification-row ' + unread + '"><div class="content"><div><b>' + notif.username + '</b> ' + phrase + '</div><div style="padding-top: 1%;" class="description">' + notif.dateDisplay + '</div></div></div>';
+                                    : 'commented on your photo: ' + '"' + notif.content + '"';
+                            const template = '<div id="row-' + notif.id + '" onclick="viewPhoto(\'' + notif.id + '\', ' + notif.photoId + ')" class="item notification-row ' + unread + '"><div class="content"><div class="ui mini image right floated"><img src="' + notif.thumbnail + '"></div><div><b>' + notif.username + '</b> ' + phrase + '</div><div style="padding-top: 2%; font-size: smaller;" class="description"><i>' + notif.dateDisplay + '</i></div></div></div>';
                             document.getElementById('datastream-rows').insertAdjacentHTML('beforeend', template);
                         }
+                        document.getElementById('datastream-loader').style = 'display: none';
                     }
                 });
             }
