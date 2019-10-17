@@ -410,7 +410,7 @@
                 <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isGuest}">
                     <i class="user icon"></i>
                 </a>
-                <a class="item icon active" href="/logged-in/home" onclick="loading()" th:if="${!isGuest}">
+                <a class="item active icon" onclick="$('html, body').animate({scrollTop: 0}, 'fast')" th:if="${!isGuest}">
                     <i class="user icon"></i>
                 </a>
             </div>
