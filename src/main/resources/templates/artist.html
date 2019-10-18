@@ -55,7 +55,7 @@
                 <a class="item active icon" onclick="$('html, body').animate({scrollTop: 0}, 'fast')">
                     <i class="users icon"></i>
                 </a>
-                <a class="item icon" href="/logged-in/notifications" onclick="loading()">
+                <a class="item icon" href="/logged-in/notification" onclick="loading()">
                     <i class="bell icon"></i>
                 </a>
                 <a class="item icon" href="/logged-in/home" onclick="loading()" th:if="${isArtist}">
@@ -64,7 +64,12 @@
             </div>
         </div>
 
-        <div class="ui container" style="padding-top: 20%">
+        <div class="ui container" style="padding-top: 12%">
+            <form th:action="@{/logged-in/artist/catch/toggle}" th:object="${catch}" th:method="put" id="form-catch">
+                <input type="hidden" th:field="*{targetId}" id="form-catch-id"/>
+                <input type="hidden" th:field="*{targetUsername}" id="form-catch-username"/>
+                <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+            </form>
             <div class="ui divided items" id="userstream">
             </div>
             <div id="userstream-loader" style="display: none">
@@ -83,7 +88,28 @@
             $('.ui.dropdown').dropdown({
                 on: 'hover',
                 action: 'nothing'
-            })
+            });
+
+            function toggleCatch(id, username) {
+                document.getElementById('form-catch-id').value = id;
+                document.getElementById('form-catch-username').value = username;
+
+                $.ajax({
+                    url: "/logged-in/artist/catch/toggle",
+                    type: 'put',
+                    data: $('#form-catch').serialize(),
+                    success: function (response) {
+                        const buttonId = "catch-" + id;
+                        if (response.id === null) {
+                            document.getElementById(buttonId).innerHTML = "Catch";
+                            document.getElementById(buttonId).classList.remove('basic');
+                        } else {
+                            document.getElementById(buttonId).innerHTML = "Catching";
+                            document.getElementById(buttonId).classList.add('basic');
+                        }
+                    }
+                });
+            }
 
             function loading() {
                 document.getElementById('global-loader').style = '';
@@ -94,7 +120,7 @@
                 onBottomVisible: function () {
                     document.getElementById('userstream-loader').style = '';
                     $.ajax({
-                        url: '/logged-in/artists/pagination/next',
+                        url: '/logged-in/artist/pagination/next',
                         type: 'get',
                         success: function (responseBody) {
                             document.getElementById('userstream').insertAdjacentHTML('beforeend', responseBody);

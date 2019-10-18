@@ -68,7 +68,7 @@ public class PhotoController {
         return this.photoService.createComment(comment);
     }
 
-    @PostMapping("/logged-in/photo/like/toggle")
+    @PutMapping("/logged-in/photo/like/toggle")
     @ResponseBody
     ILike toggleLike(final Like like) {
         return this.photoService.toggleLike(like);

@@ -31,17 +31,17 @@ public class NotificationController {
     @Autowired
     private NotificationService notificationService;
 
-    @GetMapping("/logged-in/notifications")
+    @GetMapping("/logged-in/notification")
     String pageNotifications(final Model model, final HttpServletRequest request) {
         model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("user", AuthUtils.getAuth().user());
         model.addAttribute("like", new Like());
         model.addAttribute("comment", new Comment());
         SessionUtils.resetPaginationOffsets(request);
-        return "notifications";
+        return "notification";
     }
 
-    @GetMapping("/logged-in/notifications/pagination/next")
+    @GetMapping("/logged-in/notification/pagination/next")
     @ResponseBody
     List<Notification> notificationPaginationNext(final HttpServletRequest request) {
         long currentUserId = AuthUtils.getAuth().user().id();
@@ -51,6 +51,7 @@ public class NotificationController {
         return notifs;
     }
 
+    // TODO Change to PUT because a data was updated.
     @GetMapping("/logged-in/notification/{uuid}/photo/{id}")
     @ResponseBody
     IPhoto readNotification(

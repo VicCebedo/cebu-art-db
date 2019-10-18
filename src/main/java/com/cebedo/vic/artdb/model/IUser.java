@@ -30,4 +30,6 @@ public interface IUser {
     String profilePic();
     
     boolean artist();
+    
+    int catchCount();
 }

@@ -5,6 +5,8 @@
  */
 package com.cebedo.vic.artdb.service;
 
+import com.cebedo.vic.artdb.model.ICatch;
+
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
@@ -12,5 +14,9 @@ package com.cebedo.vic.artdb.service;
 public interface CatchService {
 
     boolean isCatch(final long targetId, final long followerId);
+
+    int countCatchCurrentUser();
+
+    ICatch toggleCatch(final ICatch dto);
 
 }

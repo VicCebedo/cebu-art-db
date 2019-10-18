@@ -6,6 +6,7 @@
 package com.cebedo.vic.artdb.controller;
 
 import com.cebedo.vic.artdb.dto.CredentialsDto;
+import com.cebedo.vic.artdb.model.ICatch;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.util.List;
@@ -16,8 +17,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.cebedo.vic.artdb.model.IUser;
+import com.cebedo.vic.artdb.model.impl.Catch;
 import com.cebedo.vic.artdb.service.CatchService;
 import com.cebedo.vic.artdb.utils.SessionUtils;
+import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  *
@@ -32,18 +35,25 @@ public class ArtistController {
     @Autowired
     private CatchService catchService;
 
-    @GetMapping("/logged-in/artists")
-    String pageArtists(final Model model, final HttpServletRequest request) {
+    @GetMapping("/logged-in/artist")
+    String pageArtist(final Model model, final HttpServletRequest request) {
         model.addAttribute("isArtist", AuthUtils.isArtist());
+        model.addAttribute("catch", new Catch());
         model.addAttribute("artists", this.userService.getUsers(0));
         model.addAttribute("changePass", new CredentialsDto());
         SessionUtils.resetPaginationOffsets(request);
-        return "artists";
+        return "artist";
     }
 
-    @GetMapping("/logged-in/artists/pagination/next")
+    @PutMapping("/logged-in/artist/catch/toggle")
     @ResponseBody
-    String artistsPaginationNext(final Model model, final HttpServletRequest request) {
+    ICatch toggleCatch(final Catch obj) {
+        return this.catchService.toggleCatch(obj);
+    }
+
+    @GetMapping("/logged-in/artist/pagination/next")
+    @ResponseBody
+    String artistPaginationNext(final Model model, final HttpServletRequest request) {
         // Get current offset value.
         int offset = SessionUtils.getAttributeInt(request, "users-pagination-offset");
 
@@ -76,30 +86,28 @@ public class ArtistController {
                     ? ""
                     : "            <div class=\"ui label\"><i class=\"phone icon\"></i> " + user.phone() + "</div>\n";
 
-            boolean isCatch = this.catchService.isCatch(user.id(), currentUser.id());
-            String catchButton = isCatch
-                    ? "<div class=\"content\">\n"
-                    + "  <div class=\"ui left labeled mini right floated button\" tabindex=\"0\">\n"
-                    + "    <a class=\"ui mini green basic right pointing label\">\n"
-                    + "      1,048\n"
-                    + "    </a>\n"
-                    + "    <div class=\"ui mini green button\">\n"
-                    + "      <i class=\"plus icon\"></i> Catch\n"
-                    + "    </div>\n"
-                    + "  </div>\n"
-                    + "</div>\n"
-                    + "<br/>"
-                    : "<div class=\"content\">\n"
-                    + "  <div class=\"ui left labeled mini right floated button\" tabindex=\"0\">\n"
-                    + "    <a class=\"ui mini green basic right pointing label\">\n"
-                    + "      1,048\n"
-                    + "    </a>\n"
-                    + "    <div class=\"ui mini green basic button\">\n"
-                    + "      <i class=\"plus icon\"></i> Catch\n"
-                    + "    </div>\n"
-                    + "  </div>\n"
-                    + "</div>\n"
-                    + "<br/>";
+            // Catch button.
+            // Do not include if this is me.
+            String catchButton = "";
+            if (user.id() != currentUser.id()) {
+                boolean isCatch = this.catchService.isCatch(user.id(), currentUser.id());
+                String catchId = "catch-" + user.id();
+                catchButton = isCatch
+                        ? "<div class=\"content\">\n"
+                        + "  <div id=\"" + catchId + "\" class=\"ui mini green basic button right floated\" onclick=\"toggleCatch(" + user.id() + ", '" + user.username() + "')\">\n"
+                        + "    Catching\n"
+                        + "  </div>\n"
+                        + "</div>\n"
+                        + "<br/>"
+                        : "<div class=\"content\">\n"
+                        + "  <div id=\"" + catchId + "\" class=\"ui mini green button right floated\" onclick=\"toggleCatch(" + user.id() + ", '" + user.username() + "')\">\n"
+                        + "    Catch\n"
+                        + "  </div>\n"
+                        + "</div>\n"
+                        + "<br/>";
+            } else {
+                catchButton = "<br/>";
+            }
 
             String template
                     = "<div class=\"item\">\n"
