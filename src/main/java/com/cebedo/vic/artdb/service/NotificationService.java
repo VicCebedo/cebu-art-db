@@ -14,6 +14,8 @@ import java.util.List;
  */
 public interface NotificationService {
 
-    List<Notification> getByOwnerId(final long ownerId);
+    List<Notification> getByOwnerId(final long ownerId, final int page);
+
+    void markExpiredNotificationsAsRead();
 
 }

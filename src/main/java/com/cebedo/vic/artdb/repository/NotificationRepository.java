@@ -7,6 +7,7 @@ package com.cebedo.vic.artdb.repository;
 
 import com.cebedo.vic.artdb.model.impl.Notification;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 /**
@@ -15,7 +16,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface NotificationRepository extends MongoRepository<Notification, String> {
 
-    List<Notification> findByOwnerIdOrderByDatetimeDesc(final long ownerId);
+    List<Notification> findByOwnerIdOrderByDatetimeDesc(final long ownerId, final Pageable pageable);
+
+    List<Notification> findByUnread(final boolean unread);
 
     void deleteByPhotoId(final long photoId);
 

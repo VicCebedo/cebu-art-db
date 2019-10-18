@@ -138,6 +138,7 @@ public class UserController {
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);
+        request.getSession().setAttribute("notifications-pagination-page", 0);
         return "home";
     }
 }

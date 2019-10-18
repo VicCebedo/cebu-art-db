@@ -10,6 +10,7 @@ import com.cebedo.vic.artdb.repository.NotificationRepository;
 import com.cebedo.vic.artdb.service.NotificationService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,8 +26,34 @@ public class NotificationServiceImpl implements NotificationService {
     NotificationRepository notificationRepository;
 
     @Override
-    public List<Notification> getByOwnerId(final long ownerId) {
-        return this.notificationRepository.findByOwnerIdOrderByDatetimeDesc(ownerId);
+    public List<Notification> getByOwnerId(final long ownerId, final int page) {
+        return this.notificationRepository.findByOwnerIdOrderByDatetimeDesc(ownerId, PageRequest.of(page, 10));
+    }
+
+    @Override
+    public void markExpiredNotificationsAsRead() {
+        // Get all notifications where unread = true.
+        List<Notification> notifs = this.notificationRepository.findByUnread(true);
+
+        // Go through each,
+        // check if notification is greater than 24 hours.
+        for (Notification notif : notifs) {
+
+            long past = notif.datetime().getTime();
+            long now = System.currentTimeMillis();
+            long life = now - past;
+            long oneDay = 86400000;
+
+            // If life of the notification has exceeded more than a day.
+            if (life > oneDay) {
+
+                // If yes, set unread = false (mark as read).
+                // Then save.
+                notif.setUnread(false);
+            }
+        }
+
+        this.notificationRepository.saveAll(notifs);
     }
 
 }

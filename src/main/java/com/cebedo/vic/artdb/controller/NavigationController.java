@@ -28,6 +28,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.vic.artdb.model.IUser;
 import com.cebedo.vic.artdb.model.impl.Notification;
 import com.cebedo.vic.artdb.service.NotificationService;
+import com.cebedo.vic.artdb.utils.SessionUtils;
 
 /**
  *
@@ -49,6 +50,7 @@ public class NavigationController {
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);
+        request.getSession().setAttribute("notifications-pagination-page", 0);
     }
 
     @GetMapping("/")
@@ -89,20 +91,19 @@ public class NavigationController {
 
     @GetMapping("/logged-in/notifications/pagination/next")
     @ResponseBody
-    List<Notification> notificationPaginationNext() {
-        // TODO Implement offset.
+    List<Notification> notificationPaginationNext(final HttpServletRequest request) {
         long currentUserId = AuthUtils.getAuth().user().id();
-        return this.notificationService.getByOwnerId(currentUserId);
+        int page = SessionUtils.getAttributeInt(request, "notifications-pagination-page");
+        List<Notification> notifs = this.notificationService.getByOwnerId(currentUserId, page);
+        SessionUtils.setAttributeInt(request, "notifications-pagination-page", page + 1);
+        return notifs;
     }
 
     @GetMapping("/logged-in/artists/pagination/next")
     @ResponseBody
     String artistsPaginationNext(final Model model, final HttpServletRequest request) {
         // Get current offset value.
-        HttpSession session = request.getSession();
-        int offset = session.getAttribute("users-pagination-offset") == null
-                ? 0
-                : (int) session.getAttribute("users-pagination-offset");
+        int offset = SessionUtils.getAttributeInt(request, "users-pagination-offset");
 
         // Get photos.
         List<IUser> users = this.userService.getUsers(offset);
@@ -156,7 +157,7 @@ public class NavigationController {
         }
 
         // Increment offset by five, then save.
-        session.setAttribute("users-pagination-offset", offset + 5);
+        SessionUtils.setAttributeInt(request, "users-pagination-offset", offset + 5);
         return returnString.toString();
     }
 
