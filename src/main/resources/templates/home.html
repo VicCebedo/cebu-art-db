@@ -139,27 +139,27 @@
                 <div class="ui items">
                     <div class="item">
                         <div class="ui medium image">
-                            <div class="ui grey ribbon label large" th:if="${profile.getName() != ''}">
-                                [[${profile.getName()}]]
+                            <div class="ui grey ribbon label large" th:if="${user.name() != ''}">
+                                [[${user.name()}]]
                             </div>
-                            <img th:if="${profile.getProfilePic()} == ''" src="https://semantic-ui.com/images/wireframe/image.png" />
-                            <img th:unless="${profile.getProfilePic()} == ''" th:src="${profile.getProfilePic()}" />
+                            <img th:if="${user.profilePic()} == ''" src="https://semantic-ui.com/images/wireframe/image.png" />
+                            <img th:unless="${user.profilePic()} == ''" th:src="${user.profilePic()}" />
                         </div>
                         <div class="content center">
-                            <div class="description" th:if="${profile.getBio() != ''}">
-                                <p style="white-space: pre-line">[[${profile.getBio()}]]</p>
+                            <div class="description" th:if="${user.bio() != ''}">
+                                <p style="white-space: pre-line">[[${user.bio()}]]</p>
                             </div>
                             <div class="extra">
                                 <div class="ui label"><i class="user icon"></i>[[${user.username()}]]</div>
 
                                 <a href="#" 
                                    onclick="#" 
-                                   th:attr="onclick=|window.open('${profile.getWebsite()}', '_blank'); event.preventDefault();|"
-                                   th:if="${profile.getWebsite() != ''}">
-                                    <div class="ui label"><i class="globe icon"></i>[[${profile.getWebsite()}]]</div>
+                                   th:attr="onclick=|window.open('${user.website()}', '_blank'); event.preventDefault();|"
+                                   th:if="${user.website() != ''}">
+                                    <div class="ui label"><i class="globe icon"></i>[[${user.website()}]]</div>
                                 </a>
-                                <div class="ui label" th:if="${profile.getEmail() != ''}"><i class="envelope icon"></i>[[${profile.getEmail()}]]</div>
-                                <div class="ui label" th:if="${profile.getPhone() != ''}"><i class="phone icon"></i>[[${profile.getPhone()}]]</div>
+                                <div class="ui label" th:if="${user.email() != ''}"><i class="envelope icon"></i>[[${user.email()}]]</div>
+                                <div class="ui label" th:if="${user.phone() != ''}"><i class="phone icon"></i>[[${user.phone()}]]</div>
                             </div>
                         </div>
                     </div>

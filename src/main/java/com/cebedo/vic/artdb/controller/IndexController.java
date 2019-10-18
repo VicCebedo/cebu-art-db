@@ -79,19 +79,25 @@ public class IndexController {
             return "redirect:/";
         }
 
+        // Data.
         IUser user = AuthUtils.getAuth().user();
         model.addAttribute("user", user);
-        model.addAttribute("profile", new ProfileDto(user));
         model.addAttribute("photos", this.photoService.getPhotosByCurrentUser(0));
+        model.addAttribute("isGuest", false);
+
+        // Forms.
+        model.addAttribute("profile", new ProfileDto(user));
         model.addAttribute("photo", new Photo());
         model.addAttribute("changePass", new CredentialsDto());
+
+        // Notifications.
         model.addAttribute("missingBio", StringUtils.isBlank(user.bio()));
         model.addAttribute("missingEmail", StringUtils.isBlank(user.email()));
         model.addAttribute("missingName", StringUtils.isBlank(user.name()));
         model.addAttribute("missingPhone", StringUtils.isBlank(user.phone()));
         model.addAttribute("missingWebsite", StringUtils.isBlank(user.website()));
         model.addAttribute("missingProfilePic", StringUtils.isBlank(user.profilePic()));
-        model.addAttribute("isGuest", false);
+
         SessionUtils.resetPaginationOffsets(request);
         return "home";
     }

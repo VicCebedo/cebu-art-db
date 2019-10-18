@@ -130,7 +130,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseDto updateProfileCurrentUser(final ProfileDto profile) {
+    public ResponseDto updateProfile(final ProfileDto profile) {
         // Artist only feature.
         if (!AuthUtils.isArtist()) {
             return ResponseDto.newInstanceWithError("Something went terribly wrong. Please contact support.");

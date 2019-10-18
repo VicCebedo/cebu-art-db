@@ -72,8 +72,8 @@ public class UserController {
     }
 
     @PutMapping("/logged-in/user/profile/update")
-    String updateProfileCurrentUser(final ProfileDto profile, final RedirectAttributes attrs) {
-        ResponseDto rsp = this.userService.updateProfileCurrentUser(profile);
+    String updateProfile(final ProfileDto profile, final RedirectAttributes attrs) {
+        ResponseDto rsp = this.userService.updateProfile(profile);
         attrs.addFlashAttribute("responseErrors", rsp.getErrors());
         attrs.addFlashAttribute("responseMessages", rsp.getMessages());
         return "redirect:/logged-in/home";

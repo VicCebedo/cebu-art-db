@@ -25,7 +25,7 @@ public interface UserService {
 
     List<IUser> getUsers(final int offset);
 
-    ResponseDto updateProfileCurrentUser(final ProfileDto user);
+    ResponseDto updateProfile(final ProfileDto user);
 
     ResponseDto updateProfilePic(final String profilePic);
 
