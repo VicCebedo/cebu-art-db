@@ -14,4 +14,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface CatchRepository extends MongoRepository<Catch, String> {
 
+    long countByTargetIdAndFollowerId(final long targetId, final long followerId);
+
 }

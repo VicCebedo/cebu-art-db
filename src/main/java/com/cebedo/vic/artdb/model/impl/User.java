@@ -30,20 +30,6 @@ public class User implements IUser {
         ;
     }
 
-    public User(final IUser usr) {
-        Objects.requireNonNull(usr);
-        this.id = usr.id();
-        this.username = usr.username();
-        this.password = usr.password();
-        this.name = usr.name();
-        this.bio = usr.bio();
-        this.website = usr.website();
-        this.email = usr.email();
-        this.phone = usr.phone();
-        this.profilePic = usr.profilePic();
-        this.artist = usr.artist();
-    }
-
     public User(final UserBuilder b) {
         Objects.requireNonNull(b);
         this.id = b.id();

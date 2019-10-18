@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.cebedo.vic.artdb.model.IUser;
+import com.cebedo.vic.artdb.service.CatchService;
 import com.cebedo.vic.artdb.utils.SessionUtils;
 
 /**
@@ -27,6 +28,9 @@ public class ArtistController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CatchService catchService;
 
     @GetMapping("/logged-in/artists")
     String pageArtists(final Model model, final HttpServletRequest request) {
@@ -46,6 +50,8 @@ public class ArtistController {
         // Get photos.
         List<IUser> users = this.userService.getUsers(offset);
         StringBuilder returnString = new StringBuilder();
+        IUser currentUser = AuthUtils.getAuth().user();
+
         for (IUser user : users) {
 
             String profPic = user.profilePic().isEmpty()
@@ -70,17 +76,34 @@ public class ArtistController {
                     ? ""
                     : "            <div class=\"ui label\"><i class=\"phone icon\"></i> " + user.phone() + "</div>\n";
 
-            String follow = "<div class=\"ui left labeled mini right floated button\" tabindex=\"0\">\n"
-                    + "  <a class=\"ui mini basic black right pointing label\">\n"
-                    + "    1,048\n"
-                    + "  </a>\n"
-                    + "  <div class=\"ui black mini button\">\n"
-                    + "    <i class=\"plus icon\"></i> Catch\n"
+            boolean isCatch = this.catchService.isCatch(user.id(), currentUser.id());
+            String catchButton = isCatch
+                    ? "<div class=\"content\">\n"
+                    + "  <div class=\"ui left labeled mini right floated button\" tabindex=\"0\">\n"
+                    + "    <a class=\"ui mini green basic right pointing label\">\n"
+                    + "      1,048\n"
+                    + "    </a>\n"
+                    + "    <div class=\"ui mini green button\">\n"
+                    + "      <i class=\"plus icon\"></i> Catch\n"
+                    + "    </div>\n"
                     + "  </div>\n"
-                    + "</div>";
+                    + "</div>\n"
+                    + "<br/>"
+                    : "<div class=\"content\">\n"
+                    + "  <div class=\"ui left labeled mini right floated button\" tabindex=\"0\">\n"
+                    + "    <a class=\"ui mini green basic right pointing label\">\n"
+                    + "      1,048\n"
+                    + "    </a>\n"
+                    + "    <div class=\"ui mini green basic button\">\n"
+                    + "      <i class=\"plus icon\"></i> Catch\n"
+                    + "    </div>\n"
+                    + "  </div>\n"
+                    + "</div>\n"
+                    + "<br/>";
 
             String template
                     = "<div class=\"item\">\n"
+                    + catchButton
                     + "    <div class=\"image\" onclick=\"loading(); location.href='/" + user.username() + "';\">\n"
                     + "        <img src=\"" + profPic + "\"/>\n"
                     + "    </div>\n"
@@ -88,7 +111,6 @@ public class ArtistController {
                     + "        <a href=\"#\" onclick=\"loading(); location.href='/" + user.username() + "';\" class=\"header\">\n"
                     + "            " + displayName + "\n"
                     + "        </a>\n"
-                    + follow
                     + "        <div class=\"extra\">\n"
                     + "            <div class=\"ui label\"><i class=\"user icon\"></i> " + user.username() + "</div>\n"
                     + website

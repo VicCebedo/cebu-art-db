@@ -112,7 +112,7 @@ public class PhotoDaoImpl implements PhotoDao {
                         rs.getString("url"),
                         rs.getString("caption"),
                         rs.getTimestamp("timestamp"),
-                        new User(user),
+                        user,
                         commentCount,
                         likeCount,
                         like != null)

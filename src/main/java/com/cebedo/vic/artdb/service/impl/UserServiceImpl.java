@@ -25,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.cebedo.vic.artdb.model.IUser;
+import com.cebedo.vic.artdb.model.impl.User;
 
 /**
  *
@@ -153,11 +154,11 @@ public class UserServiceImpl implements UserService {
 
         // Update in DB and in session.
         this.userDao.updateProfileCurrentUser(profile);
-        AuthUtils.getAuth().profile().setName(profile.getName());
-        AuthUtils.getAuth().profile().setBio(profile.getBio());
-        AuthUtils.getAuth().profile().setWebsite(profile.getWebsite());
-        AuthUtils.getAuth().profile().setEmail(profile.getEmail());
-        AuthUtils.getAuth().profile().setPhone(profile.getPhone());
+        ((User) AuthUtils.getAuth().user()).setName(profile.getName());
+        ((User) AuthUtils.getAuth().user()).setBio(profile.getBio());
+        ((User) AuthUtils.getAuth().user()).setWebsite(profile.getWebsite());
+        ((User) AuthUtils.getAuth().user()).setEmail(profile.getEmail());
+        ((User) AuthUtils.getAuth().user()).setPhone(profile.getPhone());
 
         return ResponseDto.newInstanceWithMessage("Your profile is now updated.");
     }
@@ -170,7 +171,7 @@ public class UserServiceImpl implements UserService {
         }
 
         this.userDao.updateProfilePhoto(profilePic);
-        AuthUtils.getAuth().profile().setProfilePic(profilePic);
+        ((User) AuthUtils.getAuth().user()).setProfilePic(profilePic);
         return ResponseDto.newInstanceWithMessage("Your profile photo is now updated.");
     }
 

@@ -19,7 +19,6 @@ import com.cebedo.vic.artdb.model.IUser;
 public final class WebAuthenticationToken extends UsernamePasswordAuthenticationToken {
 
     private final IUser user;
-    private final User profile;
 
     public WebAuthenticationToken(
             final Object principal,
@@ -33,15 +32,10 @@ public final class WebAuthenticationToken extends UsernamePasswordAuthentication
         Objects.requireNonNull(authorities);
         Objects.requireNonNull(user);
         this.user = user;
-        this.profile = new User(user);
     }
 
     public IUser user() {
         return this.user;
-    }
-
-    public User profile() {
-        return this.profile;
     }
 
 }
