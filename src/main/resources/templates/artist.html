@@ -65,7 +65,7 @@
         </div>
 
         <div class="ui container" style="padding-top: 12%">
-            <form th:action="@{/logged-in/artist/catch/toggle}" th:object="${catch}" th:method="put" id="form-catch">
+            <form th:action="@{/logged-in/catch/toggle}" th:object="${catch}" th:method="put" id="form-catch">
                 <input type="hidden" th:field="*{targetId}" id="form-catch-id"/>
                 <input type="hidden" th:field="*{targetUsername}" id="form-catch-username"/>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
@@ -95,7 +95,7 @@
                 document.getElementById('form-catch-username').value = username;
 
                 $.ajax({
-                    url: "/logged-in/artist/catch/toggle",
+                    url: "/logged-in/catch/toggle",
                     type: 'put',
                     data: $('#form-catch').serialize(),
                     success: function (response) {

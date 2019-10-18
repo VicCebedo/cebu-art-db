@@ -44,12 +44,17 @@ public class IndexController {
             return "redirect:/login";
         }
 
+        // Data.
         model.addAttribute("user", AuthUtils.getAuth().user());
         model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("photos", this.photoService.getPhotos(0));
+        model.addAttribute("catches", this.catchService.getByCurrentUser());
+
+        // Forms.
         model.addAttribute("changePass", new CredentialsDto());
         model.addAttribute("comment", new Comment());
         model.addAttribute("like", new Like());
+
         SessionUtils.resetPaginationOffsets(request);
         return "index";
     }

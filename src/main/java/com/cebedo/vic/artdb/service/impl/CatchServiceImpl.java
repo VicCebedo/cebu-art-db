@@ -13,8 +13,8 @@ import com.cebedo.vic.artdb.repository.CatchRepository;
 import com.cebedo.vic.artdb.service.CatchService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
-import static jdk.nashorn.internal.runtime.Debug.id;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,6 +32,11 @@ public class CatchServiceImpl implements CatchService {
 
     @Autowired
     private UserDao userDao;
+
+    @Override
+    public List<Catch> getByCurrentUser() {
+        return this.catchRepository.findByFollowerId(AuthUtils.getAuth().user().id());
+    }
 
     @Override
     public ICatch toggleCatch(final ICatch dto) {

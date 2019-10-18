@@ -6,6 +6,8 @@
 package com.cebedo.vic.artdb.service;
 
 import com.cebedo.vic.artdb.model.ICatch;
+import com.cebedo.vic.artdb.model.impl.Catch;
+import java.util.List;
 
 /**
  *
@@ -18,5 +20,7 @@ public interface CatchService {
     int countCatchCurrentUser();
 
     ICatch toggleCatch(final ICatch dto);
+
+    List<Catch> getByCurrentUser();
 
 }

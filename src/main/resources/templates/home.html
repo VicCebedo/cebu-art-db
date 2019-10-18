@@ -42,9 +42,9 @@
             <a class="item icon" onclick="$('#modal-upload').modal('show')">
                 <h4 class="ui header"><i class="camera icon"></i></h4>
             </a>
-            <a class="item icon" onclick="$('#modal-upload').modal('show')">
+            <a class="item icon" onclick="openCatch()">
                 <div class="ui green label">
-                    <i class="plus icon"></i> [[${user.catchCount()}]]
+                    <i class="star icon"></i> [[${user.catchCount()}]]
                 </div>
             </a>
             <div class="ui dropdown item">
@@ -428,7 +428,17 @@
             $('.ui.dropdown').dropdown({
                 on: 'hover',
                 action: 'nothing'
-            })
+            });
+
+            function openCatch() {
+                $.ajax({
+                    url: "/logged-in/artist/catch",
+                    type: 'get',
+                    success: function (response) {
+                        console.log(response);
+                    }
+                });
+            }
 
             function popupImage(elem) {
                 $('#modal-image').modal('show');

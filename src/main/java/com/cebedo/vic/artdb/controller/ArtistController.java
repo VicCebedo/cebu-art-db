@@ -6,7 +6,6 @@
 package com.cebedo.vic.artdb.controller;
 
 import com.cebedo.vic.artdb.dto.CredentialsDto;
-import com.cebedo.vic.artdb.model.ICatch;
 import com.cebedo.vic.artdb.service.UserService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import java.util.List;
@@ -20,7 +19,6 @@ import com.cebedo.vic.artdb.model.IUser;
 import com.cebedo.vic.artdb.model.impl.Catch;
 import com.cebedo.vic.artdb.service.CatchService;
 import com.cebedo.vic.artdb.utils.SessionUtils;
-import org.springframework.web.bind.annotation.PutMapping;
 
 /**
  *
@@ -45,10 +43,10 @@ public class ArtistController {
         return "artist";
     }
 
-    @PutMapping("/logged-in/artist/catch/toggle")
+    @GetMapping("/logged-in/artist/catch")
     @ResponseBody
-    ICatch toggleCatch(final Catch obj) {
-        return this.catchService.toggleCatch(obj);
+    List<Catch> getByCurrentUser() {
+        return this.catchService.getByCurrentUser();
     }
 
     @GetMapping("/logged-in/artist/pagination/next")
