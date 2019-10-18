@@ -33,9 +33,8 @@ import com.cebedo.vic.artdb.model.IPhoto;
 import com.cebedo.vic.artdb.model.IUser;
 import com.cebedo.vic.artdb.model.impl.Comment;
 import com.cebedo.vic.artdb.model.impl.Like;
-import com.cebedo.vic.artdb.model.impl.Notification;
 import com.cebedo.vic.artdb.repository.NotificationRepository;
-import java.text.SimpleDateFormat;
+import com.cebedo.vic.artdb.service.NotificationService;
 
 /**
  *
@@ -62,6 +61,9 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public ResponseDto create(final IPhoto photo) {
@@ -174,41 +176,8 @@ public class PhotoServiceImpl implements PhotoService {
         mutable.setUsername(user.username());
 
         // Save notification and comment.
-        saveNotification(user, comment.photoId(), ActionEnum.COMMENT, uuid, comment.content());
+        this.notificationService.createNotification(user, comment.photoId(), ActionEnum.COMMENT, uuid, comment.content());
         return this.commentRepository.save(mutable);
-    }
-
-    private void saveNotification(IUser currentUser, long photoId, ActionEnum action, String refId, String content) {
-        IPhoto photo = this.photoDao.getPartial(photoId);
-        long userId = currentUser.id();
-        long ownerId = photo.user().id();
-
-        // Create notification only if initiator of action
-        // and owner of photo is not the same.
-        if (ownerId != userId) {
-            Date currentDate = new Date();
-            Notification notif = new Notification();
-            notif.setId(UUID.randomUUID().toString());
-            notif.setAction(action);
-            notif.setUserId(userId);
-            notif.setUsername(currentUser.username());
-            notif.setPhotoId(photoId);
-            notif.setUnread(true);
-            notif.setDatetime(currentDate);
-            notif.setContent(content);
-            notif.setReferenceId(refId);
-
-            // Thumbnail url.
-            String[] urlSplit = photo.url().split("/upload/");
-            notif.setThumbnail(urlSplit[0] + "/upload/c_limit,h_100,w_100/" + urlSplit[1]);
-
-            // Owner is the uploader of the photo.
-            String dateString = new SimpleDateFormat("MMM dd, h:mm aaa").format(currentDate);
-            notif.setOwnerId(ownerId);
-            notif.setDateDisplay(dateString);
-
-            this.notificationRepository.save(notif);
-        }
     }
 
     @Override
@@ -237,7 +206,7 @@ public class PhotoServiceImpl implements PhotoService {
 
         // Save notification.
         String uuid = UUID.randomUUID().toString();
-        saveNotification(user, photoId, ActionEnum.LIKE, uuid, "");
+        this.notificationService.createNotification(user, photoId, ActionEnum.LIKE, uuid, "");
 
         Like mutable = (Like) like;
         mutable.setUserId(userId);
@@ -245,11 +214,4 @@ public class PhotoServiceImpl implements PhotoService {
         return this.likeRepository.save(mutable);
     }
 
-    @Override
-    public IPhoto readNotification(final String uuid, final long id) {
-        Notification notif = this.notificationRepository.findById(uuid).get();
-        notif.setUnread(false);
-        this.notificationRepository.save(notif);
-        return this.photoDao.get(id);
-    }
 }

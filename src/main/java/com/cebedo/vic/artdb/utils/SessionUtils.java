@@ -25,4 +25,12 @@ public class SessionUtils {
         HttpSession session = request.getSession();
         session.setAttribute(attributeName, value);
     }
+
+    public static void resetPaginationOffsets(final HttpServletRequest request) {
+        HttpSession session = request.getSession();
+        session.setAttribute("index-pagination-offset", 0);
+        session.setAttribute("home-pagination-offset", 0);
+        session.setAttribute("users-pagination-offset", 0);
+        session.setAttribute("notifications-pagination-page", 0);
+    }
 }

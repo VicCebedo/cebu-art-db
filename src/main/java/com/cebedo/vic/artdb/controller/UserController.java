@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.vic.artdb.model.IPhoto;
@@ -33,7 +32,6 @@ import com.cebedo.vic.artdb.model.IUser;
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
 @Controller
-@RequestMapping
 public class UserController {
 
     @Autowired

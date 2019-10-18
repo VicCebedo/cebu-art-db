@@ -38,6 +38,4 @@ public interface PhotoService {
 
     ILike toggleLike(final ILike like);
 
-    IPhoto readNotification(final String uuid, final long id);
-
 }
