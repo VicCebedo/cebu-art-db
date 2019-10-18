@@ -26,7 +26,7 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<Notification> getByOwnerId(final long ownerId) {
-        return this.notificationRepository.findByOwnerId(ownerId);
+        return this.notificationRepository.findByOwnerIdOrderByDatetimeDesc(ownerId);
     }
 
 }

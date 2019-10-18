@@ -160,7 +160,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public List<Comment> getCommentsByPhotoId(final long id) {
-        return this.commentRepository.findByPhotoId(id);
+        return this.commentRepository.findByPhotoIdOrderByDatetimeAsc(id);
     }
 
     @Override

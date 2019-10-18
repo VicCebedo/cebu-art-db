@@ -15,7 +15,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface NotificationRepository extends MongoRepository<Notification, String> {
 
-    List<Notification> findByOwnerId(final long ownerId);
+    List<Notification> findByOwnerIdOrderByDatetimeDesc(final long ownerId);
 
     void deleteByPhotoId(final long photoId);
 

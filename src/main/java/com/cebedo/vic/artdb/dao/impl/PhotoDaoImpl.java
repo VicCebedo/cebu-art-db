@@ -204,7 +204,7 @@ public class PhotoDaoImpl implements PhotoDao {
                 long likeCount = this.likeRepository.countByPhotoId(photoId);
                 long userId = AuthUtils.getAuth().user().id();
                 ILike like = this.likeRepository.findByPhotoIdAndUserId(photoId, userId);
-                List<Comment> comments = this.commentRepository.findByPhotoId(id);
+                List<Comment> comments = this.commentRepository.findByPhotoIdOrderByDatetimeAsc(id);
 
                 return new PhotoBuilder(
                         photoId,
