@@ -31,5 +31,5 @@ public interface IUser {
     
     boolean artist();
     
-    int catchCount();
+    int followCount();
 }

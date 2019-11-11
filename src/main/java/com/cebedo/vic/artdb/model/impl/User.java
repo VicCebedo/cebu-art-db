@@ -25,7 +25,7 @@ public class User implements IUser {
     private String phone;
     private String profilePic;
     private boolean artist;
-    private int catchCount;
+    private int followCount;
 
     public User() {
         ;
@@ -175,17 +175,17 @@ public class User implements IUser {
         return this.artist;
     }
 
-    public int getCatchCount() {
-        return catchCount;
+    public int getFollowCount() {
+        return followCount;
     }
 
-    public void setCatchCount(int catchCount) {
-        this.catchCount = catchCount;
+    public void setFollowCount(int followCount) {
+        this.followCount = followCount;
     }
 
     @Override
-    public int catchCount() {
-        return this.catchCount;
+    public int followCount() {
+        return this.followCount;
     }
 
 }

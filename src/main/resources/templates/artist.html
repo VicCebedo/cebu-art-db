@@ -65,9 +65,9 @@
         </div>
 
         <div class="ui container" style="padding-top: 12%">
-            <form th:action="@{/logged-in/catch/toggle}" th:object="${catch}" th:method="put" id="form-catch">
-                <input type="hidden" th:field="*{targetId}" id="form-catch-id"/>
-                <input type="hidden" th:field="*{targetUsername}" id="form-catch-username"/>
+            <form th:action="@{/logged-in/follow/toggle}" th:object="${follow}" th:method="put" id="form-follow">
+                <input type="hidden" th:field="*{targetId}" id="form-follow-id"/>
+                <input type="hidden" th:field="*{targetUsername}" id="form-follow-username"/>
                 <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
             </form>
             <div class="ui divided items" id="userstream">
@@ -90,21 +90,21 @@
                 action: 'nothing'
             });
 
-            function toggleCatch(id, username) {
-                document.getElementById('form-catch-id').value = id;
-                document.getElementById('form-catch-username').value = username;
+            function toggleFollow(id, username) {
+                document.getElementById('form-follow-id').value = id;
+                document.getElementById('form-follow-username').value = username;
 
                 $.ajax({
-                    url: "/logged-in/catch/toggle",
+                    url: "/logged-in/follow/toggle",
                     type: 'put',
-                    data: $('#form-catch').serialize(),
+                    data: $('#form-follow').serialize(),
                     success: function (response) {
-                        const buttonId = "catch-" + id;
+                        const buttonId = "follow-" + id;
                         if (response.id === null) {
-                            document.getElementById(buttonId).innerHTML = "Catch";
+                            document.getElementById(buttonId).innerHTML = "Follow";
                             document.getElementById(buttonId).classList.remove('basic');
                         } else {
-                            document.getElementById(buttonId).innerHTML = "Catching";
+                            document.getElementById(buttonId).innerHTML = "Following";
                             document.getElementById(buttonId).classList.add('basic');
                         }
                     }

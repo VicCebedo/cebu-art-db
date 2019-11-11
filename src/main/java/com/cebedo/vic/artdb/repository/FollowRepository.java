@@ -5,7 +5,7 @@
  */
 package com.cebedo.vic.artdb.repository;
 
-import com.cebedo.vic.artdb.model.impl.Catch;
+import com.cebedo.vic.artdb.model.impl.Follow;
 import java.util.List;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
@@ -13,11 +13,11 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public interface CatchRepository extends MongoRepository<Catch, String> {
+public interface FollowRepository extends MongoRepository<Follow, String> {
 
-    Catch findByTargetIdAndFollowerId(final long targetId, final long followerId);
+    Follow findByTargetIdAndFollowerId(final long targetId, final long followerId);
 
-    List<Catch> findByFollowerId(final long followerId);
+    List<Follow> findByFollowerId(final long followerId);
 
     long countByTargetIdAndFollowerId(final long targetId, final long followerId);
 

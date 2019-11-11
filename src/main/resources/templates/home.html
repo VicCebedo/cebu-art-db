@@ -30,6 +30,11 @@
             body {
                 background: #F9F9F9;
             }
+
+            .follow-row {
+                padding-top: 4%;
+                padding-bottom: 4%;
+            }
         </style>
 
     </head>
@@ -42,9 +47,9 @@
             <a class="item icon" onclick="$('#modal-upload').modal('show')">
                 <h4 class="ui header"><i class="camera icon"></i></h4>
             </a>
-            <a class="item icon" onclick="openCatch()">
-                <div class="ui green label">
-                    <i class="star icon"></i> [[${user.catchCount()}]]
+            <a class="item icon" onclick="openFollow()">
+                <div class="ui green label" style="margin: 0px">
+                    <i class="star icon"></i> [[${user.followCount()}]]
                 </div>
             </a>
             <div class="ui dropdown item">
@@ -424,18 +429,37 @@
         <div class="ui hidden divider"></div>
         <div class="ui hidden divider"></div>
 
+        <!--MODAL FOLLOW-->
+        <div class="ui small modal" id="modal-follow">
+            <i class="close icon"></i>
+            <div class="header">
+                Following
+            </div>
+            <div class="content">
+                <div class="ui relaxed divided list" id="datastream-follows" style="overflow-y: auto; max-height: 400px;">
+                </div>
+            </div>
+        </div>
+
         <script type="text/javascript">
             $('.ui.dropdown').dropdown({
                 on: 'hover',
                 action: 'nothing'
             });
 
-            function openCatch() {
+            function openFollow() {
                 $.ajax({
-                    url: "/logged-in/artist/catch",
+                    url: "/logged-in/artist/follow",
                     type: 'get',
                     success: function (response) {
-                        console.log(response);
+                        var items = '';
+                        for (var i = 0; i < response.length; i++) {
+                            const follow = response[i];
+                            const username = follow.targetUsername;
+                            items += '<div class="item" onclick="loading(); location.href=\'/' + username + '\'"><div class="content follow-row">' + username + '</div></div>\n';
+                        }
+                        document.getElementById('datastream-follows').insertAdjacentHTML('beforeend', items);
+                        $('#modal-follow').modal('show');
                     }
                 });
             }

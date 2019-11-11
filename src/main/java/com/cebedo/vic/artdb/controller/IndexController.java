@@ -12,7 +12,6 @@ import com.cebedo.vic.artdb.dto.ProfileDto;
 import com.cebedo.vic.artdb.dto.ResponseDto;
 import com.cebedo.vic.artdb.dto.CredentialsDto;
 import com.cebedo.vic.artdb.model.impl.User;
-import com.cebedo.vic.artdb.service.CatchService;
 import com.cebedo.vic.artdb.service.PhotoService;
 import com.cebedo.vic.artdb.utils.AuthUtils;
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.cebedo.vic.artdb.utils.SessionUtils;
+import com.cebedo.vic.artdb.service.FollowService;
 
 /**
  *
@@ -35,7 +35,7 @@ public class IndexController {
     private PhotoService photoService;
 
     @Autowired
-    private CatchService catchService;
+    private FollowService followService;
 
     @GetMapping("/")
     String pageIndex(final Model model, final HttpServletRequest request) {
@@ -48,7 +48,7 @@ public class IndexController {
         model.addAttribute("user", AuthUtils.getAuth().user());
         model.addAttribute("isArtist", AuthUtils.isArtist());
         model.addAttribute("photos", this.photoService.getPhotos(0));
-        model.addAttribute("catches", this.catchService.getByCurrentUser());
+        model.addAttribute("follows", this.followService.getByCurrentUser());
 
         // Forms.
         model.addAttribute("changePass", new CredentialsDto());
@@ -89,7 +89,7 @@ public class IndexController {
 
         // Data.
         User user = (User) AuthUtils.getAuth().user();
-        user.setCatchCount(this.catchService.countCatchCurrentUser());
+        user.setFollowCount(this.followService.countFollowCurrentUser());
         model.addAttribute("user", user);
         model.addAttribute("photos", this.photoService.getPhotosByCurrentUser(0));
         model.addAttribute("isGuest", false);

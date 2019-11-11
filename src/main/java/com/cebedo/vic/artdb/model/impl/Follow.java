@@ -5,16 +5,16 @@
  */
 package com.cebedo.vic.artdb.model.impl;
 
-import com.cebedo.vic.artdb.model.ICatch;
 import java.util.Date;
 import org.springframework.data.mongodb.core.mapping.Document;
+import com.cebedo.vic.artdb.model.IFollow;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-@Document(collection = "catch")
-public class Catch implements ICatch {
+@Document(collection = "follow")
+public class Follow implements IFollow {
 
     private String id;
     private long targetId;

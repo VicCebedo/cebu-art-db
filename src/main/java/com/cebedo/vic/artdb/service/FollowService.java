@@ -5,22 +5,22 @@
  */
 package com.cebedo.vic.artdb.service;
 
-import com.cebedo.vic.artdb.model.ICatch;
-import com.cebedo.vic.artdb.model.impl.Catch;
+import com.cebedo.vic.artdb.model.impl.Follow;
 import java.util.List;
+import com.cebedo.vic.artdb.model.IFollow;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public interface CatchService {
+public interface FollowService {
 
-    boolean isCatch(final long targetId, final long followerId);
+    boolean isFollow(final long targetId, final long followerId);
 
-    int countCatchCurrentUser();
+    int countFollowCurrentUser();
 
-    ICatch toggleCatch(final ICatch dto);
+    IFollow toggleFollow(final IFollow dto);
 
-    List<Catch> getByCurrentUser();
+    List<Follow> getByCurrentUser();
 
 }

@@ -16,9 +16,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import com.cebedo.vic.artdb.model.IUser;
-import com.cebedo.vic.artdb.model.impl.Catch;
-import com.cebedo.vic.artdb.service.CatchService;
+import com.cebedo.vic.artdb.model.impl.Follow;
 import com.cebedo.vic.artdb.utils.SessionUtils;
+import com.cebedo.vic.artdb.service.FollowService;
 
 /**
  *
@@ -31,22 +31,22 @@ public class ArtistController {
     private UserService userService;
 
     @Autowired
-    private CatchService catchService;
+    private FollowService followService;
 
     @GetMapping("/logged-in/artist")
     String pageArtist(final Model model, final HttpServletRequest request) {
         model.addAttribute("isArtist", AuthUtils.isArtist());
-        model.addAttribute("catch", new Catch());
+        model.addAttribute("follow", new Follow());
         model.addAttribute("artists", this.userService.getUsers(0));
         model.addAttribute("changePass", new CredentialsDto());
         SessionUtils.resetPaginationOffsets(request);
         return "artist";
     }
 
-    @GetMapping("/logged-in/artist/catch")
+    @GetMapping("/logged-in/artist/follow")
     @ResponseBody
-    List<Catch> getByCurrentUser() {
-        return this.catchService.getByCurrentUser();
+    List<Follow> getByCurrentUser() {
+        return this.followService.getByCurrentUser();
     }
 
     @GetMapping("/logged-in/artist/pagination/next")
@@ -84,32 +84,32 @@ public class ArtistController {
                     ? ""
                     : "            <div class=\"ui label\"><i class=\"phone icon\"></i> " + user.phone() + "</div>\n";
 
-            // Catch button.
+            // Follow button.
             // Do not include if this is me.
-            String catchButton = "";
+            String followButton = "";
             if (user.id() != currentUser.id()) {
-                boolean isCatch = this.catchService.isCatch(user.id(), currentUser.id());
-                String catchId = "catch-" + user.id();
-                catchButton = isCatch
+                boolean isFollow = this.followService.isFollow(user.id(), currentUser.id());
+                String followId = "follow-" + user.id();
+                followButton = isFollow
                         ? "<div class=\"content\">\n"
-                        + "  <div id=\"" + catchId + "\" class=\"ui mini green basic button right floated\" onclick=\"toggleCatch(" + user.id() + ", '" + user.username() + "')\">\n"
-                        + "    Catching\n"
+                        + "  <div id=\"" + followId + "\" class=\"ui mini green basic button right floated\" onclick=\"toggleFollow(" + user.id() + ", '" + user.username() + "')\">\n"
+                        + "    Following\n"
                         + "  </div>\n"
                         + "</div>\n"
                         + "<br/>"
                         : "<div class=\"content\">\n"
-                        + "  <div id=\"" + catchId + "\" class=\"ui mini green button right floated\" onclick=\"toggleCatch(" + user.id() + ", '" + user.username() + "')\">\n"
-                        + "    Catch\n"
+                        + "  <div id=\"" + followId + "\" class=\"ui mini green button right floated\" onclick=\"toggleFollow(" + user.id() + ", '" + user.username() + "')\">\n"
+                        + "    Follow\n"
                         + "  </div>\n"
                         + "</div>\n"
                         + "<br/>";
             } else {
-                catchButton = "<br/>";
+                followButton = "<br/>";
             }
 
             String template
                     = "<div class=\"item\">\n"
-                    + catchButton
+                    + followButton
                     + "    <div class=\"image\" onclick=\"loading(); location.href='/" + user.username() + "';\">\n"
                     + "        <img src=\"" + profPic + "\"/>\n"
                     + "    </div>\n"

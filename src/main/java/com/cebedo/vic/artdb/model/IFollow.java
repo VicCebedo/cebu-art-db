@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
-public interface ICatch {
+public interface IFollow {
 
     String id();
 

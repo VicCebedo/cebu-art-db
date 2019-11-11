@@ -5,28 +5,28 @@
  */
 package com.cebedo.vic.artdb.controller;
 
-import com.cebedo.vic.artdb.model.ICatch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ResponseBody;
-import com.cebedo.vic.artdb.model.impl.Catch;
-import com.cebedo.vic.artdb.service.CatchService;
+import com.cebedo.vic.artdb.model.impl.Follow;
 import org.springframework.web.bind.annotation.PutMapping;
+import com.cebedo.vic.artdb.service.FollowService;
+import com.cebedo.vic.artdb.model.IFollow;
 
 /**
  *
  * @author Vic Cebedo <cebedo.vii@gmail.com>
  */
 @Controller
-public class CatchController {
+public class FollowController {
 
     @Autowired
-    private CatchService catchService;
+    private FollowService followService;
 
-    @PutMapping("/logged-in/catch/toggle")
+    @PutMapping("/logged-in/follow/toggle")
     @ResponseBody
-    ICatch toggleCatch(final Catch obj) {
-        return this.catchService.toggleCatch(obj);
+    IFollow toggleFollow(final Follow obj) {
+        return this.followService.toggleFollow(obj);
     }
 
 }
