@@ -43,15 +43,15 @@
             <div class="ui small text loader"></div>
         </div>
 
-        <div class="ui top fixed three item menu" style="border: 0;" th:if="${!isGuest}">
+        <div class="ui top fixed two item menu" style="border: 0;" th:if="${!isGuest}">
             <a class="item icon" onclick="$('#modal-upload').modal('show')">
                 <h4 class="ui header"><i class="camera icon"></i></h4>
             </a>
-            <a class="item icon" onclick="openFollow()">
+<!--            <a class="item icon" onclick="openFollow()">
                 <div class="ui green label" style="margin: 0px">
                     <i class="star icon"></i> [[${user.followCount()}]]
                 </div>
-            </a>
+            </a>-->
             <div class="ui dropdown item">
                 <i class="large cog icon"></i>
                 <div class="menu">

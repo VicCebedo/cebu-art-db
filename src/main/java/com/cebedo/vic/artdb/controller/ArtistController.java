@@ -87,7 +87,9 @@ public class ArtistController {
             // Follow button.
             // Do not include if this is me.
             String followButton = "";
-            if (user.id() != currentUser.id()) {
+            boolean enableFollow = false;
+            // if (user.id() != currentUser.id()) {
+            if (enableFollow) {
                 boolean isFollow = this.followService.isFollow(user.id(), currentUser.id());
                 String followId = "follow-" + user.id();
                 followButton = isFollow
