@@ -338,7 +338,7 @@
                         <label>Photo</label>
                         <input type="file" accept="image/*" onchange="setFiles(this.files)"/>
                     </div>
-                    <div class="field">
+                    <div class="field" style="display: none">
                         <label>Caption</label>
                         <textarea placeholder="Caption" th:field="*{caption}" rows="3"></textarea>
                     </div>
@@ -465,9 +465,12 @@
             }
 
             function popupImage(elem) {
-                $('#modal-image').modal('show');
-                document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
-                $('#modal-image').modal('refresh');
+                const captionsEnabled = false;
+                if (captionsEnabled) {
+                    $('#modal-image').modal('show');
+                    document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
+                    $('#modal-image').modal('refresh');
+                }
             }
 
             function deletePhoto(elem) {
@@ -607,7 +610,7 @@
                                             + "                    <i class=\"ellipsis horizontal icon\"></i>\n"
                                             + "                </div>\n"
                                             + "                <div class=\"left floated menu\">\n"
-                                            + "                    <div class=\"item\"\n"
+                                            + "                    <div style='display: none' class=\"item\"\n"
                                             + "                         id=\"" + editCaptionId + "\"\n"
                                             + "                         targetId=\"" + photo.id + "\"\n"
                                             + "                         targetCaption=\"\"\n"

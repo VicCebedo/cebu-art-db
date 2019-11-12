@@ -271,9 +271,13 @@
             }
 
             function popupImage(elem) {
-                document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
-                $('#modal-image').modal('show');
-                $('#modal-image').modal('refresh');
+                const caption = elem.attributes.caption.value;
+                const captionsEnabled = false;
+                if (captionsEnabled) {
+                    document.getElementById('modal-image-caption').innerHTML = caption;
+                    $('#modal-image').modal('show');
+                    $('#modal-image').modal('refresh');
+                }
             }
 
             function loading() {
