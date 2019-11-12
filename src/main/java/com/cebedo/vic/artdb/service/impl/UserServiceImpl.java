@@ -109,19 +109,20 @@ public class UserServiceImpl implements UserService {
         // Else, account will be basic, not artist account.
         String inviteCode = userDto.getInviteCode();
         boolean hasCode = !inviteCode.isEmpty();
-        if (hasCode) {
 
-            // Check if invite code exists.
-            // And if invite code remaining > 0.
-            int remaining = this.userDao.getInviteCodeRemaining(inviteCode);
-            if (remaining == 0) {
-                return ResponseDto.newInstanceWithError("The invite code you provided is not valid. Please try again.");
-            }
-
-            // If invite code remaining > 0,
-            // deduct 1 from remaining.
-            this.userDao.decrementInviteCodeRemaining(inviteCode, remaining - 1);
+        // Enable to artists only.
+        // if (hasCode) {
+        // Check if invite code exists.
+        // And if invite code remaining > 0.
+        int remaining = this.userDao.getInviteCodeRemaining(inviteCode);
+        if (remaining == 0) {
+            return ResponseDto.newInstanceWithError("The code you provided is not valid. Please try again.");
         }
+
+        // If invite code remaining > 0,
+        // deduct 1 from remaining.
+        this.userDao.decrementInviteCodeRemaining(inviteCode, remaining - 1);
+        // }
 
         // Normal behaviour.
         IUser user = new UserBuilder(0, username, ENCODER.encode(password), "", "", "", "", "", "", hasCode).build();

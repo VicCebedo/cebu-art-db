@@ -348,6 +348,12 @@
                     url: "/logged-in/notification/pagination/next",
                     type: 'get',
                     success: function (notifications) {
+
+                        var template = '';
+                        if (notifications.length === 0) {
+                            template = '<div class="ui placeholder basic segment"><div class="ui icon header"><i class="hand peace icon"></i>No notifications.</div></div>';
+                        }
+
                         for (var i = 0; i < notifications.length; i++) {
                             const notif = notifications[i];
                             const unread = notif.unread
@@ -356,9 +362,10 @@
                             const phrase = notif.action === 'LIKE'
                                     ? 'liked your photo.'
                                     : 'commented on your photo: ' + '"' + notif.content + '"';
-                            const template = '<div id="row-' + notif.id + '" onclick="viewPhoto(\'' + notif.id + '\', ' + notif.photoId + ')" class="item notification-row ' + unread + '"><div class="content"><div class="ui mini image right floated"><img src="' + notif.thumbnail + '"></div><div><b>' + notif.username + '</b> ' + phrase + '</div><div style="padding-top: 2%; font-size: smaller;" class="description"><i>' + notif.dateDisplay + '</i></div></div></div>';
-                            document.getElementById('datastream-rows').insertAdjacentHTML('beforeend', template);
+                            template += '<div id="row-' + notif.id + '" onclick="viewPhoto(\'' + notif.id + '\', ' + notif.photoId + ')" class="item notification-row ' + unread + '"><div class="content"><div class="ui mini image right floated"><img src="' + notif.thumbnail + '"></div><div><b>' + notif.username + '</b> ' + phrase + '</div><div style="padding-top: 2%; font-size: smaller;" class="description"><i>' + notif.dateDisplay + '</i></div></div></div>\n';
                         }
+
+                        document.getElementById('datastream-rows').insertAdjacentHTML('beforeend', template);
                         document.getElementById('datastream-loader').style = 'display: none';
                     }
                 });
