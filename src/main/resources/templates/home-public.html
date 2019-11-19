@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-84479704-5"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+                dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+
+            gtag('config', 'UA-84479704-5');
+        </script>
+
+        <title>Catch | [[${user.username()}]]</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+        <link rel="shortcut icon" href="https://res.cloudinary.com/hqx5vpvj4/image/upload/v1569985458/static/njwnn4takgv2rqo7ks9i.ico">
+        <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous">
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+
+        <style>
+            body {
+                background: #F9F9F9;
+            }
+
+            .follow-row {
+                padding-top: 4%;
+                padding-bottom: 4%;
+            }
+        </style>
+
+    </head>
+    <body>
+        <div class="ui active inverted page dimmer" id="global-loader" style="display: none">
+            <div class="ui small text loader"></div>
+        </div>
+
+        <!--NAVIGATION BAR-->
+        <div class="ui container" style="padding-top: 5%">
+            <a href="/artist">
+                <button class="ui compact icon button">
+                    <i class="chevron left icon"></i> Back
+                </button>
+            </a>
+        </div>
+
+        <div class="ui top fixed two item menu" style="border: 0;" th:if="${!isGuest}">
+            <a class="item icon" onclick="$('#modal-upload').modal('show')">
+                <h4 class="ui header"><i class="camera icon"></i></h4>
+            </a>
+            <!--            <a class="item icon" onclick="openFollow()">
+                            <div class="ui green label" style="margin: 0px">
+                                <i class="star icon"></i> [[${user.followCount()}]]
+                            </div>
+                        </a>-->
+            <div class="ui dropdown item">
+                <i class="large cog icon"></i>
+                <div class="menu">
+                    <div class="item" onclick="$('#modal-edit-profile').modal('show')">Edit Profile</div>
+                    <div class="item" onclick="$('#modal-profile-pic').modal('show')">Change Profile Photo</div>
+                    <div class="item" onclick="$('#modal-change-password').modal('show')">Change Password</div>
+                    <div class="item" onclick="loading(); document.getElementById('form-logout').submit()">Logout</div>
+                </div>
+            </div>
+        </div>
+        <div th:if="${!isGuest}">
+            <div class="ui hidden divider"></div>
+            <div class="ui hidden divider"></div>
+        </div>
+
+        <!--MESSAGES-->
+        <div class="ui container">
+            <div th:if="${!isGuest && (missingBio || missingEmail || missingName || missingPhone || missingWebsite)}">
+                <div class="ui hidden divider"></div>
+                <div class="ui yellow message">
+                    <div class="header">
+                        There are missing details in your profile.
+                    </div>
+                    <ul class="list">
+                        <li th:if="${missingName}">It's essential to provide a <b>name</b> for this account.</li>
+                        <li th:if="${missingEmail}">You need to provide an <b>email address</b> so that clients can contact you.</li>
+                        <li th:if="${missingPhone}">Your <b>phone number</b> is missing.</li>
+                        <li th:if="${missingBio}">Please provide an <b>artist bio</b> in your profile.</li>
+                        <li th:if="${missingWebsite}">Provide a link to your <b>website</b> or any social media account.</li>
+                        <p></p>
+                        <div class="ui bottom attached warning message">
+                            <i class="icon help"></i>
+                            Want to complete your profile? 
+                            <a class="item" href="#" onclick="$('#modal-edit-profile').modal('show')">
+                                Edit Profile
+                            </a> now.
+                        </div>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${!isGuest && missingProfilePic}">
+                <div class="ui hidden divider"></div>
+                <div class="ui yellow message">
+                    <div class="header">
+                        You have not yet uploaded a profile photo.
+                    </div>
+                    <ul class="list">
+                        <li th:if="${missingName}">Profile photos are essential so that other people can recognize you.</li>
+                        <p></p>
+                        <div class="ui bottom attached warning message">
+                            <i class="icon help"></i>
+                            Want to upload a new profile photo? 
+                            <a class="item" href="#" onclick="$('#modal-profile-pic').modal('show')">
+                                Change Profile Photo
+                            </a> now.
+                        </div>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${not #lists.isEmpty(responseMessages)}" id="message-container">
+                <div class="ui hidden divider"></div>
+                <div class="ui success message">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Success!
+                    </div>
+                    <ul class="list" th:each="msg : ${responseMessages}">
+                        <li>[[${msg}]]</li>
+                    </ul>
+                </div>
+            </div>
+            <div th:if="${not #lists.isEmpty(responseErrors)}" id="message-container">
+                <div class="ui hidden divider"></div>
+                <div class="ui error message">
+                    <i class="close icon" onclick="document.getElementById('message-container').style = 'display: none'"></i>
+                    <div class="header">
+                        Error!
+                    </div>
+                    <ul class="list" th:each="error : ${responseErrors}">
+                        <li>[[${error}]]</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!--HEADER PROFILE DISPLAY-->
+        <div class="ui hidden divider"></div>
+        <div class="ui container">
+            <div class="ui segment left aligned">
+                <div class="ui items">
+                    <div class="item">
+                        <div class="ui medium image">
+                            <div class="ui grey ribbon label large" th:if="${user.name() != ''}">
+                                [[${user.name()}]]
+                            </div>
+                            <img th:if="${user.profilePic()} == ''" src="https://semantic-ui.com/images/wireframe/image.png" />
+                            <img th:unless="${user.profilePic()} == ''" th:src="${user.profilePic()}" />
+                        </div>
+                        <div class="content center">
+                            <div class="description" th:if="${user.bio() != ''}">
+                                <p style="white-space: pre-line">[[${user.bio()}]]</p>
+                            </div>
+                            <div class="extra">
+                                <div class="ui label"><i class="user icon"></i>[[${user.username()}]]</div>
+
+                                <a href="#" 
+                                   onclick="#" 
+                                   th:attr="onclick=|window.open('${user.website()}', '_blank'); event.preventDefault();|"
+                                   th:if="${user.website() != ''}">
+                                    <div class="ui label"><i class="globe icon"></i>[[${user.website()}]]</div>
+                                </a>
+                                <div class="ui label" th:if="${user.email() != ''}"><i class="envelope icon"></i>[[${user.email()}]]</div>
+                                <div class="ui label" th:if="${user.phone() != ''}"><i class="phone icon"></i>[[${user.phone()}]]</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--CURRENT USER PHOTO GRID-->
+        <div class="ui hidden divider"></div>
+        <div class="ui horizontal divider">&nbsp;</div>
+        <div class="ui hidden divider"></div>
+        <div class="ui container">
+            <div class="ui cards three stackable" id="photostream">
+                <form th:action="@{/logged-in/photo/delete}" th:method="delete" id="form-photo-delete" style="display: none">
+                    <input type="hidden" id="photo-delete-id" name="id" value=""/>
+                    <input type="hidden" id="photo-delete-cloud" name="cloud" value=""/>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div id="photostream-loader" style="display: none">
+                <br/>
+                <div class="ui active centered inline loader"></div>
+                <br/>
+            </div>
+        </div>
+
+        <!--EDIT PROFILE-->        
+        <div class="ui tiny modal" id="modal-edit-profile">
+            <div class="header">
+                Edit Profile
+            </div>
+            <div class="content">
+                <form th:action="@{/logged-in/user/profile/update}" th:object="${profile}" th:method="put" class="ui form" id="form-edit-profile">
+                    <div class="field">
+                        <label>Name</label>
+                        <input type="text" placeholder="Name" th:field="*{name}" />
+                    </div>
+                    <div class="field">
+                        <label>Website</label>
+                        <input type="text" placeholder="Website" th:field="*{website}" />
+                    </div>
+                    <div class="field">
+                        <label>Email</label>
+                        <input type="text" placeholder="Email" th:field="*{email}" />
+                    </div>
+                    <div class="field">
+                        <label>Phone</label>
+                        <input type="text" placeholder="Phone" th:field="*{phone}" />
+                    </div>
+                    <div class="field">
+                        <label>Artist Bio</label>
+                        <textarea placeholder="Bio" th:field="*{bio}" rows="10"></textarea>
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui reply form">
+                    <div class="ui left floated basic tertiary mini circular deny button" style="margin-bottom: 5%;">
+                        Cancel
+                    </div>
+                    <div class="ui right floated basic secondary mini circular positive button" 
+                         style="margin-bottom: 5%;" 
+                         onclick="loading(); document.getElementById('form-edit-profile').submit()">
+                        Save
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--CHANGE PASSWORD-->        
+        <div id="modal-change-password" class="ui mini modal">
+            <div class="header">
+                Change Password
+            </div>
+            <div class="content">
+                <form th:action="@{/logged-in/user/password/update}" th:object="${changePass}" th:method="put" class="ui form" id="form-change-password">
+                    <div class="field">
+                        <label>Current Password</label>
+                        <input type="password" placeholder="Current Password" th:field="*{password}" />
+                    </div>
+                    <div class="field">
+                        <label>New Password</label>
+                        <input type="password" placeholder="New Password" th:field="*{newPassword}" />
+                    </div>
+                    <div class="field">
+                        <label>Retype New Password:</label>
+                        <input type="password" placeholder="Retype Password" th:field="*{newPasswordRetype}" />
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui reply form">
+                    <div class="ui left floated basic tertiary mini circular deny button" style="margin-bottom: 5%;">
+                        Cancel
+                    </div>
+                    <div class="ui right floated basic secondary mini circular positive button" 
+                         style="margin-bottom: 5%;" 
+                         onclick="loading(); document.getElementById('form-change-password').submit()">
+                        Save
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--CHANGE PROFILE PIC-->        
+        <div class="ui mini modal" id="modal-profile-pic" th:if="${!isGuest}">
+            <div class="header">
+                Change Profile Photo
+            </div>
+            <div class="content">
+                <form th:action="@{/logged-in/user/profile-pic/update}" th:object="${profile}" th:method="PUT" class="ui form" id="form-profile-pic">
+                    <input type="hidden" th:field="*{profilePic}" id="profile-pic-url"/>
+                    <div class="field">
+                        <input type="file" accept="image/*" onchange="setFiles(this.files)"/>
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui reply form">
+                    <div class="ui left floated basic tertiary mini circular deny button" style="margin-bottom: 5%;">
+                        Cancel
+                    </div>
+                    <div class="ui right floated basic mini circular positive button" 
+                         style="margin-bottom: 5%;" 
+                         onclick="loading(); uploadProfilePhoto();">
+                        Save
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--EDIT CAPTION MODAL-->
+        <div class="ui tiny modal" id="modal-edit-caption" th:if="${!isGuest}">
+            <div class="header">
+                Edit Caption
+            </div>
+            <div class="content">
+                <form th:action="@{/logged-in/photo/caption/update}" th:object="${photo}" th:method="put" class="ui form" id="form-edit-caption">
+                    <div class="field">
+                        <label>Caption</label>
+                        <textarea placeholder="Caption" id="edit-caption-value" th:field="*{caption}" rows="3"></textarea>
+                    </div>
+                    <input type="hidden" th:field="*{id}" id="edit-caption-id"/>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui black deny button">
+                    Cancel
+                </div>
+                <a onclick="$('#modal-edit-caption').modal('hide'); loading(); $('#form-edit-caption').submit()">
+                    <div class="ui green button">
+                        Update
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!--UPLOAD MODAL-->
+        <div class="ui tiny modal" id="modal-upload" th:if="${!isGuest}">
+            <div class="header">
+                Upload
+            </div>
+            <div class="content">
+                <form th:action="@{/logged-in/photo/upload}" th:object="${photo}" method="post" class="ui form" id="form-upload">
+                    <input type="hidden" th:field="*{url}" id="photo-url"/>
+                    <div class="field">
+                        <label>Photo</label>
+                        <input type="file" accept="image/*" onchange="setFiles(this.files)"/>
+                    </div>
+                    <div class="field" style="display: none">
+                        <label>Caption</label>
+                        <textarea placeholder="Caption" th:field="*{caption}" rows="3"></textarea>
+                    </div>
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+                </form>
+            </div>
+            <div class="actions">
+                <div class="ui reply form">
+                    <div class="ui left floated basic tertiary mini circular deny button" style="margin-bottom: 5%;">
+                        Cancel
+                    </div>
+                    <div class="ui right floated basic mini circular positive button" 
+                         style="margin-bottom: 5%;" 
+                         onclick="loading(); uploadFile()">
+                        Save
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--IMAGE IS CLICKED-->
+        <div class="ui basic small modal" id="modal-image">
+            <div class="content">
+                <p id="modal-image-caption" style="white-space: pre-line" onclick="$('#modal-image').modal('hide');"></p>
+                <div class="ui basic mini modal" id="modal-photo-delete">
+                    <div class="ui icon header">
+                        <i class="trash icon"></i>
+                        Delete Photo
+                    </div>
+                    <div class="content">
+                        <p>You will not be able to recover this photo. Do you still want to delete?</p>
+                    </div>
+                    <div class="actions">
+                        <div class="ui red basic cancel inverted button">
+                            <i class="remove icon"></i>
+                            Cancel
+                        </div>
+                        <div class="ui green ok inverted button" onclick="loading(); doDeletePhoto()">
+                            <i class="checkmark icon"></i>
+                            Delete
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ui hidden divider"></div>
+        <div class="ui hidden divider"></div>
+
+        <!--MODAL FOLLOW-->
+        <div class="ui small modal" id="modal-follow">
+            <i class="close icon"></i>
+            <div class="header">
+                Following
+            </div>
+            <div class="content">
+                <div class="ui relaxed divided list" id="datastream-follows" style="overflow-y: auto; max-height: 400px;">
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript">
+            $('.ui.dropdown').dropdown({
+                on: 'hover',
+                action: 'nothing'
+            });
+
+            function openFollow() {
+                $.ajax({
+                    url: "/logged-in/artist/follow",
+                    type: 'get',
+                    success: function (response) {
+                        var items = '';
+                        for (var i = 0; i < response.length; i++) {
+                            const follow = response[i];
+                            const username = follow.targetUsername;
+                            items += '<div class="item" onclick="loading(); location.href=\'/' + username + '\'"><div class="content follow-row">' + username + '</div></div>\n';
+                        }
+                        document.getElementById('datastream-follows').insertAdjacentHTML('beforeend', items);
+                        $('#modal-follow').modal('show');
+                    }
+                });
+            }
+
+            function popupImage(elem) {
+                const captionsEnabled = false;
+                if (captionsEnabled) {
+                    $('#modal-image').modal('show');
+                    document.getElementById('modal-image-caption').innerHTML = elem.attributes.caption.value;
+                    $('#modal-image').modal('refresh');
+                }
+            }
+
+            function deletePhoto(elem) {
+                document.getElementById('photo-delete-id').value = elem.attributes.targetid.value;
+                document.getElementById('photo-delete-cloud').value = elem.attributes.targetcloudname.value;
+                $('#modal-photo-delete').modal('show');
+            }
+
+            function doDeletePhoto() {
+                document.getElementById('form-photo-delete').submit();
+            }
+
+            const cloudName = 'hqx5vpvj4';
+
+            // Do upload to Cloudinary.
+            var uploadFile = function () {
+                const unsignedUploadPreset = 'nihp5svy';
+
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    var url = 'https://api.cloudinary.com/v1_1/' + cloudName + '/upload';
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', url, true);
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                    xhr.onreadystatechange = function (e) {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+
+                            // File uploaded successfully
+                            var response = JSON.parse(xhr.responseText);
+                            var img = new Image();
+                            img.src = response.secure_url;
+                            document.getElementById('photo-url').value = img.src;
+                            document.getElementById('form-upload').submit();
+                        }
+                    };
+
+                    var fd = new FormData();
+                    fd.append('upload_preset', unsignedUploadPreset);
+                    fd.append('public_id', '/[[${user.username()}]]/' + uuidv4());
+                    fd.append('file', file);
+                    xhr.send(fd);
+                    break;
+                }
+            };
+
+            // Upload profile pic.
+            var uploadProfilePhoto = function () {
+                $.ajax({
+                    url: '/logged-in/user/profile-pic/delete',
+                    type: 'delete',
+                    data: $('#form-profile-pic').serialize(),
+                    success: function () {
+                        const unsignedUploadPreset = 'profile-pic';
+
+                        for (var i = 0; i < files.length; i++) {
+                            var file = files[i];
+                            var url = 'https://api.cloudinary.com/v1_1/' + cloudName + '/upload';
+                            var xhr = new XMLHttpRequest();
+                            xhr.open('POST', url, true);
+                            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                            xhr.onreadystatechange = function (e) {
+                                if (xhr.readyState === 4 && xhr.status === 200) {
+
+                                    // File uploaded successfully
+                                    var response = JSON.parse(xhr.responseText);
+                                    var img = new Image();
+                                    img.src = response.secure_url;
+                                    document.getElementById('profile-pic-url').value = img.src;
+                                    document.getElementById('form-profile-pic').submit();
+                                }
+                            };
+
+                            var fd = new FormData();
+                            fd.append('upload_preset', unsignedUploadPreset);
+                            fd.append('public_id', '/[[${user.username()}]]/profile_pic');
+                            fd.append('file', file);
+                            xhr.send(fd);
+                            break;
+                        }
+                    }
+                });
+            };
+
+            function setFiles(filesToUpload) {
+                files = filesToUpload;
+            }
+
+            function uuidv4() {
+                return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+                )
+            }
+
+            function loading() {
+                document.getElementById('global-loader').style = '';
+            }
+
+            function popupEditCaption(elem) {
+                document.getElementById('edit-caption-id').value = elem.attributes.targetid.value;
+                document.getElementById('edit-caption-value').value = elem.attributes.targetcaption.value;
+                $('#modal-edit-caption').modal('show');
+            }
+
+            $('#photostream').visibility({
+                once: false,
+                onBottomVisible: function () {
+                    document.getElementById('photostream-loader').style = '';
+                    $.ajax({
+                        url: `/logged-in/user/[[${user.id()}]]/photo/pagination/next`,
+                        type: 'get',
+                        success: function (responseBody) {
+
+                            for (var i = 0; i < responseBody.length; i++) {
+                                const photo = responseBody[i];
+                                const imgSrcId = "photostream-card-" + photo.id + "img-src";
+                                const editCaptionId = "photostream-card-" + photo.id + "edit-caption";
+                                const isGuest = `[[${isGuest}]]` === `true`;
+
+                                var template = "";
+                                if (isGuest) {
+                                    template = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 30px;\">\n"
+                                            + "    <div class=\"image\"\n"
+                                            + "         id=\"" + imgSrcId + "\"\n"
+                                            + "         caption=\"\"\n"
+                                            + "         onclick=\"popupImage(this);\">\n"
+                                            + "        <img class=\"ui image\" src=\"" + photo.url + "\" style=\"border-radius: 0px !important\"/>\n"
+                                            + "    </div>\n"
+                                            + "</div>\n";
+                                    document.getElementById('photostream').insertAdjacentHTML('beforeend', template);
+                                    document.getElementById(imgSrcId).setAttribute("caption", photo.caption);
+                                } else {
+                                    template = "<div class=\"card\" style=\"box-shadow: none; background: none; margin-bottom: 30px;\">\n"
+                                            + "    <div class=\"content\">\n"
+                                            + "        <span class=\"right floated\">\n"
+                                            + "            <div class=\"ui dropdown\">\n"
+                                            + "                <div class=\"text\">\n"
+                                            + "                    <i class=\"ellipsis horizontal icon\"></i>\n"
+                                            + "                </div>\n"
+                                            + "                <div class=\"left floated menu\">\n"
+                                            + "                    <div style='display: none' class=\"item\"\n"
+                                            + "                         id=\"" + editCaptionId + "\"\n"
+                                            + "                         targetId=\"" + photo.id + "\"\n"
+                                            + "                         targetCaption=\"\"\n"
+                                            + "                         onclick=\"popupEditCaption(this)\">\n"
+                                            + "                        Edit Caption\n"
+                                            + "                    </div>\n"
+                                            + "                    <div class=\"item\"\n"
+                                            + "                         targetId=\"" + photo.id + "\"\n"
+                                            + "                         targetCloudName=\"" + photo.cloud + "\"\n"
+                                            + "                         onclick=\"deletePhoto(this)\">\n"
+                                            + "                        Delete\n"
+                                            + "                    </div>\n"
+                                            + "                </div>\n"
+                                            + "            </div>\n"
+                                            + "        </span>\n"
+                                            + "    </div>\n"
+                                            + "    <div class=\"image\"\n"
+                                            + "         id=\"" + imgSrcId + "\"\n"
+                                            + "         caption=\"\"\n"
+                                            + "         onclick=\"popupImage(this);\">\n"
+                                            + "        <img class=\"ui image\" src=\"" + photo.url + "\" style=\"border-radius: 0px !important\"/>\n"
+                                            + "    </div>\n"
+                                            + "</div>\n";
+                                    document.getElementById('photostream').insertAdjacentHTML('beforeend', template);
+                                    document.getElementById(editCaptionId).setAttribute("targetCaption", photo.caption);
+                                    document.getElementById(imgSrcId).setAttribute("caption", photo.caption);
+                                }
+                            }
+                            document.getElementById('photostream-loader').style = 'display: none';
+                            $('.ui.dropdown').dropdown({
+                                on: 'hover',
+                                action: 'nothing'
+                            })
+                        }
+                    });
+                }
+            });
+        </script>
+    </body>
+
+</html>

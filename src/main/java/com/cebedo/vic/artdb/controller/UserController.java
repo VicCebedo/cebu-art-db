@@ -109,34 +109,52 @@ public class UserController {
             final Model model,
             final HttpServletRequest request) {
 
-        // If not yet authenticated, redirect to login.
-        if (!AuthUtils.isAuthenticated()) {
-            return "redirect:/login";
-        }
-
-        // If this username is equal to mine,
-        // redirect to home.
-        boolean isArtist = AuthUtils.isArtist();
-        if (username.equals(AuthUtils.getAuth().user().username())) {
-
-            // If non-artist, redirect to index.
-            if (!isArtist) {
-                return "redirect:/";
-            }
-            return "redirect:/logged-in/home";
-        }
-
         // If we are visiting another person's profile.
         IUser user = this.userService.get(username);
         model.addAttribute("user", user);
         model.addAttribute("profile", new ProfileDto(user));
         model.addAttribute("isGuest", true);
-        model.addAttribute("isArtist", isArtist);
         model.addAttribute("changePass", new CredentialsDto());
         request.getSession().setAttribute("index-pagination-offset", 0);
         request.getSession().setAttribute("home-pagination-offset", 0);
         request.getSession().setAttribute("users-pagination-offset", 0);
         request.getSession().setAttribute("notifications-pagination-page", 0);
-        return "home";
+        return "home-public";
     }
+    //    @GetMapping("/{username}")
+    //    String pageUser(
+    //            @PathVariable("username") final String username,
+    //            final Model model,
+    //            final HttpServletRequest request) {
+    //
+    //        // If not yet authenticated, redirect to login.
+    //        if (!AuthUtils.isAuthenticated()) {
+    //            return "redirect:/login";
+    //        }
+    //
+    //        // If this username is equal to mine,
+    //        // redirect to home.
+    //        boolean isArtist = AuthUtils.isArtist();
+    //        if (username.equals(AuthUtils.getAuth().user().username())) {
+    //
+    //            // If non-artist, redirect to index.
+    //            if (!isArtist) {
+    //                return "redirect:/";
+    //            }
+    //            return "redirect:/logged-in/home";
+    //        }
+    //
+    //        // If we are visiting another person's profile.
+    //        IUser user = this.userService.get(username);
+    //        model.addAttribute("user", user);
+    //        model.addAttribute("profile", new ProfileDto(user));
+    //        model.addAttribute("isGuest", true);
+    //        model.addAttribute("isArtist", isArtist);
+    //        model.addAttribute("changePass", new CredentialsDto());
+    //        request.getSession().setAttribute("index-pagination-offset", 0);
+    //        request.getSession().setAttribute("home-pagination-offset", 0);
+    //        request.getSession().setAttribute("users-pagination-offset", 0);
+    //        request.getSession().setAttribute("notifications-pagination-page", 0);
+    //        return "home";
+    //    }
 }
