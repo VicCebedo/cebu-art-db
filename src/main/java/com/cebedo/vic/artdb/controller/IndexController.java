@@ -41,7 +41,7 @@ public class IndexController {
     String pageIndex(final Model model, final HttpServletRequest request) {
         // If not yet authenticated, redirect to login.
         if (!AuthUtils.isAuthenticated()) {
-            return "redirect:/login";
+            return "redirect:/artist";
         }
 
         // Data.
