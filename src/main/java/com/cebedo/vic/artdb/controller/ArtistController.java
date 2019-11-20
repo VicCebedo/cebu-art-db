@@ -106,7 +106,6 @@ public class ArtistController {
                     + "            " + displayName + "\n"
                     + "        </a>\n"
                     + "        <div class=\"extra\">\n"
-                    + "            <div class=\"ui label\"><i class=\"user icon\"></i> " + user.username() + "</div>\n"
                     + website
                     + email
                     + phone
@@ -196,7 +195,6 @@ public class ArtistController {
                     + "            " + displayName + "\n"
                     + "        </a>\n"
                     + "        <div class=\"extra\">\n"
-                    + "            <div class=\"ui label\"><i class=\"user icon\"></i> " + user.username() + "</div>\n"
                     + website
                     + email
                     + phone
